@@ -23,14 +23,14 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public, empty until the 
 
 | Id | Image | State | Commit | Open |
 | :--- | :--- | :--- | :--- | :--- |
-| I-01 | OpenWrt 25.12.6 x86-64 | verify (record b86aaf8 on pkg/I-01) | — | — |
-| I-02 | OpenWrt 25.12.6 armsr/armv8 | brief | — | — |
-| I-03 | OpenWrt 25.12.6 armsr/armv7 | brief | — | — |
-| I-04 | OpenWrt 25.12.6 x86/generic | brief | — | — |
-| I-05 | OpenWrt 25.12.6 Raspberry Pi 4 | brief | — | — |
-| I-06 | Debian 13.7.0 amd64 and arm64 | brief | — | — |
-| I-07 | Alpine 3.24.4 | brief | — | — |
-| I-08 | Fedora IoT 44 | brief | — | — |
+| I-01 | OpenWrt 25.12.6 x86-64 | accepted | merge 83a14fd | — |
+| I-02 | OpenWrt 25.12.6 armsr/armv8 | accepted | merge fed2004 | — |
+| I-03 | OpenWrt 25.12.6 armsr/armv7 | accepted | merge c653884 | — |
+| I-04 | OpenWrt 25.12.6 x86/generic | verify (one open major: boot time of run 3) | — | — |
+| I-05 | OpenWrt 25.12.6 Raspberry Pi 4 | accepted (taken apart only; boot on the Pi 4 is a later step) | merge 996f6e9 | — |
+| I-06 | Debian 13.7.0 amd64 and arm64 | accepted | merge 57a6e1b | — |
+| I-07 | Alpine 3.24.4 | brief (being analysed) | — | — |
+| I-08 | Fedora IoT 44 | waiting (after I-07) | — | — |
 | I-09 | Comparison for 6A | waiting | — | — |
 
 ## Core, measuring, network, reports, surfaces, product
@@ -50,3 +50,4 @@ All waiting for the foundation (C-01..C-11, M-01..M-14, N-01..N-18, R-01..R-05, 
 - 2026-11-11: owner answered F-03 Q6/Q7 and F-02 Q-01, Q-05, Q-12, Q-15, Q-16, Q-17 (migration component by component; all Python distributions; terminal kept hardened; bot secrets off by default; MACs pseudonymised for outside LLMs; maintenance needs an off-device log). F-01 started.
 - 2026-11-11: F-01 accepted: every owner decision and the image findings written into the shared plans (Python repo 492fc46 + bb0a553, pushed). The Python folder ~/src/NetworkMeasureBox stays at ad3758c until the briefs that cite it finish; then fast-forward.
 - 2026-11-11: F-00, F-03, F-02 merged into main; changelog updated.
+- 2026-11-11: image records I-01, I-02, I-03, I-05, I-06 accepted and merged; their findings are in roadmap 6A (Python repo bb0a553). Gate on main: shellcheck fails on the register scripts; fix in progress before the first push.
