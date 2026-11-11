@@ -4,7 +4,8 @@ Package I-03 (work plan section 5.4). The method is work plan 5.1, and every fie
 Each value names the command that produced it. A value that could not be read says "not determined" and why.
 Nothing here comes from memory. Only lists, versions and checksums are recorded. No file taken out of the image
 is in this repository. The headings and their order are the same as in the I-01 record (x86-64), so that I-09 can
-compare the two; section 15 is extra and covers the SDK, ImageBuilder and toolchain of the tree (5.3 point 4).
+compare the two; section 15 is extra and covers the SDK, ImageBuilder and toolchain of the tree (5.3 point 4). The texts of
+headings 9a, 10 and 12 differ from I-01 where their content differs; the sections line up by number.
 
 - Date of the analysis: 2026-11-11.
 - Where it ran: dev PC, Windows with WSL2 Ubuntu 24.04, about 1.8 GB RAM and 4 threads, no root. The QEMU guests ran
@@ -34,7 +35,7 @@ compare the two; section 15 is extra and covers the SDK, ImageBuilder and toolch
 | `openwrt-imagebuilder-25.12.6-armsr-armv7.Linux-x86_64.tar.zst` | 50,135,792 | `6109c6719b04a62dfc244e0a9754ed7e06dfb7d45f9dad8bdd40d57d08527ee2` | OK |
 | `kernel-debug.tar.zst` | 99,771,731 | `709c7270ff95cf0febf3929f3560733aed80aadb53e24f21d73659e126d10384` | OK |
 | `llvm-bpf-21.1.6.Linux-x86_64.tar.zst` | 51,187,706 | `3f07164c83d2965bc8685bbb1f1efda4539e9c86e42779f52808655b039df574` | OK |
-| `kmods/…/kmod-ikconfig-6.12.112-r1.apk` | — | `e835c6fe3aedc160af6270b8a54b0c392f4492c49ebb6b0b9192fccef686ae9f` | OK |
+| `kmods/…/kmod-ikconfig-6.12.112-r1.apk` | 45,810 | `e835c6fe3aedc160af6270b8a54b0c392f4492c49ebb6b0b9192fccef686ae9f` | OK |
 
 - **How it was checked.** The tree carries the publisher's own `sha256sums` (1,234 lines, SHA-256
   `d1e5bcaf1d46b356b231084c84d60a80165a4ddf33e12369d93ec6023c6385ae`), with `sha256sums.asc` (OpenPGP) and
@@ -213,7 +214,9 @@ both images, including the disk GUID (`0F9DC41D-18C7-F917-0F85-DEF5FA7E4400`, fi
 ## 5. Modules and firmware files carried
 
 - **Modules.** 88 `.ko` files in `lib/modules/6.12.112/` (`ls *.ko | wc -l`), plus `modules.builtin` (136 lines;
-  virtio, PL011, bridge, 8021q, squashfs, ext4, overlay and 9p-virtio are built in). Guest `lsmod | wc -l` = 88.
+  virtio, PL011, bridge, 8021q, squashfs, ext4, overlay and 9p-virtio are built in). Guest `lsmod | wc -l` = 88, so all 88 modules were
+  loaded: `/sbin/lsmod` is a link to ubox `/sbin/kmodloader`, whose lsmod prints one line per `/proc/modules` entry
+  (format `%-20s%8d%3d `) and no header line (`strings sbin/kmodloader` has no "Module"/"Used by" header string).
   - Groups: NIC drivers (`e1000e`, `ena`, `atlantic`, `genet`, `stmmac`/`stmmac-platform`/`dwmac-generic`,
     `vmxnet3`), PHY and MDIO (`aquantia`, `bcm7xxx`, `broadcom`, `marvell`, `marvell10g`, `realtek`, `smsc`, `sfp`,
     `phylink`, `pcs_xpcs`, `mdio-*`), nftables and conntrack, PPP/PPPoE, `macsec`, I2C/GPIO/RTC
