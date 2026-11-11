@@ -1,8 +1,9 @@
 # Image record: OpenWrt 25.12.6 armsr/armv8 (64-bit ARM, squashfs and ext4 combined-efi, with SDK, ImageBuilder, toolchain)
 
 Package I-02 (work plan section 5.4). The method is work plan 5.1, and every field of 5.2 is below, in the order
-of the I-01 record (`openwrt-25.12.6-x86-64.md`) so that I-09 can compare them; section 15 adds the build trees
-(5.3 point 4). Each value names the command that produced it. A value that could not be read says "not determined"
+of the I-01 record (`openwrt-25.12.6-x86-64.md`) so that I-09 can compare them by section number; section 15 adds the build trees
+(5.3 point 4) and has no counterpart in I-01. The texts of heading 9a and of heading 10 (package count) differ from
+I-01 because their content differs. Each value names the command that produced it. A value that could not be read says "not determined"
 and why. Nothing here comes from memory. Only lists, versions and checksums are recorded. No file taken out of the
 image is in this repository.
 
@@ -36,21 +37,26 @@ image is in this repository.
 | `packages/` (88 `.apk`, `index.json`, `packages.adb`) | — | in the list | OK |
 
 - **How it was checked.** The tree carries the publisher's `sha256sums` (1,258 lines, SHA-256
-  `eef9bcd2a1c517436a3bf9a1cee060d22e959e29a3e725ff108c92ee60ca5ec8`). Every file of the tree except the list itself
-  and the four index signature files (`packages.adb.asc`/`.sig` in `kmods/…` and `packages/`) is named in it, and every
-  listed file is present (`find` + `comm`). `sha256sum -c --quiet sha256sums` gave exit 0; 1,258 of 1,258 lines `OK`.
+  `eef9bcd2a1c517436a3bf9a1cee060d22e959e29a3e725ff108c92ee60ca5ec8`). Every file of the tree is named in it except 7: the list
+  itself, its own signatures `sha256sums.asc` and `sha256sums.sig`, and the four index signature files
+  (`packages.adb.asc`/`.sig` in `kmods/…` and `packages/`); every listed file is present (`find . -type f | sort`
+  against the list's names, `comm -23` gives those 7, `comm -13` gives none). `sha256sum -c --quiet sha256sums` gave exit 0; 1,258 of 1,258 lines `OK`.
 - **Signature of the list (gpg).** Checked offline in an isolated `GNUPGHOME`, `gpg --verify sha256sums.asc sha256sums`:
   "Good signature from OpenWrt Build System (Nitrokey3)", exit 0, signature made 2026-10-18.
   - Signing subkey `92C5 61DE 55AE 6552 F3C7 36B8 2B01 5109 0606 D1D9`, primary key
     `8A8B C12F 46B8 36C0 F9CD B36F 1D53 D187 7742 E911`.
   - No key was fetched for I-02: the key file that I-01 fetched and compared with OpenWrt's keyring repository
-    (`gpg/0x1D53D1877742E911.asc`) was reused from `~/nmb-work/I-01/pub/`. `gpg --show-keys` gives the same
+    (upstream file `gpg/0x1D53D1877742E911.asc`) was reused from I-01's work folder, where it is stored as
+    `~/nmb-work/I-01/pub/key.asc`. `gpg --show-keys` gives the same
     fingerprints. gpg says "not certified with a trusted signature", because no web of trust was set up.
   - The two index signatures were checked the same way: `gpg --verify packages.adb.asc packages.adb` for `packages/`
     and for `kmods/…/`, both "Good signature", exit 0.
 - **Signature of the list (usign): not checked.** `sha256sums.sig` is a usign signature ("verify with usign.pub").
-  `usign`/`signify` is not installed on the PC, and the image carries no usign public key (`/etc/opkg/keys/` is empty;
-  `/etc/apk/keys/` holds only the apk key `openwrt-25.12.pem`), so it cannot be checked without fetching a key.
+  `usign`/`signify` is not installed on the PC, and the image carries no usign key that checks the list:
+  `/etc/opkg/keys/` holds only `8a11255d14aef6c8` (95 bytes, "untrusted comment: ASU CA pubkey 2022", owned by
+  `attendedsysupgrade-common` per `lib/apk/packages/attendedsysupgrade-common.list`), while `sha256sums.sig` was made
+  with key number `b5043e70f9a75cde` (bytes 3-10 of the base64-decoded signature line). `/etc/apk/keys/` holds only
+  the apk key `openwrt-25.12.pem`. So it cannot be checked without fetching the release key.
 - **Release identity.** `version.buildinfo` = `r33311-981c978eff`; the image's `/etc/openwrt_release` gives the same,
   with `DISTRIB_TARGET='armsr/armv8'` and `DISTRIB_ARCH='aarch64_generic'`. `profiles.json`: kernel `6.12.112`,
   release 1, vermagic `67e205f26d0458c4d12f1fd315216398`, one profile `generic` ("Generic EFI Boot").
@@ -177,7 +183,8 @@ The layout was read with `sgdisk -p disk.img` (exit 0), `sgdisk -i N` and `fdisk
 
 ## 5. Modules and firmware files carried
 
-- **Modules.** There are 111 `.ko` files in `lib/modules/6.12.112/` (`ls *.ko | wc -l`), 4,881,889 bytes, plus
+- **Modules.** There are 111 `.ko` files in `lib/modules/6.12.112/` (`ls *.ko | wc -l`), 4,853,640 bytes
+  (`cat *.ko | wc -c`; the whole `lib/modules` folder is 4,881,889 bytes by `du -sb`), plus
   `modules.builtin` (460 lines). Guest `lsmod | wc -l` = 110 lines.
   - Groups: SoC and server NICs for the ARM boards of the `generic` profile (`fsl-dpaa2-eth`, `fsl-enetc*`, `fec`,
     `mvneta`, `mvpp2`, `stmmac` with `dwmac-imx`/`-rk`/`-sun8i`, `genet`, `ravb`, `thunder_*`/`nic*`,
@@ -409,7 +416,7 @@ Figures (TCG on an x86 host, two vCPUs, 512 MB, loaded host; **not** a performan
 - **Exact time of `init complete`:** only an upper bound (288 s kernel uptime), see section 12.
 - **Ext4 image boot:** not run. Taken apart only; its file and package lists equal the squashfs image's.
 - **Initramfs kernel boot:** not run; the combined-efi squashfs image booted, which the task asked for first.
-- **usign signature of `sha256sums`:** not checked (no usign tool, no usign public key without network). The gpg
+- **usign signature of `sha256sums`:** not checked (no usign tool; the matching release key `b5043e70f9a75cde` is not in the image and was not fetched). The gpg
   signature was checked.
 - **Running the SDK/toolchain compilers:** not done. Their versions come from `info.mk`, `version.mk`, `version.h`,
   the kernel's version string and `strings`; no downloaded binary was executed on the PC.
