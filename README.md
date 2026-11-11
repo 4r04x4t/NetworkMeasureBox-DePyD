@@ -9,6 +9,7 @@ version's repository (`docs/NATIVE_WORK_PLAN.md`, `docs/DEPYTHONIZATION_ROADMAP.
 
 ## Licence
 
-**Not decided yet.** The licence of the whole is fixed once its components are known, from what their
-licences require and allow (work plan section 7, point 9). Until then no dependency is taken whose licence
-would rule out an open licence; every dependency is listed with its licence as it is added.
+**MIT** (owner, 2026-11-11), the same licence as the Python version: see [`LICENSE`](LICENSE). The choice was made
+from the licences of every planned component ([`docs/licensing/`](docs/licensing/PROPOSAL.md)): nothing built into
+`nmbd` may be under a copyleft licence. Programs that the box only runs (for example `ooniprobe`, `pppd`, `nft`,
+`dnsmasq`) keep their own licences, and the images carry their licence texts and source offers.

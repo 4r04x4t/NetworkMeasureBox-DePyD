@@ -1,8 +1,9 @@
 # Dependencies and licences
 
 Every dependency of the native build, with its licence, origin, version and how it is used (work plan section 7
-point 9, roadmap 6B.3A). The licence of the whole is not decided yet (see `README.md`); until it is, nothing is
-taken whose licence would rule out an open licence.
+point 9, roadmap 6B.3A). The licence of the whole is MIT (owner, 2026-11-11; see `LICENSE` and
+`docs/licensing/PROPOSAL.md`): nothing built into `nmbd` may be under GPL, LGPL or AGPL, and
+MPL-2.0 (file-level copyleft) only after review; programs that are only run keep their own licence.
 
 The table below is read by `tools/depcheck` (run by `tools/deps.sh` in every gate) and must stay one table with
 exactly these columns. The gate fails when:

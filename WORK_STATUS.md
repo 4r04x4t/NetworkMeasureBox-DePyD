@@ -58,3 +58,4 @@ Waiting: C-01, C-02, C-06 (they implement F-04a/b/f; briefed after F-04 is accep
 - 2026-11-11: F-05 and F-06 briefs accepted and merged. Pending register additions collected from briefs: F05-P1..P16 (F-05), NF-1..NF-6 (C-05), the clock-jump check entry (F-06); added in one register round once F-04 is accepted.
 - 2026-11-11: F-07 failed its third review (new major: an entry could be raised to fixed with no test and no vector as evidence). Held under the three-failures rule; one consolidated round with the round-3 findings (saved in the scratchpad as f07-findings-r3.json) after F-04 is accepted.
 - 2026-11-11: I-08 accepted and merged; all eight image records done; I-09 (comparison for 6A, owner decides the base) can start.
+- 2026-11-11: licence decided by the owner: MIT, copyright "NetworkMeasureBox contributors"; OONI only as the separate ooniprobe program. LIC-01 lists merged; LICENSE added.
