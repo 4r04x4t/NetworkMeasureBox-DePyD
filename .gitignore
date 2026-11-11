@@ -1,0 +1,7 @@
+# Build output never goes into version control
+/dist/
+/build/
+*.test
+*.out
+/tmp/
+/testdata/fuzz-cache/
