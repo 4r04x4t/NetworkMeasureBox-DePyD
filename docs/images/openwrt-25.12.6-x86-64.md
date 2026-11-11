@@ -46,7 +46,7 @@ It is the same in both images.
 
 | No. | Sectors (512 B) | Size | GPT type | Contents (`file`) |
 | :--- | :--- | :--- | :--- | :--- |
-| 128 | 34–511 | 239 KiB | BIOS boot (`21686148-…`, name "Hah!IdontNeedEFI") | GRUB core for legacy BIOS boot |
+| 128 | 34–511 | 239 KiB | BIOS boot (`21686148-6449-6E6F-744E-656564454649`; partition name empty, `sgdisk -i 128`: `Partition name: ''`. "Hah!IdontNeedEFI" is only the ASCII of the type GUID's bytes on disk) | GRUB core for legacy BIOS boot |
 | 1 | 512–33279 | 16.0 MiB | Linux filesystem (`0FC63DAF-…`), **not** the EFI System type | FAT16, label `kernel` |
 | 2 | 33280–246271 | 104.0 MiB | Linux filesystem | squashfs image: squashfs 4.0, xz, 6,096,242 bytes, 1,291 inodes. ext4 image: ext4, label `rootfs`, 26,624 blocks of 4 KiB, 19,361 blocks free (`debugfs -R stats`) |
 
@@ -77,8 +77,8 @@ It is the same in both images.
   - `/tmp` is tmpfs.
 - **Root file system (ext4 image).** It was not booted, only taken apart. The root is the ext4 partition itself, with
   no overlay.
-  - It was unpacked with `debugfs -R "rdump / out" p2.img` (exit 0; three warnings about changing ownership, because
-    there is no root).
+  - It was unpacked with `debugfs -R "rdump / out" p2.img` (exit 0; 1,062 warnings "Operation not permitted while changing
+    ownership", one per file and folder, because there is no root: `grep -c 'Operation not permitted' rdump.log`).
   - Its file list is identical to the squashfs root (`find -type f | sort`, then `diff`, exit 0), and so is its package
     list (`diff`, exit 0).
 - **Unpacking the squashfs.** `unsquashfs -no-xattrs -d … p2.img` gave exit 2. The one failure was
@@ -163,7 +163,7 @@ It is the same in both images.
     `ena`, `stmmac`/`dwmac-intel`), nftables and conntrack, PPP/PPPoE, `i915` with DRM helpers, and `vfat`/NLS.
   - virtio-net and virtio-blk are built in (`VIRTIO_NET=y`, `VIRTIO_BLK=y`).
 - **Firmware.** There are 70 files under `lib/firmware`, 1,411,732 bytes in all (`find -type f`, `du -sb`): `bnx2/`
-  (5), `i915/` DMC (37) and `rtl_nic/` (28). No Wi-Fi firmware is in the image.
+  (5), `i915/` DMC (33) and `rtl_nic/` (32) (`find lib/firmware -type f | cut -d/ -f3 | sort | uniq -c`). No Wi-Fi firmware is in the image.
   - The three firmware packages (`bnx2-firmware`, `i915-firmware-dmc`, `r8169-firmware`) have an empty licence field
     in the apk database.
 
@@ -189,8 +189,10 @@ It is the same in both images.
   - guest `apk info | wc -l` = 182
   - The list is in section 10.
 - **Licences of the installed packages** (`L:` fields): GPL-2.0(-only/-or-later) for most of them, then ISC, Apache-2.0
-  (LuCI), LGPL-2.1, MIT, GPL-3.0-with-GCC-exception (libc, libgcc), GPL-3.0-or-later (GRUB), BSD and Zlib. Three
-  firmware packages have no licence field.
+  (LuCI), LGPL-2.1, MIT, GPL-3.0-with-GCC-exception (libc, libgcc), GPL-3.0-or-later (GRUB), MPL-2.0 (with
+  GPL-2.0-or-later: `ca-bundle`), BSD-3-Clause (`libuuid1`; `urngd` with GPL-2.0), **BSD-4-Clause** (`ppp`,
+  `ppp-mod-pppoe`; the advertising clause matters for the 6B.3A licence list) and Zlib. Three firmware packages have
+  no licence field. Command: `awk '/^P:/{p=substr($0,3)} /^L:/{print p": "substr($0,3)}' lib/apk/db/installed`.
 
 ## 7. Tools of 6A criterion 3, with versions
 
@@ -226,13 +228,14 @@ exists, otherwise from the installed package's version.
 - `grep -rlI "^#!.*python" .` found 0 files.
 - In the guest, `find / -xdev …` and `find /rom -xdev …` both found 0.
 - In the guest, `command -v python python3 perl` printed absent for all three.
-- The base's own tools are shell, ucode and C: `fw4` is ucode, and netifd and procd are C.
+- The base's own tools are shell, ucode and C: `/sbin/fw4` is a `#!/bin/sh` wrapper (`head -1`) that runs
+  `utpl -S /usr/share/firewall4/main.uc`, so the ruleset logic is ucode; netifd and procd are C.
 - `python3` is available in the packages feed but is not installed (section 9).
 
 ## 9. Own network and firewall manager, and how each is switched off (6A criterion 5)
 
 The guest runs **netifd** (`/sbin/netifd`, package `netifd 2026.02.26~cbb83a18-r2`) and **firewall4**
-(`/sbin/fw4`, ucode, package `firewall4 2025.03.17~b6e51575-r2`). The firewall's ruleset is one table,
+(`/sbin/fw4`, a shell wrapper around the ucode program `/usr/share/firewall4/main.uc`, package `firewall4 2025.03.17~b6e51575-r2`). The firewall's ruleset is one table,
 `table inet fw4` (guest `nft list tables`), with 145 lines (`nft list ruleset | wc -l`).
 
 **Default configuration.** It comes from the guest's `uci show network`, plus `/etc/board.d/99-default_network` and
@@ -391,8 +394,11 @@ Further detail from run 3:
 
 ## 13. Fields not determined
 
-- **Boot time and memory on real hardware or KVM:** not determined. Only TCG on a loaded host was possible, because
-  there is no access to `/dev/kvm`.
+- **Boot time and memory on real hardware or KVM:** not determined. Only TCG was possible when the boots ran
+  (before 05:25 UTC), because `/dev/kvm` was not writable for the user then. The figures used come from run 4, on an
+  idle host (`host_loadavg_start` 0.086 in `boot-sq4/results.log`); runs 1-3 ran on a loaded host. Access to `/dev/kvm`
+  changes during the day through a user ACL entry set and removed outside this work (`test -w /dev/kvm` succeeded at
+  11:24 UTC and failed again after the node changed at 11:27:57 UTC, `getfacl` then showed no user entry); no KVM boot was run for this record.
 - **Free memory with 512 MB:** not determined. The usable run used 256 MB, because of host memory; run 1 (512 MB) was
   not usable.
 - **Ext4 image boot:** not run. It was taken apart only, and its file and package lists equal the squashfs image's.
@@ -403,7 +409,7 @@ Further detail from run 3:
 ## 14. Tools missing on the PC
 
 `cpio`, `bsdtar`, `xorriso`, `parted`, `expect`, `socat` and `extract-ikconfig` are missing, and there is no sudo, so
-no loop mounts and no access to `/dev/kvm`.
+no loop mounts and, while the boots ran, no access to `/dev/kvm` (access changes during the day, see section 13).
 
 Present and used: `gzip`, `xz`, `sgdisk`, `fdisk`, `mtools`, `debugfs`, `unsquashfs` (squashfs-tools), `binwalk`,
 `7z`, `zstd`, `file`, `strings`, `gpg`, `qemu-system-x86_64` 8.2.2, OVMF 2024.02 and `flock`.
