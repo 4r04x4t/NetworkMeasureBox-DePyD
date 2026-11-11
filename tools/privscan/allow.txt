@@ -1,0 +1,4 @@
+# Reviewed allow list of tools/privscan: "<category> <exact value> <reason>", one per line.
+# An entry allows only that exact value. Every entry added later is reviewed by the verifier of
+# the package that adds it; an entry without a reason is an error.
+ipv4 100.64.0.0 the shared address space (RFC 6598) named as a range in docs and in privscan, no host
