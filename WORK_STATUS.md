@@ -17,7 +17,7 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public). First push 2026
 | F-04 | Contracts | brief (six part briefs a-f + coordinator) | — | — | — |
 | F-05 | Phase 0 reference | brief | — | — | — |
 | F-06 | Test bed | brief | — | — | — |
-| F-07 | Shared specification and vectors | waiting | — | — | — |
+| F-07 | Shared specification and vectors | brief | — | — | — |
 
 ## Images
 
@@ -35,7 +35,8 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public). First push 2026
 
 ## Core, measuring, network, reports, surfaces, product
 
-All waiting for the foundation (C-01..C-11, M-01..M-14, N-01..N-18, R-01..R-05, S/U, P-01..P-13).
+Briefs started early (code waits for F-04..F-06): C-03, C-04, C-05, C-07, C-08, C-09, C-10, C-11 (state: brief).
+Waiting: C-01, C-02, C-06 (they implement F-04a/b/f; briefed after F-04 is accepted), M-01..M-14, N-01..N-18, R-01..R-05, S/U, P-01..P-13.
 
 ## Log
 
@@ -52,3 +53,4 @@ All waiting for the foundation (C-01..C-11, M-01..M-14, N-01..N-18, R-01..R-05, 
 - 2026-11-11: F-00, F-03, F-02 merged into main; changelog updated.
 - 2026-11-11: image records I-01, I-02, I-03, I-05, I-06 accepted and merged; their findings are in roadmap 6A (Python repo bb0a553). Gate on main: shellcheck fails on the register scripts; fix in progress before the first push.
 - 2026-11-11: register check added to the gate; first push of main. I-07 accepted (developer's name and address removed from the record; exact allow entries for two key file names). An API interruption (identity verification) stopped about 15 agents; F-04, F-05/F-06, C-05/08/09/10 and I-08 were restarted from where they stopped.
+- 2026-11-11: force-push of main (owner approved) after a history rewrite that removed a third-party e-mail from the first I-07 commit; F-07 brief and C-03/C-04/C-07/C-11 briefs started.
