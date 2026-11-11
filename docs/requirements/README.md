@@ -53,7 +53,7 @@ of that package writes the requirements of its ranges in the brief (skill `nmb-n
 | `BY_PACKAGE.md` | For every package: the ids it owns and the ids it is also in. Generated from the parts; `check.sh` fails when they disagree. |
 | `PACKAGE_CHANGES.md` | Proposed new, split, merged and moved packages, de-duplicated; and the mappings of every roadmap section (M1), every `TESTING.md` row (M2) and every Python file (M3) to one package. |
 | `QUESTIONS.md` | The questions of all parts, de-duplicated and triaged (round 3): answered by existing decisions, developer's choices with their rule, and the owner's answers of 2026-11-11 to the six left for him (none open). |
-| `check.sh` | The register's check (POSIX `sh` and `awk`). |
+| `check.sh` | The register's check (POSIX `sh` and `awk`); runs in the gate (`tools/register.sh`). |
 | `check_test.sh` | Test of the check: the real register must pass, 30 planted faults in copies must each fail. |
 
 ## Names and site data (Quality Bar 8)
@@ -113,12 +113,20 @@ The gate (skill `nmb-native-gate`) checks that every owned id has a test.
 
 ## Running the check
 
-From the worktree root:
+Both scripts change to the repository root (found from their own path) first, so they can be called from any folder; a
+relative `register-dir` argument is taken from the folder they are called from.
 
 ```sh
 sh docs/requirements/check.sh          # exit 0: register consistent; 1: a fault (each printed as FAIL); 2: cannot read
 sh docs/requirements/check_test.sh     # exit 0: the check passes the real register and fails every planted fault
 ```
+
+Both run in the gate: `tools/gate.sh` calls `tools/register.sh`, whose steps `register:check` and `register:test` run
+them and record their exit codes in the gate's summary (`docs/DEVELOPMENT.md`, *Running the gate*); `tools/register.sh`
+alone runs just these two. The gate's self-test (case `register`) plants an id defined twice in a copy of the repository
+and requires `register:check` to fail. Both scripts pass `shellcheck` at the gate's style level; the eight sed scripts of
+`check_test.sh` that contain backticks or `$` carry a scoped `# shellcheck disable=SC2016` with the reason, because those
+characters are sed text, not shell expansions.
 
 `NMB_SRC` points to the Python repository (default `$HOME/src/NetworkMeasureBox`); the check reads commit `ad3758c` from it
 with `git show`, `git grep` and `git ls-tree`, so it does not depend on the working copy. It checks: ids defined once and

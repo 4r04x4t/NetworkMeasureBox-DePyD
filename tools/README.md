@@ -6,7 +6,7 @@ The gate of the native build and its checkers. How to run them: [`docs/DEVELOPME
 | :--- | :--- |
 | `gate.sh` | runs every step below and prints what ran where |
 | `lib.sh` | common part of the scripts (sourced): refusals, toolchain, knobs, steps, offline and hermetic runs |
-| `prepare.sh`, `deps.sh`, `build-matrix.sh`, `analyse.sh`, `test.sh`, `fuzz.sh`, `scan.sh` | the single steps |
+| `prepare.sh`, `deps.sh`, `build-matrix.sh`, `analyse.sh`, `test.sh`, `fuzz.sh`, `register.sh`, `scan.sh` | the single steps (`register.sh` runs the requirements register's `check.sh` and `check_test.sh`) |
 | `gate-selftest.sh` | proves each check can fail, on throw-away copies |
 | `cleancode/` | function, file and nesting limits (Go, standard library only) |
 | `privscan/` | personal data and secrets scanner (Go, standard library only), with `allow.txt` |

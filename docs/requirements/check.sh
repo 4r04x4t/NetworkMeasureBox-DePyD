@@ -1,8 +1,9 @@
 #!/bin/sh
 # Check of the F-02 requirements register (POSIX sh and awk).
 #
-# Usage, from the worktree root:   sh docs/requirements/check.sh [register-dir]
-#   register-dir  defaults to docs/requirements
+# Usage:   sh docs/requirements/check.sh [register-dir]
+#   It runs from the repository root (found from the script's own path), so it can be called from any folder.
+#   register-dir  defaults to docs/requirements; a relative one is taken from the folder it is called from
 #   NMB_SRC       the Python repository (default: $HOME/src/NetworkMeasureBox), read only, at commit ad3758c
 #
 # Fails (exit 1) when:
@@ -23,16 +24,24 @@
 #      coverage table nor named in OUT_OF_SCOPE below.
 # Exit 2: the register or the source cannot be read.
 set -u
-R=${1:-docs/requirements}
+R=${1:-}
+case $R in
+"" | /*) ;;
+*) R="$(pwd)/$R" ;;
+esac
+cd "$(dirname "$0")/../.." || { echo "check: cannot enter the repository root" >&2; exit 2; }
+[ -n "$R" ] || R=docs/requirements
 SRC=${NMB_SRC:-$HOME/src/NetworkMeasureBox}
 COMMIT=ad3758c
 # Documents with no coverage table of their own, each with its reason in the register README ("Sources").
 # None since round 3: parts/other-docs.md covers the last four (the NMHH comparison and three Hungarian translations).
 OUT_OF_SCOPE=""
 P="$R/parts"
-PARTS="roadmap-1-507.md roadmap-508-1034.md porting-plan.md workplan-architecture-devsetup.md testing.md readme.md changelog.md contributing.md other-docs.md"
+# The parts with requirement rows, kept as the positional parameters ("$@"; the register-dir argument is in R).
+set -- roadmap-1-507.md roadmap-508-1034.md porting-plan.md workplan-architecture-devsetup.md testing.md readme.md \
+	changelog.md contributing.md other-docs.md
 
-for f in $PARTS python-files.md; do
+for f in "$@" python-files.md; do
 	[ -f "$P/$f" ] || { echo "check: missing part $P/$f" >&2; exit 2; }
 done
 for f in BY_PACKAGE.md PACKAGE_CHANGES.md; do
@@ -110,7 +119,7 @@ cat > "$T/rows.awk" <<'EOF'
 	}
 }
 EOF
-(cd "$P" && awk -f "$T/lib.awk" -f "$T/rows.awk" $PARTS) > "$T/rows" || exit 2
+(cd "$P" && awk -f "$T/lib.awk" -f "$T/rows.awk" "$@") > "$T/rows" || exit 2
 if grep -q '^BAD ' "$T/rows"; then grep '^BAD ' "$T/rows" | sed 's/^BAD /FAIL: /'; fail=1; fi
 grep '^REQ ' "$T/rows" | cut -d' ' -f2- > "$T/req"
 grep '^SRC ' "$T/rows" > "$T/srcs"
@@ -178,7 +187,10 @@ EOF
 : > "$T/manifest2"
 while read -r part tab src start end mode; do
 	n=$(git -C "$SRC" show "$COMMIT:$src" 2>/dev/null | awk 'END { print NR }')
-	[ -n "$n" ] && [ "$n" -gt 0 ] || { echo "check: cannot read $src at $COMMIT" >&2; exit 2; }
+	if ! { [ -n "$n" ] && [ "$n" -gt 0 ]; }; then
+		echo "check: cannot read $src at $COMMIT" >&2
+		exit 2
+	fi
 	[ "$end" = N ] && end=$n
 	[ "$end" -le "$n" ] || bad "manifest: $part table $tab ends at $end, source $src has $n lines"
 	echo "$part $tab $src $start $end $mode" >> "$T/manifest2"
@@ -211,7 +223,7 @@ cov && /^\| [0-9]+(-[0-9]+)? \|/ {
 			last = num + 0
 		} else pre = ""
 	}
-}' $PARTS) > "$T/cov" || exit 2
+}' "$@") > "$T/cov" || exit 2
 awk '
 NR == FNR { key = $1 " " $2; src[key] = $3; st[key] = $4; en[key] = $5; md[key] = $6; order[++m] = key; next }
 $1 == "ROW" {

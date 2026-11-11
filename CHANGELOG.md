@@ -16,3 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/DEPENDENCIES.md`: every dependency with its licence and version. A dependency that is not listed fails the build. The licence of the whole project is not decided yet.
 - `KNOWN_PYTHON_FAULTS.md`: 294 faults of the Python version, each with the correct behaviour that the native build must have and the package that has to prove it. Open security holes are listed by category only.
 - `docs/requirements/`: 2,340 requirements taken from the plans and the documents of the Python version, each with its source line and the work package that owns it.
+- The check of the requirements register and its test now run in `tools/gate.sh` (`tools/register.sh`), so a register that disagrees with itself or with its sources fails the build.
+
+### Fixed
+
+- `tools/gate.sh` failed on `main`: shellcheck found unquoted variables and an `A && B || C` test in the register's check scripts. Both scripts are fixed and can now be called from any folder.

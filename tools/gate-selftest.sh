@@ -3,7 +3,7 @@
 # this work tree), each planted fault must make its step fail, and the clean copy must pass.
 # Usage: tools/gate-selftest.sh [CASE...]
 # Cases: clean offlinevar gofmt nesting gosec depcheck email testfail testwrites testwritesignored
-#        root summary matrix pipe
+#        root summary matrix pipe register
 set -euo pipefail
 # shellcheck source=tools/lib.sh
 . "$(dirname -- "${BASH_SOURCE[0]}")/lib.sh"
@@ -93,6 +93,7 @@ case_clean() {
 	expect 0 "scan:tree" "$d" tools/scan.sh tree
 	expect 0 "deps:depcheck" "$d" tools/deps.sh
 	expect 0 "build:sizes" "$d" tools/build-matrix.sh linux-arm64
+	expect 0 "register:check" "$d" tools/register.sh check
 }
 
 # offlinevar: NMB_IN_OFFLINE=1 passed in from outside the namespace must not skip it (the probe
@@ -273,7 +274,15 @@ case_pipe() {
 	expect fail "a pipe to tail or tee" "$d" tools/analyse.sh scriptrules
 }
 
-all=(clean offlinevar gofmt nesting gosec depcheck email testfail testwrites testwritesignored root summary matrix pipe)
+# register: a requirement id defined twice in the copy's register must fail the register step.
+case_register() {
+	local d
+	d=$(copy_repo register)
+	sed -i '/^| REQ-CL-0001 |/{p;}' "$d/docs/requirements/parts/changelog.md"
+	expect fail "FAIL: REQ-CL-0001 defined twice" "$d" tools/register.sh check
+}
+
+all=(clean offlinevar gofmt nesting gosec depcheck email testfail testwrites testwritesignored root summary matrix pipe register)
 cases=("$@")
 [ "${#cases[@]}" -gt 0 ] || cases=("${all[@]}")
 for c in "${cases[@]}"; do

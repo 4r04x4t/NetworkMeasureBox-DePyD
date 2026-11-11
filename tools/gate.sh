@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # The whole gate of a package (work plan 2.4): runs every step, always all of them, in this order:
-# prepare, deps, build matrix, analysis, tests, fuzzing, scans of the tree and of dist/, and the
-# gate's own self-test; then prints what ran where with its exit code.
+# prepare, deps, build matrix, analysis, tests, fuzzing, the requirements register check, scans of
+# the tree and of dist/, and the gate's own self-test; then prints what ran where with its exit code.
 # Exit status: 0 all passed, 1 a step failed, 2 a usage or environment error (refusal to run as
 # root, wrong toolchain, bad knob, a script that could not start).
 # Knobs: NMB_GATE_JOBS (1-4, default 2), NMB_FUZZTIME (default 30s), NMB_TOOLS_DIR,
-# NMB_PRIVATE_VALUES (see docs/DEVELOPMENT.md).
+# NMB_PRIVATE_VALUES, NMB_SRC (see docs/DEVELOPMENT.md).
 set -euo pipefail
 # shellcheck source=tools/lib.sh
 . "$(dirname -- "${BASH_SOURCE[0]}")/lib.sh"
@@ -42,6 +42,7 @@ script build-matrix.sh
 script analyse.sh
 script test.sh
 script fuzz.sh
+script register.sh
 script scan.sh tree dist
 script gate-selftest.sh
 
