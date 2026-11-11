@@ -68,6 +68,37 @@ func TestIPv4(t *testing.T) {
 	})
 }
 
+// F00-R20: a systemd unit instance name (template, @, instance, dot, unit type; systemd.unit(5))
+// has the shape of an e-mail address and is none; an address whose domain only resembles one
+// still hits.
+func TestSystemdUnitInstanceIsNoEmail(t *testing.T) {
+	var cases []ruleCase
+	for _, unitType := range []string{"service", "socket", "device", "mount", "automount", "swap", "target", "path", "timer", "slice", "scope"} {
+		cases = append(cases, ruleCase{"unit type " + unitType, "unit@instance0." + unitType, ""})
+	}
+	runCases(t, append(cases,
+		ruleCase{"kernel command line", "console=ttyS0,115200n8 systemd.mask=serial-getty@ttyS0.service", ""},
+		ruleCase{"in prose", "`serial-getty@ttyS0` took over; wg-quick@wg0.service and getty@tty1.service.", ""},
+		ruleCase{"top-level name services", j("jane", "@", "mail.provider", ".services"), catEmail},
+		ruleCase{"more labels before the type", j("jane", "@", "mail.provider", ".service"), catEmail},
+		ruleCase{"type in upper case", j("jane", "@", "ttyS0", ".Service"), catEmail},
+		ruleCase{"type as a prefix only", j("jane", "@", "ttyS0", ".servicex"), catEmail},
+		ruleCase{"unit next to an address", j("getty@tty1.service ", "jane", "@", "mailhost", ".net"), catEmail},
+	))
+}
+
+// F00-R20: a dotted quad inside a longer dotted number (kernel and backports versions such as
+// 6.12.112.6.18.55) is no address; an address next to such a number still hits.
+func TestDottedVersionIsNoIPv4(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"backports version", "kmod-mac80211-hwsim-6.12.112.6.18.55-r2 (versions `6.12.112.6.18.55-r2`)", ""},
+		{"leading dot", "linux.6.12.112.6 and x.11.22.33.44", ""},
+		{"address after a version", j("6.12.112.6.18.55 ", "11.22", ".33.44"), catIPv4},
+		{"address before a version", j("11.22", ".33.44", " 6.12.112.6.18.55"), catIPv4},
+		{"address after v1.2.3", j("v1.2.3 at ", "11.22", ".33.44"), catIPv4},
+	})
+}
+
 // F00-R20, question Q3: carrier-grade NAT and tailnet addresses are a hit.
 func TestCGNATIsHit(t *testing.T) {
 	runCases(t, []ruleCase{{"cgnat", j("100.", "100.1.2"), catIPv4}})

@@ -57,7 +57,7 @@ func findEmails(re, version *regexp.Regexp, line []byte) []span {
 	var out []span
 	for _, m := range re.FindAllSubmatchIndex(line, -1) {
 		domain := line[m[2]:m[3]]
-		if !version.Match(domain) && !emailAllowed(domain) {
+		if !version.Match(domain) && !emailAllowed(domain) && !isUnitInstance(domain) {
 			out = append(out, span{m[0], m[1]})
 		}
 	}
@@ -77,6 +77,22 @@ func emailAllowed(domain []byte) bool {
 		if hasSuffix(d, tld) {
 			return true
 		}
+	}
+	return false
+}
+
+// isUnitInstance reports whether domain is the "<instance>.<type>" part of a systemd unit
+// instance name such as getty@tty1.service. The unit types are the eleven of systemd.unit(5),
+// written in lower case as systemd requires; the instance is one label. A mail domain with more
+// labels in front of the type, or another top-level name such as .services, still hits.
+func isUnitInstance(domain []byte) bool {
+	instance, unitType, ok := bytes.Cut(domain, []byte("."))
+	if !ok || len(instance) == 0 {
+		return false
+	}
+	switch string(unitType) {
+	case "service", "socket", "device", "mount", "automount", "swap", "target", "path", "timer", "slice", "scope":
+		return true
 	}
 	return false
 }

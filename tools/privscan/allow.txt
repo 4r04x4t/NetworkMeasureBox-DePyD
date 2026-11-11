@@ -3,3 +3,12 @@
 # the package that adds it; an entry without a reason is an error.
 ipv4 100.64.0.0 the shared address space (RFC 6598) named as a range in docs and in privscan, no host
 email noreply@anthropic.com the co-author line that ends every commit message (attribution rule); a vendor no-reply address of no person
+ipv4 1.1.1.1 Cloudflare's public anycast DNS resolver, a default ping/DNS target named in the Python README and roadmap; public infrastructure, no personal or site data
+ipv4 1.0.0.1 Cloudflare's second public anycast DNS resolver, named with 1.1.1.1 in the roadmap; public infrastructure, no personal or site data
+ipv4 8.8.8.8 Google Public DNS anycast resolver, a default ping/DNS target named in the Python README and roadmap; public infrastructure, no personal or site data
+ipv4 8.8.4.4 Google Public DNS second anycast resolver, named with 8.8.8.8 in the roadmap; public infrastructure, no personal or site data
+ipv4 9.9.9.9 Quad9 public anycast DNS resolver, a default ping/DNS target named in the Python README and roadmap; public infrastructure, no personal or site data
+ipv4 185.222.222.222 DNS.SB public anycast DNS resolver, a default ping/DNS target named in the Python README; public infrastructure, no personal or site data
+ipv4 6.10.198.66 not an address: the firmware version of brcmfmac43143.bin ("Version: 6.10.198.66") quoted in the OpenWrt image record of package I-05
+email debian-cd@lists.debian.org Debian's CD signing key identity, quoted from the gpg check of the image checksums in the Debian image record (package I-06); a project list, no person
+ipv4 5.90.188.22 not an address: the bare firmware version of brcmfmac43236b.bin (built Nov 30 2011) quoted in the OpenWrt image record of package I-05
