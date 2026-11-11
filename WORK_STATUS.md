@@ -30,8 +30,8 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public). First push 2026
 | I-05 | OpenWrt 25.12.6 Raspberry Pi 4 | accepted (taken apart only; boot on the Pi 4 is a later step) | merge 996f6e9 | — |
 | I-06 | Debian 13.7.0 amd64 and arm64 | accepted | merge 57a6e1b | — |
 | I-07 | Alpine 3.24.4 | accepted | merge (this commit's parent) | verifier pass, minors noted |
-| I-08 | Fedora IoT 44 | brief (restarted after an API interruption) | — | — |
-| I-09 | Comparison for 6A | waiting | — | — |
+| I-08 | Fedora IoT 44 | accepted (no guest reached multi-user: boot figures not determined) | merged | verifier pass, 6 minors |
+| I-09 | Comparison for 6A | brief (all eight records accepted) | — | — |
 
 ## Core, measuring, network, reports, surfaces, product
 
@@ -57,3 +57,4 @@ Waiting: C-01, C-02, C-06 (they implement F-04a/b/f; briefed after F-04 is accep
 - 2026-11-11: C-05/C-08/C-09/C-10 briefs: 2 review rounds, 1-3 blocking findings each, mostly drift against F-04 drafts that changed meanwhile. Held until F-04 is accepted; then one reconciliation-and-fix round per core brief (C-01..C-11) against the accepted F-04, then review.
 - 2026-11-11: F-05 and F-06 briefs accepted and merged. Pending register additions collected from briefs: F05-P1..P16 (F-05), NF-1..NF-6 (C-05), the clock-jump check entry (F-06); added in one register round once F-04 is accepted.
 - 2026-11-11: F-07 failed its third review (new major: an entry could be raised to fixed with no test and no vector as evidence). Held under the three-failures rule; one consolidated round with the round-3 findings (saved in the scratchpad as f07-findings-r3.json) after F-04 is accepted.
+- 2026-11-11: I-08 accepted and merged; all eight image records done; I-09 (comparison for 6A, owner decides the base) can start.
