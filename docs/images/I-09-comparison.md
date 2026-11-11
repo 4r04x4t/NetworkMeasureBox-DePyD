@@ -144,8 +144,9 @@ What the kernels give, per base (all from section 4 of the records):
 Consequences (Inference unless cited):
 
 1. **`nmbd` must run under all three service managers in any case.** The routers keep OpenWrt and procd (6A,
-   *Targets*); the owner's packages for Debian, Ubuntu, Fedora/RHEL and Rocky are systemd systems, and the Alpine
-   package is an OpenRC system (work plan 7 point 20; init per base from I-06 §6, I-07 §6, I-08 §6). Choosing the
+   *Targets*); work plan 7 point 20 adds packages for Debian, Ubuntu, Alpine, Fedora/RHEL and Rocky. Of these, the
+   records show systemd on Debian (I-06 §6) and Fedora (I-08 §6) and OpenRC on Alpine (I-07 §6); the init system of
+   Ubuntu, RHEL and Rocky is not determined (no record; their package tests in P-11 will establish it). Choosing the
    image's init does not remove the work for the other two; it only decides which one the image is tested on most.
 2. **Proposal: the sandbox profile is kept once in `spec/` (6B.8) and applied the same way everywhere.** Where the
    service manager has the means (procd `ujail` and seccomp on OpenWrt, as 6B.5 says), the profile is expressed in
@@ -188,7 +189,13 @@ coexistence rules, so it is not proposed (Inference).
   update scheme and the read-only layout, not the distribution (Inference).
 - **What it costs.**
   - A/B, the read-only root and the image signing (work plan 7 point 6) must be built and tested: the tools are
-    packaged but none was tried (I-06 §3, §16).
+    packaged but none was tried (I-06 §3, §16). Of the three proposals, Debian starts furthest behind on criterion 4:
+    it has neither a read-only root nor A/B, where OpenWrt and Alpine already have a read-only root (I-01 §2,
+    I-07 §2, §12a).
+  - The A/B scheme must work on two different boot paths: on amd64 the ISO boots through isolinux (BIOS) or GRUB
+    (UEFI), and the installed system's GRUB was not exercised (the guest used QEMU's direct kernel boot); on the Pi 4
+    the VideoCore firmware reads `config.txt` from the FAT `/boot/firmware` filled by `raspi-firmware` (I-06 §2). How
+    a slot switch works on the Pi firmware path: not determined (section 2.2).
   - The largest image and memory of the three: root 360 MB (amd64) and 599.5 MB (arm64 with the Pi firmware), 61 MB
     used after boot, against 15 to 20 MB and 22 to 37 MB on OpenWrt and 37.6 MB on Alpine (I-06 §11, §12; I-01 §11,
     §12; I-07 §12). About 58 MB of docs, man pages and locales and the Pi boot partition's second copies of kernel
@@ -201,19 +208,25 @@ coexistence rules, so it is not proposed (Inference).
   - A rebuild is not byte-identical yet (I-06 §13); criterion 4 asks for a reproducible build.
   - `nftables.service` wipes NMB's tables if anything starts it (I-06 §9); the mask must be part of the image and of
     the self-test.
+  - The licences of the Pi boot files and the Wi-Fi firmware (`non-free-firmware`) were not read (I-06 §6, §13);
+    criterion 7 is open.
+  - Ookla and RTR on glibc: not determined (I-06 §13).
 
 ### Proposal B: OpenWrt 25.12 for the Pi 4 and x86-64 (one base for routers and boxes)
 
 - **What it gives.** The smallest system (roots 15 to 20 MB, 22 to 37 MB RAM used) (I-01 §11, §12; I-02 §11, §12;
   I-04 §12); a read-only squashfs root (I-01 §2); procd with `ujail` and seccomp, which 6B.5 names for OpenWrt; the
   same base, scripts and coexistence rules as the routers (6A, *Targets*; I-05 §9 byte-identical scripts); an
-  ImageBuilder that assembles an image from published packages plus an `nmbd` apk (I-02 §15, I-04 §15).
+  ImageBuilder that assembles an image from published packages plus an `nmbd` apk (I-02 §15, I-04 §15). Those two
+  are the armsr/armv8 and 32-bit x86/generic ImageBuilders; the x86/64 and bcm27xx/bcm2711 ImageBuilders that this
+  proposal's targets need are not in the set (I-01 §1, I-05 §13).
 - **What it costs.**
   - **No Landlock on any target** (I-01..I-05 §4); the 6B.5 profile is always one level lower than on Debian or
     Fedora.
   - No A/B: one root, overwritten by sysupgrade, and on the Pi 4 no way back after a failed boot (I-01 §3, I-05 §3);
     NMB must build its own two-slot scheme on two different boot paths (GRUB on x86-64, the VideoCore firmware on
-    the Pi 4).
+    the Pi 4) (I-01 §2, I-05 §2). Whether the OpenWrt feeds hold an A/B tool (RAUC, SWUpdate or another): not
+    determined, no record searched for one (section 6, item 11).
   - The two coexistence cautions in NMB's code forever: never the firewall service's `stop`, and addresses on
     netifd's devices vanish on its `restart` (I-01 §9a).
   - BusyBox `ip`, `wpad-basic` and the other base defaults differ from what the packages of point 20 run on; full
@@ -234,7 +247,9 @@ coexistence rules, so it is not proposed (Inference).
 - **What it costs.**
   - **No Landlock on the Pi 4** (`linux-rpi`), the first target of 6A (I-07 §4).
   - No A/B tool in the distribution; the kernel and modloop update is an in-place `mv` with no fallback; NMB builds
-    its own scheme (two sets of kernel, initramfs and modloop plus a boot switch) (I-07 §3).
+    its own scheme (two sets of kernel, initramfs and modloop plus a boot switch) (I-07 §3), on two different boot
+    paths: isolinux (BIOS) or GRUB (UEFI) on the x86-64 ISO, the Pi firmware reading `config.txt` on the Pi 4
+    (I-07 §2).
   - cgroup2 not mounted by default (I-07 §12a); the modloop signature check only logs a failure and still mounts
     (I-07 §3), so NMB's own signature check must come first.
   - The x86-64 modloop holds about 1.49 GB of firmware that must be narrowed (I-07 §5, §11).
@@ -244,23 +259,33 @@ coexistence rules, so it is not proposed (Inference).
 
 ### Recommendation
 
-**Proposal A: Debian 13 as the base for the Pi 4 and x86-64, with systemd, and the A/B update built with RAUC first
-(SWUpdate as the fallback), decided finally only after the measurements of section 6.** Reasons, each from the
-tables above:
+**Proposal A: Debian 13 as the base for the Pi 4 and x86-64, with systemd, and the A/B update built with RAUC or
+SWUpdate (the two tools 6A names), the one fixed only after both are tested; decided finally only after the
+measurements of section 6.** Reasons, each from the tables above:
 
 1. It is the only candidate that meets criteria 1, 2, 3, 5 and 8 on both targets and has Landlock in the kernel on
    both (section 1). OpenWrt has no Landlock anywhere and no known support period; Alpine has no Landlock on the Pi 4;
    Fedora IoT fails 2 and 8.
-2. Its gap is criterion 4, and the parts to close it are packaged in the same release (I-06 §3). OpenWrt and Alpine
-   have the same gap (no A/B) and fewer parts to close it (I-01 §3, I-07 §3).
+2. Its gap is criterion 4, and on that criterion it starts furthest behind of the three proposals: no read-only
+   root, no A/B, and a rebuild that is not byte-identical (I-06 §3, §13), where OpenWrt and Alpine already have a
+   read-only root and lack only A/B (I-01 §2, §3; I-07 §2, §3, §12a). The parts to close Debian's gap are packaged in
+   the same release, none tested (RAUC, SWUpdate, `systemd-repart`, `ostree`, `mmdebstrap`, `debos`, `mkosi`;
+   I-06 §3). Alpine has no packaged A/B tool (I-07 §3); whether the OpenWrt feeds hold one is not determined (no
+   record searched; section 6, item 11). So this reason rests on packaged, untested tools, not on a smaller gap.
 3. The owner's Pi 4 already runs Debian 13 (I-06 §15); the component-by-component migration (point 19) and the
    Debian package (point 20) run on the same userland the image would ship, so the image is the last step of one
    migration, not the start of a second.
-4. Its costs are size and memory. 61 MB used after boot left 411 MB available in a 512 MB guest (I-06 §12); how
-   that compares with the owner's Pi 4 RAM is not in the records.
+4. Its costs are the full list under Proposal A, *What it costs* and *Risks*: A/B, read-only root and signing still
+   to build and test; an A/B scheme on two boot paths (GRUB or isolinux on amd64, the Pi firmware on the Pi 4); the
+   largest image and memory of the three; unit masks and a release check for Python; arm64 never booted; arm64 LTS
+   unconfirmed; firmware licences not read. On memory: 61 MB used after boot left 411 MB available in a 512 MB
+   guest (I-06 §12); how that compares with the owner's Pi 4 RAM is not in the records.
 
-The roadmap's earlier assessment named Debian as the recommendation "so far, not a decision" (6A); the records
-support it and add two open points it did not have: the arm64 LTS question and the untested A/B tools.
+The roadmap's earlier assessment named Debian as the recommendation "so far, not a decision" (6A). The records
+keep it as the proposal on criteria 1, 2, 3, 8, Landlock and the migration path, but they show it with the largest
+criterion-4 gap of the three and add open points the earlier assessment did not have: the arm64 LTS question, the
+untested A/B tools and the slot switch on the Pi firmware path. The owner weighs these against the smaller,
+read-only alternatives (Questions 1b and 1c).
 
 ## 5. Decision questions for the owner
 
@@ -269,36 +294,45 @@ follow from question 1.
 
 **Question 1. Which base does NMB's own image use for the Raspberry Pi 4 and x86-64?**
 
-- a. **Debian 13 for both targets (recommended).** Meets the criteria except a ready A/B; largest image (section 4,
-  Proposal A).
-- b. OpenWrt 25.12 for both targets, the same base as the routers. Smallest; no Landlock, no A/B, support period not
-  known (Proposal B).
+- a. **Debian 13 for both targets (recommended).** Landlock in both kernels, longest support, the owner's box already
+  on it; read-only root, A/B and signing to be built from packaged but untested tools, on two boot paths; rebuild
+  not byte-identical; largest image and memory; arm64 never booted; Debian LTS for arm64 unconfirmed (free support
+  may end 2028-08-09 on the Pi 4); firmware licences not read; Ookla and RTR not determined (section 4, Proposal A).
+- b. OpenWrt 25.12 for both targets, the same base as the routers. Smallest, read-only root; no Landlock, no A/B
+  (whether the feeds hold an A/B tool: not determined), two boot paths, Pi 4 never booted, support period not known
+  (Proposal B).
 - c. Alpine 3.24 for both targets. Small, read-only by design; no Landlock on the Pi 4, no A/B tool, support to
-  2028-06-01 (Proposal C).
+  2028-06-01, two boot paths, Pi archive never booted (Proposal C).
 - d. Fedora IoT 44. A/B ready-made; ships Python and about 13 months of support per release (criteria 8 and 2 not
   met). Not recommended.
 - e. A different base per target. Not recommended (section 4).
 
 **Question 2. Which init system and service manager does the image use?**
 
-- a. **systemd, as Debian ships it (recommended with 1a).** It is also the service manager of the Debian, Ubuntu,
-  Fedora/RHEL and Rocky packages (point 20).
-- b. OpenRC (only with 1c).
-- c. procd (only with 1b).
+- a. **systemd, as Debian ships it (recommended with 1a).** It is also the service manager of the Debian and Fedora
+  packages (I-06 §6, I-08 §6); for the Ubuntu, RHEL and Rocky packages of point 20 the init system is not
+  determined (no record; the P-11 package tests will establish it).
+- b. Something smaller than systemd on Debian (6A, *To decide*: "systemd, as now, or something smaller"). **Not
+  examined in any record: its cost and fit are not determined.** Choosing it means a follow-up record before the
+  base is fixed.
+- c. OpenRC (only with 1c).
+- d. procd (only with 1b).
 
-  With every answer, `nmbd` still supports all three (routers on procd, the packages on systemd and OpenRC) and the
-  6B.5 sandbox stays one profile applied the same way on each (section 3). Something smaller than systemd on Debian
-  (6A, *To decide*) was not examined in any record and is not offered.
+  With every answer, `nmbd` still supports systemd, OpenRC and procd (routers on procd, the packages on systemd and
+  OpenRC) and the 6B.5 sandbox stays one profile applied the same way on each (section 3).
 
 **Question 3. How is the A/B update built?** (for 1a; with 1b or 1c NMB builds its own scheme, with 1d it is
 rpm-ostree with greenboot)
 
-- a. **RAUC (trixie `rauc` 1.13) as the first candidate, tested before it is fixed (recommended).** Packaged in the
-  same release (I-06 §3); named first in 6A, *To decide*. The records hold no technical comparison of RAUC and
-  SWUpdate, so this recommendation fixes the order of testing, not the final tool.
-- b. SWUpdate (trixie 2024.12.1), the fallback if RAUC fails the tests of section 6.
-- c. `systemd-repart` with `systemd-boot` (257.13), from the same systemd. Packaged, untested (I-06 §3).
-- d. ostree on Debian (trixie 2025.2), the deployment model Fedora IoT shows (I-08 §3). Packaged, untested (I-06 §3).
+- a. **RAUC (trixie `rauc` 1.13) and SWUpdate (trixie 2024.12.1), the two tools 6A names ("RAUC or SWUpdate"),
+  both tested under section 6 item 2 before one is fixed (recommended).** Both packaged in the same release, neither
+  tried (I-06 §3). The records give no basis for ranking one above the other beyond 6A listing both, and no cost
+  for either beyond "packaged, untested"; testing two tools costs more test runs than testing one.
+- b. `systemd-repart` with `systemd-boot` (257.13), from the same systemd. Packaged, untested (I-06 §3).
+- c. ostree on Debian (trixie 2025.2), the deployment model Fedora IoT shows (I-08 §3). Packaged, untested (I-06 §3).
+
+  For b and c, too, the records hold no cost beyond "packaged, untested". For every option, how it switches slots
+  on the Pi 4's firmware boot path (build C boots without UEFI, I-06 §2) is not determined (section 2.2).
 
   With every answer: the update is accepted only with NMB's own valid signature (work plan 7 point 6); whether each
   tool can check the proposed Ed25519 signature itself, or NMB checks it before handing the bundle over, is not
@@ -317,8 +351,10 @@ first, a tried way back, the time recorded as the box's own action, the Python v
    there), Alpine (I-07 §13) and Fedora IoT (I-08 §13).
 2. **An A/B test on the chosen base, on the Pi 4 and in QEMU** (the 6A testing plan): image built, update written to
    the other slot, forced rollback, power cut during an update, full data partition; the slot switch on the Pi
-   firmware boot path; signature check with the key scheme of work plan 7 point 6. Open for every base except Fedora
-   IoT, whose mechanism is built in but untested (I-06 §3, I-07 §3, I-01 §3, I-05 §3, I-08 §3).
+   firmware boot path; signature check with the key scheme of work plan 7 point 6. Open for every base (I-06 §3,
+   I-07 §3, I-01 §3, I-05 §3); on Fedora IoT the mechanism is built in but was never exercised: it was read from the
+   files, and no guest reached `multi-user.target` (I-08 §3, §12a). For 1a, RAUC and SWUpdate are both tested here
+   (Question 3a).
 3. **Ookla and RTR binaries on the chosen C library** (criterion 6): not determined in any record (I-01 to I-08;
    I-06 §13, I-07 §13, I-08 §13 left it to I-09, and no record holds the binaries).
 4. **Support periods not in the records:** OpenWrt 25.12 (no record), and whether Debian LTS covers arm64 (I-06 §3).
@@ -327,8 +363,10 @@ first, a tried way back, the time recorded as the box's own action, the Python v
    image (I-06 §8), byte-for-byte reproducibility (I-06 §13), a read-only root and the size after cutting docs,
    locales and the second kernel copies on `/boot/firmware` (I-06 §2, §11).
 7. **Runs of the criterion-3 tools** (dnsmasq, hostapd, wpa_supplicant, pppd with PPPoE, WireGuard and OpenVPN
-   tunnels) on the chosen base: only presence and version were checked (I-06 §12, I-07 §12); on OpenWrt only a
-   WireGuard device was created and two `mac80211_hwsim` radios were listed (I-02 §9a).
+   tunnels) on the chosen base: only presence and version were checked (I-06 §12, I-07 §12); on OpenWrt a WireGuard
+   device was created and two `mac80211_hwsim` radios were listed in the arm64 and the 32-bit x86 guests (I-02 §9a,
+   I-04 §9a), and dnsmasq ran as a service of the base, inside `ujail` (I-01 §12); no tunnel, PPPoE session, AP or
+   client connection being run is reported in any record.
 8. **Boot time and memory on real hardware or KVM** for the chosen base on x86-64: Debian and OpenWrt x86-64 ran under
    TCG only (I-06 §13, I-01 §13).
 9. **Firmware licences for the 6B.3A licence list:** Debian `non-free-firmware` (I-06 §13), OpenWrt's empty licence
@@ -337,5 +375,7 @@ first, a tried way back, the time recorded as the box's own action, the Python v
 11. **Only if Fedora IoT or OpenWrt stay in the choice:** a Fedora IoT boot that reaches `multi-user.target` on an
     idle PC or the Pi 4, and an x86_64 install in a guest with more than 512 MB (I-08 §12a, §12b, §13), plus
     whether an own compose without `firewalld`, `policycoreutils-python-utils` and `setools-console` is free of
-    Python (I-08 §13); the OpenWrt Pi 4 `cgroup_disable=memory` effect (I-05 §2) and whether an apk built with the
-    armsr/armv8 SDK installs on the Pi 4's `aarch64_cortex-a72` feeds (section 2.2).
+    Python (I-08 §13); the OpenWrt Pi 4 `cgroup_disable=memory` effect (I-05 §2), whether an apk built with the
+    armsr/armv8 SDK installs on the Pi 4's `aarch64_cortex-a72` feeds (section 2.2), and whether the OpenWrt 25.12
+    feeds hold an A/B tool (RAUC, SWUpdate or another): no OpenWrt record searched for one (I-01..I-05 §3 say only
+    "no A/B scheme").
