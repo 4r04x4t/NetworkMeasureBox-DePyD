@@ -14,9 +14,9 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public, empty until the 
 | F-01 | Owner's open decisions | code (answered 2026-11-11; plan patch waits until F-02/F-03 finish reading) | — | — | — |
 | F-02 | Requirements register | brief (register being extracted) | — | — | — |
 | F-03 | Known Python faults | brief | — | — | — |
-| F-04 | Contracts | waiting | — | — | — |
-| F-05 | Phase 0 reference | waiting | — | — | — |
-| F-06 | Test bed | waiting | — | — | — |
+| F-04 | Contracts | brief (six part briefs a-f + coordinator) | — | — | — |
+| F-05 | Phase 0 reference | brief | — | — | — |
+| F-06 | Test bed | brief | — | — | — |
 | F-07 | Shared specification and vectors | waiting | — | — | — |
 
 ## Images
@@ -44,3 +44,6 @@ All waiting for the foundation (C-01..C-11, M-01..M-14, N-01..N-18, R-01..R-05, 
 - 2026-11-11: sudo on the PC and KVM made available by the owner; cpio, bsdtar, xorriso, ostree, shellcheck, squashfs-tools-ng installed.
 - 2026-11-11: started in parallel: F-00 (implement), I-01 (verify), F-02, F-03, I-02..I-05.
 - 2026-11-11: owner chose the disclaimer (warranty and liability exclusion plus measurement note); I-06..I-08 started one at a time (RAM).
+- 2026-11-11: every commit rewritten to the no-reply e-mail (backup bundle kept outside the repository); old commit ids in earlier notes no longer exist.
+- 2026-11-11: owner answered the six F-03 questions (uplink trust per network, Ookla manual runs obey the pause only, VPN mismatch shown and asked, no default data cap, minute summaries only, bot confirms every change).
+- 2026-11-11: F-02 round 3, F-03 round 4, I-07/I-08 and image minor fixes running; F-04, F-05, F-06 briefs started early (briefs only; code waits for F-00..F-03).
