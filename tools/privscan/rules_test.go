@@ -1,0 +1,254 @@
+package main
+
+import (
+	"bufio"
+	"os"
+	"strings"
+	"testing"
+)
+
+// Positive values are assembled at run time from parts, so that no value the scanner must find
+// is ever a literal in this source (the scanner runs over its own package).
+func j(parts ...string) string { return strings.Join(parts, "") }
+
+func scanText(t *testing.T, sc *Scanner, text string) []Hit {
+	t.Helper()
+	hits, err := sc.Scan("f", strings.NewReader(text))
+	if err != nil {
+		t.Fatalf("Scan: %v", err)
+	}
+	return hits
+}
+
+func categories(hits []Hit) string {
+	var out []string
+	for _, h := range hits {
+		out = append(out, h.Category)
+	}
+	return strings.Join(out, ",")
+}
+
+type ruleCase struct {
+	name string
+	text string
+	want string // categories of the hits, comma-separated; empty for none
+}
+
+func runCases(t *testing.T, cases []ruleCase) {
+	t.Helper()
+	sc := NewScanner(nil, nil)
+	for _, c := range cases {
+		if got := categories(scanText(t, sc, c.text)); got != c.want {
+			t.Errorf("%s: %q gave %q, want %q", c.name, c.text, got, c.want)
+		}
+	}
+}
+
+func TestEmail(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"address", j("to: jane.roe", "@", "mailhost", ".net"), catEmail},
+		{"subdomain of a real domain", j("x", "@", "mail.provider", ".com"), catEmail},
+		{"reserved domain", "user@example.com and a@b.example.org", ""},
+		{"reserved names", "a@host.example b@x.invalid c@y.test d@z.localhost", ""},
+		{"module query", "golang.org/x/tools@v0.52.0 and tool@v1.2.3-rc.beta", ""},
+		{"no-reply is not exempt", j("noreply", "@", "vendor", ".com"), catEmail},
+		{"domain starting v<digit>", j("someone", "@", "v6net", ".de"), catEmail},
+		{"version-like but not a version", j("x", "@", "v1.2", ".de"), catEmail},
+		{"module query with build suffix", "golang.org/x/vuln@v1.9.0-pre.1.beta", ""},
+		{"no top-level name", "pkg@latest user@localhost", ""},
+	})
+}
+
+func TestIPv4(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"public", j("server ", "11.22", ".33.44", " up"), catIPv4},
+		{"documentation", "192.0.2.1 198.51.100.7 203.0.113.255", ""},
+		{"private and special", "10.1.2.3 172.16.0.1 192.168.1.1 127.0.0.1 169.254.1.1 0.0.0.0 255.255.255.255 224.0.0.1", ""},
+		{"longer dotted number", j("1.2", ".3.4.5 ", "v11.22", ".33.44.55"), ""},
+		{"not an address", "999.1.1.1 1.2.3 0256.1.2.3 1..2.3", ""},
+		{"end of sentence", j("at ", "11.22", ".33.44."), catIPv4},
+		// Known limit (brief 4.5): glued to ".<digit>" it cannot be told from a version number.
+		{"glued to .digit", j("at ", "11.22", ".33.44", ".5"), ""},
+	})
+}
+
+// F00-R20, verifier of 2da9473: leading zeros are decimal padding, so a zero-padded public
+// address hits and a zero-padded private or documentation one does not.
+func TestZeroPaddedIPv4(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"padded public", j("peer 011.", "022.033.044"), catIPv4},
+		{"one padded part", j("01.", "2.3.4"), catIPv4},
+		{"padded private and documentation", "192.168.001.001 010.000.000.001 192.000.002.001", ""},
+		{"padded part above 255", "0300.1.2.3 1.2.3.0256", ""},
+	})
+}
+
+// F00-R20, verifier of 2da9473: an address between letter labels (nip.io/sslip.io-style host
+// names) is no version number and hits; a dotted number after a name without a label behind it
+// (libx.so.1.2.3.4) still does not.
+func TestIPv4InHostName(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"nip.io", j("http://app.", "11.22", ".33.44", ".nip.io/"), catIPv4},
+		{"sslip.io", j("www.", "11.22", ".33.44", ".sslip.io"), catIPv4},
+		{"documentation address", "app.192.0.2.1.nip.io", ""},
+		{"shared library version", j("libx.so.", "11.22", ".33.44"), ""},
+		{"two dots before", j("x..", "11.22", ".33.44", ".y"), ""},
+		{"two dots after", j("x.", "11.22", ".33.44", "..y"), ""},
+		{"longer number between labels", j("x.", "11.22", ".33.44", ".5.y"), ""},
+	})
+	// The hit is the address alone, so an exact allow entry can name it.
+	addr := j("11.22", ".33.44")
+	hits := scanText(t, NewScanner(nil, nil), "app."+addr+".nip.io")
+	if len(hits) != 1 || string(hits[0].value) != addr || hits[0].Col != 5 {
+		t.Errorf("nip.io hit: %+v", hits)
+	}
+}
+
+// F00-R20: a systemd unit instance name (template, @, instance, dot, unit type; systemd.unit(5))
+// has the shape of an e-mail address and is none; an address whose domain only resembles one
+// still hits.
+func TestSystemdUnitInstanceIsNoEmail(t *testing.T) {
+	var cases []ruleCase
+	for _, unitType := range []string{"service", "socket", "device", "mount", "automount", "swap", "path", "timer", "slice", "scope"} {
+		cases = append(cases, ruleCase{"unit type " + unitType, "unit@instance0." + unitType, ""})
+	}
+	runCases(t, append(cases,
+		// Verifier of 2da9473: .target is a delegated top-level domain, so no exemption.
+		ruleCase{"address at a .target domain", j("jane", "@", "corporate", ".target"), catEmail},
+		ruleCase{"unit type target", j("unit", "@", "instance0", ".target"), catEmail},
+		ruleCase{"kernel command line", "console=ttyS0,115200n8 systemd.mask=serial-getty@ttyS0.service", ""},
+		ruleCase{"in prose", "`serial-getty@ttyS0` took over; wg-quick@wg0.service and getty@tty1.service.", ""},
+		ruleCase{"top-level name services", j("jane", "@", "mail.provider", ".services"), catEmail},
+		ruleCase{"more labels before the type", j("jane", "@", "mail.provider", ".service"), catEmail},
+		ruleCase{"type in upper case", j("jane", "@", "ttyS0", ".Service"), catEmail},
+		ruleCase{"type as a prefix only", j("jane", "@", "ttyS0", ".servicex"), catEmail},
+		ruleCase{"unit next to an address", j("getty@tty1.service ", "jane", "@", "mailhost", ".net"), catEmail},
+	))
+}
+
+// publicSuffixList is the Debian/Ubuntu copy of the public suffix list (package publicsuffix).
+const publicSuffixList = "/usr/share/publicsuffix/public_suffix_list.dat"
+
+// F00-R20, verifier of 2da9473: no exempt unit type may be a top-level domain, or a person's
+// address at "<name>.<type>" would pass. "target" is a delegated TLD and must stay out even where
+// the list is not installed.
+func TestExemptUnitTypesAreNoTopLevelDomain(t *testing.T) {
+	if exemptUnitTypes["target"] {
+		t.Error(`"target" is exempt, but .target is a delegated top-level domain`)
+	}
+	f, err := os.Open(publicSuffixList)
+	if err != nil {
+		t.Skipf("public suffix list not checked: %v (install the publicsuffix package)", err)
+	}
+	defer func() { _ = f.Close() }()
+	tlds := map[string]bool{}
+	lines := bufio.NewScanner(f)
+	for lines.Scan() {
+		rule := strings.TrimSpace(lines.Text())
+		if rule == "" || strings.HasPrefix(rule, "//") {
+			continue
+		}
+		tlds[strings.ToLower(rule[strings.LastIndexByte(rule, '.')+1:])] = true
+	}
+	if err := lines.Err(); err != nil {
+		t.Fatalf("reading %s: %v", publicSuffixList, err)
+	}
+	if len(tlds) < 1000 {
+		t.Fatalf("%s: only %d top-level names, not the public suffix list", publicSuffixList, len(tlds))
+	}
+	for unitType := range exemptUnitTypes {
+		if tlds[unitType] {
+			t.Errorf("exempt unit type %q is a top-level domain in the public suffix list", unitType)
+		}
+	}
+}
+
+// F00-R20: a dotted quad inside a longer dotted number (kernel and backports versions such as
+// 6.12.112.6.18.55) is no address; an address next to such a number still hits.
+func TestDottedVersionIsNoIPv4(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"backports version", "kmod-mac80211-hwsim-6.12.112.6.18.55-r2 (versions `6.12.112.6.18.55-r2`)", ""},
+		{"leading dot", "linux.6.12.112.6 and x.11.22.33.44", ""},
+		{"address after a version", j("6.12.112.6.18.55 ", "11.22", ".33.44"), catIPv4},
+		{"address before a version", j("11.22", ".33.44", " 6.12.112.6.18.55"), catIPv4},
+		{"address after v1.2.3", j("v1.2.3 at ", "11.22", ".33.44"), catIPv4},
+	})
+}
+
+// F00-R20, question Q3: carrier-grade NAT and tailnet addresses are a hit.
+func TestCGNATIsHit(t *testing.T) {
+	runCases(t, []ruleCase{{"cgnat", j("100.", "100.1.2"), catIPv4}})
+}
+
+func TestIPv6(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"global", j("addr 2a00", ":1450::", "200e"), catIPv6},
+		{"full form", j("2a00:1450:4001", ":82a:0:0:0:200e"), catIPv6},
+		{"documentation", "2001:db8::1 3fff::1 [2001:db8:0:1::2]:80", ""},
+		{"special", ":: ::1 fd12:3456::1 ff02::1 64:ff9b::c000:201", ""},
+		{"mapped documentation", "::ffff:192.0.2.1", ""},
+		{"mapped public", j("::ffff:", "11.22", ".33.44"), "ipv4,ipv6"},
+		{"identifier", "std::vector and Foo::Bar", ""},
+		{"time", "12:34:56", ""},
+	})
+}
+
+func TestEUI64LinkLocalFromRealMACIsHit(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"universal", j("fe80::", "0200:5eff:", "fe00:5301"), catIPv6},
+		{"locally administered", "fe80::ff:fe00:1", ""},
+		{"not EUI-64", "fe80::1 fe80::1234:5678:9abc:def0", ""},
+	})
+}
+
+func TestMAC(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"universal colon", j("00:00:5e", ":00:53:01"), catMAC},
+		{"universal dash", j("00-00-5E", "-00-53-01"), catMAC},
+		{"universal dot", j("0000.5e", "00.5301"), catMAC},
+		{"locally administered", "02:00:00:00:00:01 06-00-00-00-00-02", ""},
+		{"multicast and zero", "01:00:5e:00:00:01 ff:ff:ff:ff:ff:ff 00:00:00:00:00:00", ""},
+		{"inside a longer token", j("2001:db8:0:00:00", ":5e:00:53:01"), ""},
+	})
+}
+
+func TestPath(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"linux home", j("/ho", "me/", "jdoe", "/src"), catPath},
+		{"mac home", j("/Us", "ers/", "jdoe/x"), catPath},
+		{"windows", j(`C:\`, `Users\`, `Jane Roe\Downloads`), catPath},
+		{"wsl mount", j("/mnt/c/", "Users/", "jdoe/"), catPath},
+		{"allowed", `/home/nmb/ /home/<user>/ /home/$USER/ C:\Users\Public\ ~/src C:\Users\%USERNAME%`, ""},
+	})
+}
+
+func TestKey(t *testing.T) {
+	alnum36 := strings.Repeat("aB3dE6gH9", 4)
+	runCases(t, []ruleCase{
+		{"private key block", j("-----BEGIN ", "OPENSSH PRIVATE", " KEY-----"), catKey},
+		{"github token", j("gh", "p_", alnum36), catKey},
+		{"aws", j("AK", "IA", "ABCDEFGH23456789"), catKey},
+		{"telegram", j("1234567890", ":", alnum36[:35]), catKey},
+		{"telegram ending in -", j("1234567890", ":", alnum36[:34], "-"), catKey},
+		{"telegram in an API address", j("https://api.telegram.org/bot", "1234567890", ":", alnum36[:34], "-/getMe"), catKey},
+		{"telegram-like inside longer tokens", j("91234567890", ":", alnum36[:35], " 1234567890:", alnum36), ""},
+		{"api key", j("s", "k-", "proj-", alnum36[:24]), catKey},
+		{"wireguard", j("PrivateKey = ", strings.Repeat("aB3+", 10), "aB3="), catKey},
+		{"quoted assignment", j(`password = "`, "Zq8#Lw2!Rt5x", `"`), catKey},
+		{"config assignment", j("TELEGRAM_TOKEN=", "Zq8kLw2mRt5xV7"), catKey},
+		{"assignment without a digit", j("token=", "CorrectHorseBattery", "StapleZebraQ"), catKey},
+		{"placeholders", `token = "<your token>" password: "${PASSWORD}" secret=__KEEP_CURRENT__ api_key="example-key-123456"`, ""},
+		{"low entropy", `password = "aaaaaaaaaaaaaaaa1"`, ""},
+		{"code", "token := strings.TrimSpace(line) // secret handling", ""},
+		{"go.sum hash", "golang.org/x/mod v0.42.0 h1:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQ=", ""},
+	})
+}
+
+func TestEntropy(t *testing.T) {
+	if e := entropy([]byte("aaaa")); e != 0 {
+		t.Errorf("entropy of a repeated byte = %v", e)
+	}
+	if e := entropy([]byte("abcd")); e != 2 {
+		t.Errorf("entropy of four distinct bytes = %v", e)
+	}
+}
