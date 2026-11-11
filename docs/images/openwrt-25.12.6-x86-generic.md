@@ -94,7 +94,7 @@ squashfs and ext4 images of each layout differ only in partition 2.
 
 - **Partition table (combined-efi).** A GPT behind a protective MBR. As in I-01 the backup GPT header is missing;
   sgdisk reports "invalid backup GPT header", and fdisk says "The backup GPT table is not on the end of the device".
-  In the guest of run 1 (combined image, MBR) no GPT message appears. In run 3 (combined-efi) the kernel printed
+  In the guest of run 1 (combined image, MBR) no GPT message appears. In runs 3 and 4 (combined-efi) the kernel printed
   `Alternate GPT is invalid, using primary GPT.` and booted on (as in I-01).
 - **Boot partition (combined-efi).** Read with `mdir -/ -i p1.img ::` and `mcopy -s` (both exit 0). It holds
   `/boot/vmlinuz` (5,628,416 bytes), `/boot/grub/{boot.img,core.img,grub.cfg}` and **`/efi/boot/bootia32.efi`**
@@ -109,7 +109,7 @@ squashfs and ext4 images of each layout differ only in partition 2.
     `GNU GRUB version 2.12`). GRUB boots the default entry after the 5 s timeout. The combined image's `grub.cfg`
     sets `root='(hd0,msdos1)'` and has no `search` line, and run 1 printed no `error:` line (`grep -c 'error:'` = 0).
     The combined-efi `grub.cfg` has `search -l kernel -s root`, as in I-01.
-  - Legacy BIOS on the GPT image (run 3): SeaBIOS printed `Booting from Hard Disk...` and `GRUB loading....`,
+  - Legacy BIOS on the GPT image (runs 3 and 4): SeaBIOS printed `Booting from Hard Disk...` and `GRUB loading....`,
     loaded the GRUB core from the BIOS boot partition 128, and GRUB 2.12 booted `OpenWrt` after the timeout; no
     `error:` line (`grep -c 'error:'` = 0). The kernel found its root by `root=PARTUUID=<disk id>-02` and mounted
     partition 1 (FAT) on `/boot` (guest `mount`: `vfat`). So the combined-efi image also serves legacy-BIOS PCs.
@@ -420,17 +420,47 @@ qemu-system-i386 -machine pc -accel <kvm|tcg,tb-size=128> -cpu <host|max> -smp 1
 | Run | Image, settings | Result |
 | :--- | :--- | :--- |
 | 1 | squashfs-combined (MBR, legacy BIOS), **KVM** (`-cpu host`), `-smp 1 -m 256` | Booted cleanly (`Booting paravirtualized kernel on KVM`, `Hypervisor detected: KVM`). All 34 probes gave exit 0. `poweroff` was clean: `reboot: Power down`, QEMU exit 0, driver exit 0; the flock exit was not logged for this run (`boot1/times.txt` holds only start, driver rc, QEMU rc and end); 110 s in all (06:51:47–06:53:37 UTC) |
-| 2 | squashfs-combined-efi through its BIOS boot partition, KVM, `-m 512` | **Did not start**: `Could not access KVM kernel module: Permission denied` (QEMU exit 1, driver exit 1). The user's ACL entry on `/dev/kvm` was there before run 1 (`getfacl` listed a named-user entry with `rw-` for the working user) and gone after it (`getfacl` shows no user entry; the node's change time is 06:53:36 UTC). Nothing in this package changed it; there is no sudo |
+| 2 | squashfs-combined-efi through its BIOS boot partition, KVM, `-m 512` | **Did not start**: `Could not access KVM kernel module: Permission denied` (QEMU exit 1, driver exit 1). The user's ACL entry on `/dev/kvm` was there before run 1 (`getfacl` listed a named-user entry with `rw-` for the working user) and gone after it (`getfacl` shows no user entry; the node's change time is 06:53:36 UTC). Nothing in this package changed it; there is no sudo. By run 4 (12:50 UTC) the node was world read-write (`ls -l`: `crw-rw-rw-+`) and KVM worked |
 | 3 | squashfs-combined-efi through its BIOS boot partition, **TCG** (`-cpu max`, `-accel tcg,tb-size=128`), `-smp 1 -m 512`; fresh copy of the decompressed image (SHA-256 `061efadc…85e9f` checked before the copy) | Booted cleanly through SeaBIOS and GRUB 2.12 from the GPT image (`Booting paravirtualized kernel on bare hardware`; `ubus call system board`: `"system": "QEMU TCG CPU version 2.5+"`, `"rootfs_type": "squashfs"`). All 10 probes (`scripts/probes2.txt`) gave exit 0. `poweroff` was clean: `reboot: Power down`, QEMU exit 0, driver exit 0, flock+run exit 0; 360 s in all (07:41:01–07:47:01 UTC). The first probe polled `logread` before `logd` was up, so the console shows 22 `Failed to find log object: Not found` lines from that loop; the probe still ended with exit 0 |
+| 4 | squashfs-combined-efi through its BIOS boot partition, **KVM** (`-cpu host`), `-smp 1 -m 512`; the image decompressed again with `gzip -dc` (exit 0) and its SHA-256 `061efadc…85e9f` checked before the copy | Booted cleanly through SeaBIOS and GRUB 2.12 from the GPT image (`Hypervisor detected: KVM`, `Booting paravirtualized kernel on KVM`; `"rootfs_type": "squashfs"`). All 11 probes (`scripts/probes4.txt`: `probes2.txt` with one clock probe, `date -u +"%F %T %s"; cat /proc/uptime`, inserted as probe 1) gave exit 0. `poweroff` was clean: `reboot: Power down`, QEMU exit 0, driver exit 0, flock+run exit 0 (`flock -w 3600`; the lock was free, the wait and the run both started at 12:50:37 UTC); 42 s in all (12:50:37–12:51:19 UTC). One `Failed to find log object: Not found` line from the first probe's loop |
+
+**How the boot times are computed** (the same for every run; the logs are in `~/nmb-work/I-04/boot<run>/`, and
+`console.txt` of runs 3 and 4 is `console.log` with the carriage returns removed):
+
+- **Kernel start (UTC)** = the time in the kernel's line `rtc_cmos 00:05: setting system clock to <T> UTC` minus
+  that line's kernel timestamp. `<T>` has 1 s resolution.
+- **Host-clock check of kernel start:** the `start` line of `times.txt` (written by `run.sh` right before QEMU is
+  started; 1 s resolution) plus the driver's `kernel_start` offset in `driver.out`. Driver time 0 is its connection
+  to the serial socket; QEMU (`wait=on`) runs the guest only after that.
+- **Init complete** = the `logread` stamp of `procd: - init complete -` (1 s resolution) minus kernel start. Each
+  boot time therefore carries about ±1 s.
+- **Upper bound:** probe 0 loops until `logread` shows `init complete` and then prints `/proc/uptime`, so the event
+  is not later than that uptime.
+- **Not used:** the `logread` stamp of a kernel line such as `procd: - init -`. It is later than the time the kernel
+  printed the line: in run 3 the stamp 07:42:43 (`boot3/console.txt:593`) is 76.5 s after kernel start, while the
+  line carries kernel time 36.53 s and the driver saw `Please press Enter to activate this console` 37.4 s after
+  the kernel banner (62.9 − 25.5). The first version of this record took 07:42:43 − 36.53 s as kernel start
+  (07:42:06) and so gave 241 s for run 3; that figure was wrong by 40 s and is replaced by 281 s below.
+
+| Run | Kernel start from the RTC line | `init complete` (`logread`) | Init complete after kernel start | Upper bound (probe 0) | Host-clock check of kernel start |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 (KVM, MBR, 256 MB) | `boot1/console.txt:460` `[    2.945940] rtc_cmos 00:05: setting system clock to 2026-11-11T06:51:58 UTC`: 06:51:58 − 2.95 s = 06:51:55.05 | `boot1/console.txt:596` `Wed Nov 11 06:52:13 2026 daemon.info procd: - init complete -` | 06:52:13 − 06:51:55.05 = 17.95 s, **about 18 s** | `boot1/console.txt:587–588` `waited=4`, `19.52 5.82`: at most 19.5 s | `start 2026-11-11 06:51:47` + `8.4 kernel_start True` = 06:51:55.4 (0.35 s from the RTC figure) |
+| 3 (TCG, GPT, 512 MB) | `boot3/console.txt:440` `[    5.448194] rtc_cmos 00:05: setting system clock to 2026-11-11T07:41:32 UTC`: 07:41:32 − 5.45 s = 07:41:26.55 | `boot3/console.txt:594` `Wed Nov 11 07:46:08 2026 daemon.info procd: - init complete -` | 07:46:08 − 07:41:26.55 = 281.45 s, **about 281 s** | `boot3/console.txt:585–586` `waited=78`, `290.51 5.43`: at most 290.5 s | `start 2026-11-11 07:41:01` + `25.5 kernel_start True` = 07:41:26.5 (0.05 s from the RTC figure) |
+| 4 (KVM, GPT, 512 MB) | `boot4/console.txt:462` `[    3.112695] rtc_cmos 00:05: setting system clock to 2026-11-11T12:50:49 UTC`: 12:50:49 − 3.11 s = 12:50:45.89 | `boot4/console.txt:603` `Wed Nov 11 12:51:08 2026 daemon.info procd: - init complete -` | 12:51:08 − 12:50:45.89 = 22.11 s, **about 22 s** | `boot4/console.txt:588–589` `waited=6`, `22.15 4.88`: at most 22.15 s | `start 2026-11-11 12:50:37` + `8.7 kernel_start True` = 12:50:45.7 (0.19 s from the RTC figure) |
 
 Figures from run 3 (TCG, one vCPU, 512 MB; emulation on the dev PC, **not** a figure for real hardware):
 
-- **Boot time.** Host clock (driver timestamps from QEMU start): kernel banner at 25.5 s, `Please press Enter to
-  activate this console` at 62.9 s, shell prompt at 74.5 s. Kernel timestamps: `Run /sbin/init` at 7.10 s,
-  `procd: - init -` at 36.53 s (logged as 07:42:43 UTC, so kernel start was about 07:42:06). `procd: - init
-  complete -` was logged at 07:46:08 UTC, about 241 s after kernel start (1 s resolution); most of that is the
-  modules and services starting under emulation (`kmodloader: done` at 57.4 s, `br-lan` forwarding at 185.3 s).
-  The first boot includes formatting the overlay.
+- **Boot time: about 281 s** from kernel start to `procd: - init complete -` (table above: 07:46:08 − 07:41:26.55
+  = 281.45 s).
+  - Host clock (`boot3/driver.out`, seconds from the driver's connection): kernel banner at 25.5 s, `Please press
+    Enter to activate this console` at 62.9 s (37.4 s after the banner), shell prompt at 74.5 s (49.0 s after the
+    banner); init complete therefore at about 25.5 + 281.45 = 307 s.
+  - Kernel timestamps (`boot3/console.txt`): `Run /sbin/init` at 7.10 s (line 476), `procd: - init -` at 36.53 s
+    (line 496), `kmodloader: done loading kernel modules from /etc/modules.d/*` at 57.39 s (line 561), `br-lan`
+    port 1 forwarding at 185.32 s (line 583). Most of the 281 s is modules and services starting under emulation.
+  - Guest uptime runs at host speed under TCG: probe 0 ended at driver time 316.4 s with uptime 290.51 s, which
+    puts kernel start at no later than 316.4 − 290.51 = 25.9 s on the driver clock, against 25.5 s for the banner.
+  - The first boot includes formatting the overlay.
 - **Memory.** Kernel line: `Memory: 501724K/523756K available (10324K kernel code, …, 0K highmem)`; `HighMem empty`
   (512 MB lies below the 32-bit low-memory limit, so PAE high memory is not used). Guest `free` after `init
   complete`: total 503,628 kB, used 23,464 kB, free 457,812 kB, available 442,428 kB; at the end (uptime 302 s)
@@ -447,16 +477,46 @@ Figures from run 3 (TCG, one vCPU, 512 MB; emulation on the dev PC, **not** a fi
   no `/proc/config.gz`; no `/dev/watchdog*`, `ubus call system watchdog` `"status": "offline"`; cgroup2 on
   `/sys/fs/cgroup`.
 
+Figures from run 4 (KVM, one vCPU, 512 MB, the same combined-efi image and boot path as run 3; **not** a figure for
+real hardware):
+
+- **Boot time: about 22 s** from kernel start to `procd: - init complete -` (table above: 12:51:08 − 12:50:45.89
+  = 22.11 s).
+  - Host clock (`boot4/driver.out`): kernel banner at 8.7 s, `Please press Enter to activate this console` at
+    18.7 s (10.0 s after the banner), shell prompt at 24.2 s; init complete therefore at about 8.7 + 22.11 = 31 s
+    after the driver's connection. This includes SeaBIOS and the 5 s GRUB timeout.
+  - Kernel timestamps (`boot4/console.txt`): `Run /sbin/init` at 3.53 s (line 499), `procd: - init -` at 9.91 s
+    (line 519), `kmodloader: done loading kernel modules from /etc/modules.d/*` at 15.68 s (line 575), `br-lan`
+    port 1 forwarding at 22.23 s (line 587).
+  - Clock probe (probe 1, `boot4/console.txt:594–595`): `2026-11-11 12:51:09 1794401469` with uptime `22.35`. The
+    `logread` stamp 12:51:08 is then 0 to 2 s before that reading, so init complete lies between uptime 20.35 s and
+    22.35 s; with probe 0's bound, between 20.35 s and 22.15 s. The RTC figure 22.11 s lies inside.
+  - The same image under TCG (run 3) took about 281 s, 12.7 times as long (281.45 / 22.11).
+  - The first boot includes formatting the overlay.
+- **Memory.** Kernel line (`boot4/console.txt:281`): `Memory: 501708K/523756K available (10324K kernel code, …, 0K
+  highmem)`. Guest `free` after `init complete` (probe 7): total 503,628 kB, used 22,212 kB, free 459,148 kB,
+  available 443,728 kB; at the end (uptime 26.19 s) used 22,180 kB, available 443,660 kB.
+- **Storage, listening ports and the other probes:** the same values as run 3 (`/rom` 5,376 kB at 100 %, `/overlay`
+  89,195 kB with 62 kB used, `/boot` (FAT) 16,334 kB with 6,090 kB used; the same `/proc/partitions`; the same
+  listening set; `i686`, 179 packages, no `opkg`, 67 modules, no `/dev/watchdog*`, watchdog `"status": "offline"`).
+  Flags `pae cx8 cmov sse2 nx`; with `-cpu host`, `ubus call system board` shows the host CPU's model string.
+- **Boot path:** `Booting from Hard Disk...` and `GRUB loading....` (lines 14–15), `Alternate GPT is invalid, using
+  primary GPT.` (line 442), `/dev/vda1 on /boot type vfat`; no `error:` line (`grep -c 'error:'` = 0).
+
 Figures from run 1 (KVM, one vCPU, 256 MB; **not** a figure for real hardware, and not comparable with I-01's TCG
 figures):
 
-- **Boot time.**
-  - Host clock (driver timestamps from QEMU start): kernel banner at 8.4 s, `Please press Enter to activate this
-    console` at 17.8 s. This includes SeaBIOS and the 5 s GRUB timeout.
-  - Kernel timestamps: `Run /sbin/init` at 3.36 s, `procd: - init -` at 9.43 s.
-  - `procd: - init complete -` (from `logread`) at 06:52:13 UTC. The RTC line `setting system clock to
-    2026-11-11T06:51:58 UTC` at 2.95 s puts kernel start at about 06:51:55, so init completed about 18 s after
-    kernel start (1 s resolution). At uptime 19.5 s the first probe had already found it.
+- **Boot time: about 18 s** from kernel start to `procd: - init complete -` (table above: 06:52:13 − 06:51:55.05
+  = 17.95 s; this figure was already computed from the RTC line and is unchanged).
+  - Host clock (`boot1/driver.out`): kernel banner at 8.4 s, `Please press Enter to activate this console` at
+    17.8 s (9.4 s after the banner), shell prompt at 23.3 s; init complete therefore at about 8.4 + 17.95 = 26 s
+    after the driver's connection. This includes SeaBIOS and the 5 s GRUB timeout.
+  - Kernel timestamps (`boot1/console.txt`): `Run /sbin/init` at 3.36 s (line 497), `procd: - init -` at 9.43 s
+    (line 518), `kmodloader: done loading kernel modules from /etc/modules.d/*` at 15.05 s (line 573), `br-lan`
+    port 1 forwarding at 19.19 s (line 586).
+  - At uptime 19.52 s the first probe had already found `init complete` (lines 587–588).
+  - The `logread` stamp of `procd: - init -` (06:52:10, line 595) would put kernel start at 06:52:00.6, 5.5 s
+    later than the RTC line does; it is not used (see "How the boot times are computed").
   - The first boot includes formatting the overlay.
 - **Memory.** Kernel line: `Memory: 242436K/261612K available (10324K kernel code, …, 0K highmem)`; `HighMem empty`.
   Guest `free` right after `init complete`: total 244,236 kB, used 21,772 kB, free 200,084 kB, available
@@ -490,7 +550,7 @@ figures):
 ## 14. Tools missing on the PC
 
 `cpio`, `bsdtar`, `xorriso`, `usign`, a 32-bit (IA32) OVMF and `extract-ikconfig` are missing, and there is no sudo,
-so no loop mounts. `/dev/kvm` was usable for run 1 only (section 12).
+so no loop mounts. `/dev/kvm` was usable for runs 1 and 4, not for run 2 (section 12).
 
 Present and used: `gzip`, `xz`, `zstd`, `tar`, `sgdisk`, `fdisk`, `mtools`, `debugfs`, `unsquashfs`
 (squashfs-tools 4.6.1), `binwalk`, `file`, `strings`, `gpg`, `qemu-system-i386` 8.2.2, SeaBIOS 1.16.3 and `flock`.
@@ -564,7 +624,7 @@ listing and its unpacked squashfs root).
 | Root size | squashfs 6,096,242 bytes; unpacked 20,384,863 | squashfs 5,410,898; unpacked 16,519,194 |
 | Feed size (`apk update`) | 11,234 distinct packages | 11,142 |
 | Identical | — | `/etc/config`, `/etc/board.d`, `/etc/init.d`, `/lib/upgrade/platform.sh` (`diff -r`, exit 0); enabled services; listening ports; netifd and fw4 behaviour in every coexistence test; feed versions of every tool in 9a; Python absent |
-| QEMU | TCG only (no KVM access then), OVMF | KVM in run 1 (MBR image) and TCG in run 3 (GPT image through its BIOS boot partition), SeaBIOS; run 1 figures are not comparable, run 3 is TCG on the same PC but with a different firmware path and CPU model |
+| QEMU | TCG only (no KVM access then), OVMF | KVM in run 1 (MBR image) and run 4 (GPT image through its BIOS boot partition), TCG in run 3 (the same GPT image), SeaBIOS; the KVM figures are not comparable with I-01's, run 3 is TCG on the same PC but with a different firmware path and CPU model |
 
 **Cross-check result.** The 32-bit tree confirms I-01 on every point of 5.2 that does not depend on the CPU: the
 same kernel options for NMB, the same userland and versions, the same network and firewall managers with the same
@@ -590,7 +650,12 @@ All on the dev PC under WSL2, as the normal user, in `~/nmb-work/I-04/`:
   (`/dev/kvm` permission denied). Run 3 (TCG, squashfs-combined-efi, 512 MB, under `flock -w 3600
   ~/nmb-work/qemu.lock` for the whole run, started after the lock was free): flock+run exit 0, QEMU exit 0,
   driver exit 0, all 10 probes exit 0.
+- QEMU run 4 (KVM, squashfs-combined-efi, 512 MB): `gzip -dc` of the combined-efi image again, exit 0, SHA-256
+  `061efadc…85e9f`; under `flock -w 3600 ~/nmb-work/qemu.lock` for the whole run (lock free at once): flock+run
+  exit 0, QEMU exit 0, driver exit 0, all 11 probes exit 0.
+- Boot times recomputed from the logs after verifier round 2 (section 12, "How the boot times are computed"):
+  run 3 corrected from 241 s to about 281 s; run 1 (about 18 s) confirmed; run 4 added (about 22 s).
 - Kernel config count re-derived after verification (section 4): `awk` split at the first `=`, output
   `95 323 192`.
 - Large extractions removed afterwards: the decompressed disk images, the guest disk copies and the unpacked
-  toolchain binaries.
+  toolchain binaries; after run 4 also its decompressed image and guest disk copy.
