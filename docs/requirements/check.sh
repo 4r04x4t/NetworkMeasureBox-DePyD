@@ -27,9 +27,10 @@ R=${1:-docs/requirements}
 SRC=${NMB_SRC:-$HOME/src/NetworkMeasureBox}
 COMMIT=ad3758c
 # Documents with no coverage table of their own, each with its reason in the register README ("Sources").
-OUT_OF_SCOPE="docs/TESTING.hu.md docs/DEV_SETUP_WINDOWS.hu.md docs/NMHH_SZELESSAVNET_COMPARISON.md docs/NMHH_SZELESSAVNET_OSSZEHASONLITAS.hu.md"
+# None since round 3: parts/other-docs.md covers the last four (the NMHH comparison and three Hungarian translations).
+OUT_OF_SCOPE=""
 P="$R/parts"
-PARTS="roadmap-1-507.md roadmap-508-1034.md porting-plan.md workplan-architecture-devsetup.md testing.md readme.md changelog.md contributing.md"
+PARTS="roadmap-1-507.md roadmap-508-1034.md porting-plan.md workplan-architecture-devsetup.md testing.md readme.md changelog.md contributing.md other-docs.md"
 
 for f in $PARTS python-files.md; do
 	[ -f "$P/$f" ] || { echo "check: missing part $P/$f" >&2; exit 2; }
@@ -85,7 +86,7 @@ cat > "$T/rows.awk" <<'EOF'
 	line = $0; gsub(/\\\|/, "\001", line)
 	n = split(line, c, "|")
 	id = trim(c[2])
-	if (id !~ /^REQ-(RM|PP|WP|AR|DV|TS|RE|CL|CT)-[0-9][0-9][0-9][0-9]$/) { print "BAD " FILENAME ":" FNR " bad id cell: " id; next }
+	if (id !~ /^REQ-(RM|PP|WP|AR|DV|TS|RE|CL|CT|NH)-[0-9][0-9][0-9][0-9]$/) { print "BAD " FILENAME ":" FNR " bad id cell: " id; next }
 	if (n != 8) { print "BAD " FILENAME ":" FNR " " id " has " n - 2 " cells, not 6"; next }
 	if (id in seen) { print "BAD " id " defined twice: " seen[id] " and " FILENAME ":" FNR; next }
 	seen[id] = FILENAME ":" FNR
@@ -169,6 +170,10 @@ readme.md 2 README.hu.md 1 N sparse
 changelog.md 1 CHANGELOG.md 1 N contig
 contributing.md 1 CONTRIBUTING.md 1 N contig
 contributing.md 2 CONTRIBUTING.hu.md 1 N contig
+other-docs.md 1 docs/NMHH_SZELESSAVNET_COMPARISON.md 1 N contig
+other-docs.md 2 docs/NMHH_SZELESSAVNET_OSSZEHASONLITAS.hu.md 1 N contig
+other-docs.md 3 docs/DEV_SETUP_WINDOWS.hu.md 1 N contig
+other-docs.md 4 docs/TESTING.hu.md 1 N contig
 EOF
 : > "$T/manifest2"
 while read -r part tab src start end mode; do

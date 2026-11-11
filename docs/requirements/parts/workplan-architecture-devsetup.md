@@ -72,7 +72,7 @@ Many work-plan rows are rules for how the native work is done (roles, gate, stat
 | REQ-WP-0053 | Size, memory and CPU figures are recorded for every package. | docs/NATIVE_WORK_PLAN.md@ad3758c:95 | F-00 | P-13 | |
 | REQ-WP-0054 | Changelog, manual chapter and command reference are updated with every package (roadmap 6B.7). | docs/NATIVE_WORK_PLAN.md@ad3758c:95-96 | P-12 | F-00 | |
 | REQ-WP-0055 | Size rule: a package is what one agent can read, write and test in one sitting (as a guide at most about 1,500 lines of Python reference, or one protocol); a bigger one is split by its analyst before coding. | docs/NATIVE_WORK_PLAN.md@ad3758c:100-101 | F-02 | all packages | |
-| REQ-WP-0056 | The foundation packages come in order, before anything else. | docs/NATIVE_WORK_PLAN.md@ad3758c:103 | F-00 | | Section 4 lists only F-00 to F-06 (see Questions). |
+| REQ-WP-0056 | The foundation packages come in order, before anything else. | docs/NATIVE_WORK_PLAN.md@ad3758c:103 | F-00 | | Section 4 lists only F-00 to F-06. Q-02 settled: F-07 is part of the foundation of 3.0; its first version (`spec/` layout, formats, vector runner) is accepted before Core starts and then grows with each package (rule 11 of 2.2). |
 | REQ-WP-0057 | F-00 Skeleton: the `NetworkMeasureBox-DePyD/` layout, `CHANGELOG.md` (first commit), `KNOWN_PYTHON_FAULTS.md`, `WORK_STATUS.md`, Go module, build and gate scripts for the matrix of 2.4, and the toolchain version fixed (the roadmap names Go 1.23+; the version installed on the PC: source names a specific site value; not copied). | docs/NATIVE_WORK_PLAN.md@ad3758c:107 | F-00 | | |
 | REQ-WP-0058 | F-01 Owner's open decisions: the list of section 7 answered and written into the roadmap. | docs/NATIVE_WORK_PLAN.md@ad3758c:108 | F-01 | | |
 | REQ-WP-0059 | F-02 Requirements register: every requirement of both plans, `TESTING.md` (release checklist, To fix, Known limits), `ARCHITECTURE.md`, the READMEs and the changelog as one numbered list with source lines; each id assigned to a package; a second agent checks that no paragraph is without an id. | docs/NATIVE_WORK_PLAN.md@ad3758c:109 | F-02 | | This file is one part of it. |
@@ -224,7 +224,7 @@ Many work-plan rows are rules for how the native work is done (roles, gate, stat
 | REQ-AR-0009 | The speed service runs unprivileged and writes tests. | docs/ARCHITECTURE.md@ad3758c:42 | P-04 | M-04 | |
 | REQ-AR-0010 | The report job runs unprivileged on a timer and does not write the database. | docs/ARCHITECTURE.md@ad3758c:43 | P-04 | R-03 | |
 | REQ-AR-0011 | The Telegram bot runs unprivileged and writes alerts. | docs/ARCHITECTURE.md@ad3758c:44 | P-04 | S-11 | |
-| REQ-AR-0012 | The web server runs as `nmb` with `CAP_NET_BIND_SERVICE`, `CAP_NET_ADMIN` and `CAP_NET_RAW` and writes the configuration. | docs/ARCHITECTURE.md@ad3758c:45 | P-04 | S-01 | See Questions (capabilities of the web server). |
+| REQ-AR-0012 | The web server runs as its own unprivileged user with only the right to bind its port (`CAP_NET_BIND_SERVICE`, or no capability with a socket passed by the service manager) and writes the configuration; network changes and other privileged tasks go to the network daemon or the privileged helper. The Python `CAP_NET_ADMIN` and `CAP_NET_RAW` are not carried over. | docs/ARCHITECTURE.md@ad3758c:45 | P-04 | S-01 | Q-13 settled (developer's choice: Quality Bar 7, only the capabilities a daemon needs; 6B.5). Restated in round 3. |
 | REQ-AR-0013 | The snapshot job runs unprivileged on a timer and does not write the live database. | docs/ARCHITECTURE.md@ad3758c:46 | P-04 | C-02 | |
 | REQ-AR-0014 | The collector server runs as its own user on the collector's server (an ISP or a specialist), never on the box, with its own database. | docs/ARCHITECTURE.md@ad3758c:47; docs/ARCHITECTURE.md@ad3758c:59 | S-13 | P-10 | |
 | REQ-AR-0015 | Scheduled speed tests are started by an in-process scheduler driven by `schedule_cron` (hourly by default); there is no separate systemd timer for them. | docs/ARCHITECTURE.md@ad3758c:49 | M-04 | P-10 | |
@@ -266,7 +266,7 @@ Many work-plan rows are rules for how the native work is done (roles, gate, stat
 | REQ-AR-0051 | Bot diagnostics commands: `/status`, `/ping`, `/test [ookla\|cloudflare\|fastcom\|rtr\|iperf]`, `/report` (HTML dossier), `/ai` (Markdown bundle), `/mode`. | docs/ARCHITECTURE.md@ad3758c:115 | S-11 | R-03, R-04, M-04 | |
 | REQ-AR-0052 | `/vpn` shows WireGuard and OpenVPN status and client counts. | docs/ARCHITECTURE.md@ad3758c:116-117 | S-11 | N-13, N-14 | |
 | REQ-AR-0053 | `/vpn clients` lists connected peers with address, latest handshake and RX/TX traffic. | docs/ARCHITECTURE.md@ad3758c:118 | S-11 | N-13, N-14 | |
-| REQ-AR-0054 | `/vpn add <name> [wg\|ovpn]` creates a client peer and sends its QR code image and `.conf` file. | docs/ARCHITECTURE.md@ad3758c:119 | S-11 | N-13, N-14 | QR and profile hold the private key: see roadmap part question 4. |
+| REQ-AR-0054 | `/vpn add <name> [wg\|ovpn]` creates a client peer and sends its QR code image and `.conf` file. | docs/ARCHITECTURE.md@ad3758c:119 | S-11 | N-13, N-14 | QR and profile hold the private key: owner question Q-15. |
 | REQ-AR-0055 | `/vpn qr <name>` makes and sends the QR code image. | docs/ARCHITECTURE.md@ad3758c:120 | S-11 | N-13 | |
 | REQ-AR-0056 | `/vpn conf <name>` sends the configuration profile. | docs/ARCHITECTURE.md@ad3758c:121 | S-11 | N-13, N-14 | |
 | REQ-AR-0057 | `/vpn start [wg\|ovpn]` and `/vpn stop [wg\|ovpn]` start and stop the VPN service. | docs/ARCHITECTURE.md@ad3758c:122 | S-11 | N-13, N-14 | |
@@ -280,8 +280,8 @@ Many work-plan rows are rules for how the native work is done (roles, gate, stat
 | REQ-AR-0065 | `/heal fix [tier]` runs the repair escalation (tiers 1 to 3). | docs/ARCHITECTURE.md@ad3758c:132 | S-11 | P-01 | |
 | REQ-AR-0066 | `/heal updates` checks for a verified stable release. | docs/ARCHITECTURE.md@ad3758c:133 | S-11 | P-02 | |
 | REQ-AR-0067 | `/heal apply` installs an update atomically with a checkpoint before and automatic rollback. | docs/ARCHITECTURE.md@ad3758c:134 | S-11 | P-02 | Native: only signed updates (REQ-WP-0184). |
-| REQ-AR-0068 | `/tasks` (or `/top`) shows tasks and load; `/kill <pid> [signal]` sends a signal. | docs/ARCHITECTURE.md@ad3758c:135 | S-11 | C-09 | See Questions (`/kill` scope). |
-| REQ-AR-0069 | `/wifi` shows telemetry, `/wifi scan` nearby access points, `/wifi connect <ssid> [pw]` joins a network, `/wifi saved` lists saved networks. | docs/ARCHITECTURE.md@ad3758c:136 | S-11 | M-14, N-07, N-08 | Heading says "Guest Wi-Fi" but no guest command is listed. See Questions (password in chat). |
+| REQ-AR-0068 | `/tasks` (or `/top`) shows tasks and load; `/kill <pid> [signal]` sends a signal. | docs/ARCHITECTURE.md@ad3758c:135 | S-11 | C-09 | Q-14 answered by the owner's decision of 2026-11-11: the scope stays (the task manager of 4.13), every signal needs a confirmation tap, and KILL or a process outside NMB also the typed word; the privileged helper sends it (never `sudo` or a shell); PID 1 and the bot stay protected (REQ-RE-0280). |
+| REQ-AR-0069 | `/wifi` shows telemetry, `/wifi scan` nearby access points, `/wifi connect <ssid> [pw]` joins a network, `/wifi saved` lists saved networks. | docs/ARCHITECTURE.md@ad3758c:136 | S-11 | M-14, N-07, N-08 | Heading says "Guest Wi-Fi" but no guest command is listed. Password in chat: owner question Q-15. |
 | REQ-AR-0070 | `/backup list`, `/backup create [label]` and `/backup send <filename>` (the archive sent in Telegram). | docs/ARCHITECTURE.md@ad3758c:137 | S-11 | P-03 | Out of date: Python sends the archive encrypted with the owner's passphrase, plain only with `plain` (`nmb/bot/commands.py@ad3758c:1627-1630`). The native build keeps the encrypted default. |
 | REQ-AR-0071 | `/drivers` shows hardware and drivers; `/reboot now` reboots the box. | docs/ARCHITECTURE.md@ad3758c:138 | S-11 | N-17, P-10 | |
 | REQ-AR-0072 | Alerts are stateful and deduplicated in the database (alert table). | docs/ARCHITECTURE.md@ad3758c:140-141 | S-11 | C-02 | |
@@ -316,7 +316,7 @@ Many work-plan rows are rules for how the native work is done (roles, gate, stat
 | REQ-DV-0023 | No secrets in the repository, in commits or in logs: tokens, passwords, keys, the Wi-Fi password. | docs/DEV_SETUP_WINDOWS.md@ad3758c:197 | F-00 | C-03, C-04, P-13 | |
 | REQ-DV-0024 | Ookla at most once an hour; no code to dodge its rate limits. | docs/DEV_SETUP_WINDOWS.md@ad3758c:199 | M-05 | M-10 | |
 | REQ-DV-0025 | Every user-visible change is in `CHANGELOG.md`. | docs/DEV_SETUP_WINDOWS.md@ad3758c:200 | P-12 | F-00 | |
-| REQ-DV-0026 | Documentation is in English and Hungarian. | docs/DEV_SETUP_WINDOWS.md@ad3758c:200 | P-12 | | Rule of the Python repository; see Questions for the native build. |
+| REQ-DV-0026 | Native documentation: the user manual and the command reference in every UI language from one source; developer documents (briefs, test record, contribution rules, development setup) in English as their one source. The Python pair English and Hungarian is not carried over. | docs/DEV_SETUP_WINDOWS.md@ad3758c:200 | P-12 | | Rule of the Python repository restated for the native build. Q-09 answered by 6B.7 (manual in all 11 languages, one source) and Quality Bar 9 (no language is a default); English-only developer documents are the developer's choice. Restated in round 3. |
 
 ## Coverage
 
@@ -697,6 +697,8 @@ Each range includes the blank line(s) that end it. Every line of each file is in
 4. **NEW: X2-01 Step-2 router tiers** (proposed in the roadmap part) owns REQ-DV-0011 here and is "Also in" for REQ-WP-0006, -0007, -0009, -0064, -0147, -0156, -0161, -0171 and REQ-DV-0010. No further new package.
 
 ## Questions for the owner
+
+*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 3 → Q-14, 5 → Q-09 (answered); 1 → Q-02, 2 → Q-13 (developer's choices); 4 → Q-15 (for the owner). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
 
 1. **F-07 in the order (work plan lines 103 and 222):** section 3.0 says the foundation F-00 to F-07 comes in order before anything else, but section 4 step 1 lists only F-00 to F-06. Should F-07 (`spec/` and vectors) also be done before Core starts, as rule 11 of 2.2 ("behaviour is changed in `spec/` first") implies, or may it grow alongside Core?
 2. **Capabilities of the web server (ARCHITECTURE line 45):** the Python web server holds `CAP_NET_ADMIN` and `CAP_NET_RAW` besides `CAP_NET_BIND_SERVICE`. Is that intended for the native build, or should the native web server have no network-admin rights and pass such tasks to the network daemon or the privileged helper (QB 7)?

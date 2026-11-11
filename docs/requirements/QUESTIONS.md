@@ -1,86 +1,238 @@
-# Requirements register: questions for the owner
+# Requirements register: questions, triaged
 
-The questions the parts raised, de-duplicated (44 asked, 39 numbered here; Q-06 and Q-07 were answered by other rows in round 1
-and moved to the end, so 37 are open). Each names the part(s) that asked it, the rows it
-affects, the package that needs the answer, and the proposal of the part where it made one. Until a question is answered
-the rows stay as written. Questions the owner already settled in `docs/NATIVE_WORK_PLAN.md@ad3758c` section 7 are not asked
-again; where a question falls under such a decision, it says so. Answers go to F-01, which writes them into the roadmap.
+The parts asked 44 questions; de-duplicated they are the 39 below (Q-01 to Q-39; ids are permanent and were kept). In round 3
+(2026-11-11) each was sorted into one of three sections:
+
+1. **Answered by existing decisions**: the owner's decisions in `docs/NATIVE_WORK_PLAN.md@ad3758c` section 7, the owner's
+   decisions of 2026-11-11 (given to F-02 by the orchestrator, to be written into the roadmap by F-01), or the roadmap's own text.
+2. **Developer's choices**: the owner left the matter to the developer (work plan 7 point 1), or the choice follows from a
+   Quality Bar point (QB) or another roadmap rule; the rule is named.
+3. **For the owner**: real owner decisions (product scope, security trade-offs, money, legal), each as one question with
+   options and a recommendation.
+
+Each entry names the rows it concerns and the packages that need it. Rows settled by sections 1 and 2 were corrected in their
+parts (round 3 list: `PACKAGE_CHANGES.md` section I); rows of section 3 stay as written and point here. Answers go to F-01,
+which writes them into the roadmap.
 
 Part names: RM1 `roadmap-1-507.md`, RM2 `roadmap-508-1034.md`, PP `porting-plan.md`, WP `workplan-architecture-devsetup.md`,
-TS `testing.md`, RE `readme.md`, CL `changelog.md`, PY `python-files.md`.
+TS `testing.md`, RE `readme.md`, CL `changelog.md`, PY `python-files.md`. `contributing.md` and `other-docs.md` asked no
+question of their own (their rows follow Q-09 and the owner's decisions of 2026-11-11).
 
-## Scope and order of the work
+## Answered by existing decisions
 
-| No. | Question | Asked by | Rows | Needed by | Proposal in the part |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Q-01 | Must the native components run **alongside the Python version on one box**, component by component (Phase 1.1: native probe writing into the Python SQLite database), or is replacing it with the whole `nmbd` enough (QB 5, decision 5)? | RM2 1 | REQ-RM-1002, -1260 | P-13, M-01 | none |
-| Q-02 | **F-07 in the order:** work plan 3.0 puts F-00 to F-07 before anything else, section 4 step 1 lists only F-00 to F-06. Is `spec/` finished before Core starts, or does it grow alongside? | WP 1 | REQ-WP-0004 ff. | F-00, F-07 | done first, as rule 11 of 2.2 implies |
-| Q-03 | **ARMv6 (Pi 1, Pi Zero):** roadmap line 73 and section 8 (`GOARM=6`) name them; the step-1 matrix has arm v7 only. Add `linux/arm` v6, or leave Pi Zero and Pi 1 out of step 1? | RM1 7, RM2 6 | REQ-RM-0013, REQ-RM-1440 | F-00, P-13 | none |
-| Q-04 | **Projections as limits?** Are the RAM and CPU figures of roadmap sections 7 and 9 (for example 10-18 MB RSS, idle CPU below 0.5 %) acceptance limits for P-13, or targets to measure and report? | RM2 5 | REQ-RM-1413 to -1438, -1442, -1443, -1456 to -1460 | P-13 | measure and record (current rows) |
-| Q-05 | **Supported distributions:** must native packages still install on every distribution the Python version supported (Debian, Ubuntu, Alpine, Fedora/RHEL family, Rocky), or only on the own distribution and the bases chosen after the image analysis? | CL 1 | CHANGELOG lines 95, 96, 131 rows | P-11 | none |
-| Q-08 | **OpenWrt package format:** Phase 4.3 says `.ipk`/`opkg`; OpenWrt 25.12 (the step-1 images) uses `apk`. Assumed: the format follows the target release (APK for 25.12, `.ipk` for the 22.03 base of the TL-WR1043ND v1). Confirm. | RM2 4 | REQ-RM-1271 | P-11 | as assumed |
-| Q-09 | **Documentation languages:** does the English-and-Hungarian rule of the Python repository hold for the native repository (manual and command reference of P-12), or does it follow the 11 UI languages, or English only? | WP 5 | DEV_SETUP line 200 rows | P-12 | none |
-| Q-10 | **Test scripts in the repository** (REQ-TS-0312 is marked pending until this is answered): the Python known limit (VM and bot check scripts kept outside the repository) became a requirement that the native scripts live in the native repository. Confirm. | TS 6 | TESTING line 399 row | F-06 | as written |
+**Q-01 Native and Python components side by side on one box?** (RM2 1; REQ-RM-1002, REQ-RM-1260; P-13, M-01)
+Answer: no. The only Python box is the owner's Pi 4, and the transition there is the swap of work plan 7 point 5: full backup,
+the whole native `nmbd` installed and tested, the Python version put back until the native one has replaced it. The native
+program is built whole, "every component, not a subset" (roadmap *Order of Work* step 1), Python files are never edited to
+point at native ones (*Where the Native Files Live*), and the native database schema is its own (`spec/`, 6B.8 point 1).
+REQ-RM-1002 restated; REQ-RM-1260 (native probe writing into the Python database) withdrawn.
 
-## Security and privacy
+**Q-06 Ubuntu 22.04 / polkit 0.105: service user may manage any unit?** (REQ-RE-0288; P-06) Answered in round 1: QB 6 and 7,
+REQ-TS-0018, REQ-CL-0365: the native privilege rule is an allow-list of NMB's own units on every base.
 
-| No. | Question | Asked by | Rows | Needed by | Proposal in the part |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Q-11 | **Third-party code in-process or sandboxed:** section 7 and Phase 3.2 put OONI's probe-engine and the iPerf3 client inside `nmbd`; 6B.5 runs third-party code in a stricter sandbox that never sees `nmb.conf`, keys or the database. Is a vetted library in-process allowed? (The OONI code also sits in an `internal/` folder and is GPL-3.0, which affects the licence, decision 9.) | RM2 2, RM1 note | REQ-RM-1267, -1350, -1417, -1418 | P-04, M-13, M-09 | none |
-| Q-12 | **Browser terminal:** `/api/terminal/exec` runs shell commands as root from the browser (off unless `terminal_enabled`). Port it at all? Same question for the **experimental stop on network traffic** (changelog line 373). | PY 3, CL 3 | CHANGELOG lines 373, 374 rows; page U-20 | S-08, U-20, M-03 | none |
-| Q-13 | **Web server capabilities:** the Python web server holds `CAP_NET_ADMIN` and `CAP_NET_RAW`. Keep that, or give the native web server no network-admin rights and pass such tasks to the network daemon or the privileged helper (QB 7)? | WP 2 | ARCHITECTURE line 45 rows | S-01, P-04 | none |
-| Q-14 | **`/kill` from Telegram** signals any PID above 1, with `sudo` if needed (it can stop sshd or Tailscale). Limit the native `/kill` to NMB's own processes? | WP 3 | REQ-AR rows of line 135; REQ-RE-0280 | S-11 | none |
-| Q-15 | **Secrets in Telegram messages:** a WireGuard QR code holds the client's private key and the bot would send it through Telegram; `/wifi connect <ssid> [pw]` puts the Wi-Fi password in a message Telegram keeps. Keep both, or have the bot point to the Web UI for these? | RM1 4, WP 4 | roadmap line 300 rows; ARCHITECTURE line 136 rows | S-11, N-13 | none |
-| Q-16 | **MAC addresses in shared diagnostics:** the redactor keeps MAC addresses in bundles that go to outside LLMs or ISP support. Intended under QB 8, or masked (for example vendor prefix only)? | RM1 3 | roadmap line 386 rows | C-04, R-04 | none |
-| Q-17 | **Audit log "the session cannot erase":** a root shell can erase any local file. Send the log off the device as it is written (collector or syslog), make the maintenance shell a restricted user with logged `sudo`, or accept a local append-only log with the limit stated? | PP 6 | REQ-PP-0135 | P-05 | one of the three |
-| Q-18 | **Login method:** roadmap 4.4 (line 151) names HTTP Basic Auth; work plan S-01 has login, sessions and CSRF, and the roadmap wins where they differ. Falls under decision 1 (API left to the developer) if the owner agrees. | RM1 1 | roadmap line 151 rows | S-01 | session login (Basic Auth line out of date) |
-| Q-19 | **Factory login warning:** the Python installer warns on every run while the Web UI factory login is set. The owner keeps that login on purpose. Should the native installer keep the warning, drop it, or show it once? | CL 2 | CHANGELOG line 211 row | P-11 | kept as written until answered |
-| Q-20 | **Donation addresses** appear in the README, the Web UI, the bot and the CLI. Do they go into the native code as product data, or are they supplied at build or release time from outside the code (QB 8)? | RE 4 | REQ-RE-0310, -0311 | P-08 | none |
-| Q-21 | **Theme images:** may the vendor-look images (`asus_title.png`, `tuf_logo.png`, `tplink_*.jpg`) ship as add-ons of the open native repository, or be redrawn without logos or left out? And is `themes/hago.jpg` a personal photo or place (then it stays out, QB 8)? | PY 1, 2 | python-files rows of `nmb/web/static/themes/` | P-09 | none |
-| Q-22 | **Origin and licence of `components/open-rmbt/`:** the repository has no licence file for the C client. Upstream RTR code (which project and version) or written for NMB? The licence of the native build follows from its components (decision 9). | PY 4 | python-files rows of `components/open-rmbt/` | M-08, P-08 | none |
+**Q-07 Alpine without the public-address guard?** (REQ-RE-0290; N-02) Answered in round 1: QB 7 (nothing listens on the WAN
+side unless the owner turned it on, `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:587`), REQ-TS-0129, REQ-CL-0205: the guard runs
+on every base, Alpine/OpenRC included. Whether Alpine is a supported base stays with Q-05 and I-09.
 
-## Measuring
+**Q-09 Documentation languages of the native repository?** (WP 5; REQ-DV-0026, REQ-CT-0016, -0022; P-12) Answer: the user
+manual and the command reference are in all 11 UI languages from one source (roadmap 6B.7: "available in all 11 UI
+languages, from one source so no language falls behind"); no language is a default (QB 9). The English-and-Hungarian pair
+of the Python repository is not carried over. Developer documents (briefs, test record, contribution rules, development
+setup) are written in English as their one source; that part is the developer's choice under the same rule.
 
-| No. | Question | Asked by | Rows | Needed by | Proposal in the part |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Q-23 | **NAT type classifier:** a plain RFC 5389 Binding Request cannot tell full cone from restricted cone (needs RFC 5780 or several servers). May the classifier report "unknown" when no such server answers? | RM1 5 | roadmap line 359 rows | M-12 | report "unknown" |
-| Q-24 | **Flow Cache bypass:** the plan turns off Broadcom acceleration with a shell call and does not restore it. Fault? | PP 1 | REQ-PP-0051 | X2-01 | call the interface directly (no shell) and always restore the previous state, also after a crash |
-| Q-25 | **CAKE shaping on the measured line:** the speed tests would measure the shaper. Off (or lifted) during measurements, or on with the shaper recorded in the measurement setup (4.29)? | PP 2 | REQ-PP-0053, -0186 | X2-01, C-11 | none |
-| Q-26 | **DynDNS from the local WAN address** is wrong behind NAT or CGNAT. Fault? | PP 5 | REQ-PP-0088 | N-16 | use the netlink address only when public, otherwise the public-address check (M-12) |
-| Q-27 | **Fast.com over plain HTTP:** a fixed rule for the native engine, or may it use TLS when it measures as well? | CL 4 | CHANGELOG line 82 row | M-07 | the M-07 analyst compares both |
-| Q-28 | **Manual and bot Ookla runs against the hourly limit:** counting them means a manual run inside the hour is refused or deferred. Intended? (Decision 3 settles how Ookla runs, not this.) | TS 3 | TESTING line 386 row | M-05, M-10 | none |
-| Q-29 | **Default data cap on a metered link:** set a default daily cap on USB and mobile uplinks, or only warn (the box ships with 0)? | TS 2 | TESTING line 388 row | M-05, N-10 | none |
-| Q-30 | **RTR over 5G** measured far above the other engines and was never settled. Fault to find in the M-08 brief, or accepted engine behaviour? | TS 5 | TESTING line 179 rows | M-08 | none |
-| Q-31 | **Bloom filter false positives** (0.1 %) block domains that are on no list. Accepted on small routers, or every hit confirmed by an exact check before blocking? | PP 4, RM1 note | REQ-PP-0078 | N-12, X2-01 | confirm exactly before blocking |
+**Q-11 Third-party engines in-process or sandboxed?** (RM2 2; REQ-RM-1267, -1350, -1417, -1418, -1459; P-04, M-13, M-09)
+Answer: sandboxed, in a separate process. Roadmap 6B.5 (owner, 2026-11-10, newer than Phase 3.2 and section 7) lists
+`ooniprobe` and iPerf3 among third-party code that runs in the stricter sandbox, and "third-party engines and upload parsers
+cannot be taken out of their sandbox". OONI's engine is shipped as upstream's own program with its licence and run under that
+profile; as a separate program its GPL-3.0 does not decide the licence of `nmbd` (work plan 7 point 9). An iPerf3 client
+that NMB writes itself is NMB code under the service sandbox; `libiperf` (C tier) is third-party and runs apart.
+Ordinary libraries (netlink, DNS parsing, SQLite) are dependencies under the licence and vulnerability checks of QB 7 and 6B.3A.
 
-## Network and modes
+**Q-14 `/kill` from Telegram limited to NMB's processes?** (WP 3; REQ-AR-0068, REQ-RE-0280; S-11) Answer: the scope stays (the
+task manager of roadmap 4.13), guarded by the owner's decision of 2026-11-11: every bot command that changes the box needs a
+confirmation tap, destructive ones also the typed word. Read for `/kill`: every signal needs the tap; KILL, or any process
+outside NMB (sshd, Tailscale and the like), also needs the typed word. The privileged helper sends the signal (never `sudo` or
+a shell, QB 7); PID 1 and the bot stay protected.
 
-| No. | Question | Asked by | Rows | Needed by | Proposal in the part |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Q-32 | **Mode B when the box fails:** README.md:92 says the connection stops with the box; README.hu.md:169 claims the software bridge or bypass hardware still passes traffic. Is a fail-open bypass required? | RE 1 | REQ-RE-0028, -0315 | N-03 | none |
-| Q-33 | **Wi-Fi client without NetworkManager:** Python fails there by design. Own nl80211/WPA control natively, or keep the dependency and report it clearly? | TS 1 | TESTING line 142 row | N-07 | none |
-| Q-34 | **Not built in Python:** IPv6 for the LAN on a DHCP or USB WAN, and dual-band with a second radio. In step 1, or recorded as a limit? | TS 4 | TESTING lines 319, 330 rows | N-11, N-07 | none |
-| Q-35 | **No PPPoE on the TL-WR740N:** the 4 MiB recipe removes PPP, so that target has no router mode. Accepted for Tier 3 (the UI then says so plainly)? | PP 3 | REQ-PP-0061 | X2-01 | none |
-| Q-36 | **ip, nft and iw in the image:** 6A lists them as image contents; section 7 and Phase 2.1 remove `nmbd`'s calls of them. Kept only for people and recovery, or left out? | RM2 3 | REQ-RM-1263, -1277, -1414, -1425 | P-11 | none |
+**Q-18 Login method: HTTP Basic Auth or session login?** (RM1 1; REQ-RM-0033; S-01) Answer: session login with CSRF protection.
+Work plan 7 point 1 leaves the API to the developer, and QB 7 asks for CSRF protection, secure cookies and a rate-limited
+login, which Basic Auth does not give. The Basic Auth line of roadmap 4.4 is out of date; REQ-RM-0033 restated.
 
-## Surfaces and names
+**Q-19 Installer warning about the factory login?** (CL 2; REQ-CL-0247; P-11) Answer: no warning is needed. The owner decided
+on 2026-11-10 that every native image gets a unique password per device (QB 7), so the native build has no factory login to
+warn about. (The owner's own Python box keeps its login by choice; that is not the native build.) REQ-CL-0247 restated.
 
-| No. | Question | Asked by | Rows | Needed by | Proposal in the part |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Q-37 | **Languages of the bot and the dossier:** roadmap lines 301 and 308 list 5 languages, line 406 and the Web UI have 11. Are the 5-language lists out of date (all 11 used)? The Python bot has 5 core languages plus 6 locale files (`nmb/bot/i18n.py@ad3758c:27`). | RM1 2, PP note, RE note | roadmap lines 301, 308 rows | S-11, R-03, C-06 | all 11 (C-06) |
-| Q-38 | **Compatibility command names `pihole` and `pivpn`** (`setup.sh@ad3758c:486-489`; roadmap line 503): install them from the native multi-call binary (they can clash with a real Pi-hole or PiVPN and with scripts that expect their own CLI), or only the `nmb-*` names? | RM1 6, PY 5 | roadmap line 503 rows | P-10, N-12, N-13 | none |
-| Q-39 | **Collector server "not ported"** (porting plan) against work plan package S-13. Reading: not part of the router builds; S-13 stays in step 1 for the PC/server build. Correct? | PP 7 | REQ-PP-0193 | S-13 | as read |
+**Q-28 Manual and bot Ookla runs against the hourly limit?** (TS 3; REQ-TS-0302; M-05, M-10) Answer (owner, 2026-11-11): tests a
+person starts obey the refusal pause but not the hourly limit; scheduled runs keep it. REQ-TS-0302 restated.
 
-## Merged and not asked again
+**Q-29 Default data cap on a metered link?** (TS 2; REQ-TS-0304; M-05, N-10) Answer (owner, 2026-11-11): no default cap;
+scheduled tests on a metered link wait until the user has set one, and the box says so. REQ-TS-0304 restated.
 
-- The admin/admin default login of the Web UI (REQ-RE-0231) against "unique password per device" of P-03: recorded in the
-  row's Notes by the readme part; the owner keeps the default on purpose, so it is not a question.
-- Ookla protocol emulation (REQ-PP-0080) and Ookla "eliminated" in roadmap section 7: superseded by decision 3.
-- The disclaimer wording (REQ-RM-1344): already open as point 7 of work plan section 7.
-- Q-06 (Ubuntu 22.04, polkit 0.105, service user may manage any unit; REQ-RE-0288): answered in round 1 by the Quality Bar,
-  points 6 and 7 (known Python faults are not carried over; no security hole is left open) and by REQ-TS-0018 and
-  REQ-CL-0365: the native privilege rule is an allow-list of NMB's own units on every base. REQ-RE-0288 states that; owner P-06.
-- Q-07 (Alpine without the public-address guard; REQ-RE-0290): answered in round 1 by QB 7 (nothing listens on the WAN side
-  unless the owner turned it on, `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:587`) and by REQ-TS-0129 and REQ-CL-0205 (the
-  firewall in every mode): the native guard runs on every base, Alpine/OpenRC included. Whether Alpine is a supported base at
-  all stays with Q-05 and the image comparison (I-09).
+**Q-33 Wi-Fi client without NetworkManager?** (TS 1; REQ-TS-0114; N-07, N-08) Answer: the native client works without it. The
+own image holds "no NetworkManager or netplan" (roadmap 6A) and the Wi-Fi manager is a direct client of `wpa_supplicant`'s
+control socket (section 7, REQ-RM-1436). Where another network manager holds the radio, or `wpa_supplicant` is missing, the
+feature is reported as unavailable with the reason. REQ-TS-0114 restated.
+
+**Q-35 No PPPoE on the TL-WR740N?** (PP 3; REQ-PP-0061; X2-01) Answer: roadmap 6B.8 point 6: what a target cannot hold is
+listed in its parity table and shown in the UI as not available, never faked. The target is not scheduled yet (*Order of
+Work* step 3: the other routers come in an order the owner sets then); the image recipe is checked again at that time.
+
+**Q-36 `ip`, `nft` and `iw` in the image?** (RM2 3; REQ-RM-1263, -1277, -1414, -1425; P-11) Answer: both texts hold. 6A lists
+the tools as image contents (for people and recovery); section 7 and Phase 2.1 say that `nmbd` itself never calls them.
+
+**Q-37 Languages of the bot and the dossier?** (RM1 2; REQ-RM-0105, -0107; S-11, R-03, C-06) Answer: all 11. QB 9: "all 11 (and
+later more) are always available ... every report and chart label exists in every language"; roadmap line 406 says the
+same. The 5-language lists of lines 301 and 308 are out of date; both rows restated.
+
+**Q-39 Collector server "not ported" against work plan S-13?** (PP 7; REQ-PP-0193; S-13) Answer: the porting plan concerns the
+router builds; work plan 3.5 keeps S-13, so the collector server is ported natively in step 1 for the PC and server build.
+
+Merged earlier and not asked again:
+
+- The Web UI factory login admin/admin (REQ-RE-0231): the owner keeps it on his own Python box on purpose; the native build
+  has a unique password per device (QB 7). Not a question.
+- Ookla protocol emulation (REQ-PP-0080) and Ookla "eliminated" in roadmap section 7: superseded by work plan 7 point 3.
+- The disclaimer wording (REQ-RM-1344, work plan 7 point 7): decided by the owner on 2026-11-11: the open-source "as is"
+  warranty and liability exclusion, plus "measurement results are indicative, not a certified measurement; for an official
+  complaint use the certified tool of your country", with the tool named only from the country data file (C-10); the
+  neutral international default names none (QB 9).
+
+## Developer's choices
+
+**Q-02 F-07 before Core, or alongside?** (WP 1; REQ-WP-0056; F-00, F-07) Choice: F-07 belongs to the foundation, which work
+plan 3.0 puts "in order, before anything else"; section 4 point 1 is read as F-00 to F-07. Its first version (the `spec/`
+layout, the formats and the vector runner) is accepted before Core starts, then `spec/` grows with each package. Rule:
+work plan 2.2 rule 11 ("behaviour is changed in `spec/` first") cannot hold for Core without it.
+
+**Q-03 ARMv6 (Pi 1, Pi Zero) in the build matrix?** (RM1 7, RM2 6; REQ-RM-0013, -1440; F-00, P-13) Choice: `linux/arm` GOARM=6
+joins the cross-compile-only set (built on every change, not run); Pi Zero and Pi 1 are not a tested or promised target of
+step 1. Rule: *Generic First* point 6 (cross-compile what would break later "while it is cheap to fix"), roadmap section 8
+names GOARM=6, and the work plan's step-1 targets stay as they are.
+
+**Q-04 RAM and CPU projections as limits?** (RM2 5; REQ-RM-1413 to -1437, -1442, -1443, -1456 to -1460; P-13) Choice: measured
+on the Pi 4 and recorded against each projected figure, not pass/fail on the figure. The pass condition is QB 4 ("the
+improvement is measured, not claimed": lower than the Python version on the same box and day) and *Generic First* point 7.
+
+**Q-08 OpenWrt package format?** (RM2 4; REQ-RM-1271; P-11) Choice: the format follows the target release: `apk` for OpenWrt
+25.12 (the step-1 images), `.ipk` with `opkg` for the 22.03 base of the TL-WR1043ND v1. Rule: the target's own installer and
+upgrade method (6B.3, *Generic First* point 3). REQ-RM-1271 restated.
+
+**Q-10 Test scripts in the native repository?** (TS 6; REQ-TS-0312; F-06) Choice: yes, with reserved values only; private
+values (the box's password, the owner's own data) stay outside. Rule: QB 6 (a software-caused known limit is not carried
+over), QB 8, work plan 2.3A (what holds nothing private belongs in the native repository). The row is no longer pending.
+
+**Q-13 Network-admin rights of the web server?** (WP 2; REQ-AR-0012; S-01, P-04) Choice: the native web server gets only the
+right to bind its port (`CAP_NET_BIND_SERVICE`, or none with a socket passed by the service manager); network changes and
+other privileged tasks go to the network daemon or the privileged helper. Rule: QB 7 "only the capabilities they need" and
+6B.5. REQ-AR-0012 restated.
+
+**Q-16 MAC addresses in shared diagnostic bundles?** (RM1 3; REQ-RM-0135; C-04, R-04) Choice: each MAC address is replaced by its
+vendor prefix and a pseudonym that stays the same within one bundle, so the topology still reads; the user can ask for full
+addresses for one export (for example for the ISP's support). Rule: QB 8 and data minimisation; the purpose of roadmap line
+386 (topology diagnostics) needs neither the full address nor the same pseudonym across bundles. REQ-RM-0135 restated.
+
+**Q-17 An audit log "the session cannot erase"?** (PP 6; REQ-PP-0135; P-05) Choice: an append-only, hash-chained local log, so
+an erased or changed entry is detected and reported; each entry also goes off the device as it is written when a target is
+set (collector or syslog); the limit is stated plainly: a root session can delete the local log, and the next check shows
+it. Rule: honest reports (work plan 2.2 point 8) and QB 3 (a limit is written down, not hidden). REQ-PP-0135 restated.
+
+**Q-20 Donation addresses in the code?** (RE 4; REQ-RE-0310, -0311; P-08) Choice: not in the code base. The addresses come from a
+release data file outside it, read by the release step, and are shown in the Web UI, the bot and the CLI as before; a build
+without the file shows no donation section. Rule: QB 8 (nothing that belongs to a person in source, defaults, tests or
+documentation examples; the build scan fails on the owner's values).
+
+**Q-21 Vendor-look theme images and `hago.jpg`?** (PY 1, 2; the 20 theme-image rows of `parts/python-files.md`; P-09) Choice: no
+theme image goes into the native repository. A native theme carries colours, fonts from the image and spacing only (6B.1);
+the vendor-look themes are redrawn as colour schemes under neutral names, without makers' logos or names. Whether
+`hago.jpg` is personal no longer matters: it stays out either way (QB 8). Any image theme the owner wants for himself is an
+add-on file he adds to his own box (6B.1: add-ons are added by hand, never shipped).
+
+**Q-22 Origin and licence of `components/open-rmbt/`?** (PY 4; its rows in `parts/python-files.md`; M-08, P-08) Choice: the native
+build copies nothing from it; M-08 writes the Go client from the RMBT protocol documentation and upstream open-rmbt sources
+(with their licences in the 6B.3A list) and uses the C client only as a behaviour reference. Rule: work plan 7 point 9 (no
+component of unclear licence) and 6B.3A. Found in the history: the folder came in one commit
+(`30f7cf8`, 2026-11-04) with no copyright header and no licence file; its origin matters only for the Python repository.
+
+**Q-23 NAT type classifier without RFC 5780?** (RM1 5; REQ-RM-0123; M-12) Choice: RFC 5780 tests where a server supports them;
+otherwise the type the probes cannot tell apart is reported as "unknown", never guessed. Rule: the fault register's
+*Measurement honesty* (no made-up data). REQ-RM-0123 restated.
+
+**Q-24 Flow Cache bypass by shell, not restored?** (PP 1; REQ-PP-0051; X2-01) Choice: the interface is called directly (ioctl
+or `/proc`), never through a shell, and the previous state is always restored, also after a crash or restart. Rule:
+REQ-PP-0029 and QB 7 (no shell), and 4.29 (the box's own changes are marked as its own action). REQ-PP-0051 restated.
+
+**Q-25 CAKE shaping on the measured line?** (PP 2; REQ-PP-0053, -0186; X2-01, C-11) Choice: the shaper is lifted for the box's
+own line speed tests and restored afterwards; where it cannot be lifted, the shaper and its rate are stored in the result's
+measurement setup and the result is marked as measured through it. Rule: roadmap 4.29 (every result states its setup) and
+*Measurement honesty*.
+
+**Q-26 DynDNS from the local WAN address behind NAT?** (PP 5; REQ-PP-0088; N-16) Choice: the netlink address is used only when it
+is public; behind NAT or CGNAT the box's public-address check (M-12) gives the address. Rule: the fault register ("the public
+IP missing or replaced by the LAN address"). REQ-PP-0088 restated.
+
+**Q-27 Fast.com over plain HTTP or TLS?** (CL 4; REQ-CL-0075; M-07) Choice: the M-07 analyst measures both on the same box and line;
+TLS is used where it reaches the line rate on the Pi 4, plain HTTP where the comparison shows TLS limits the result; the
+figures go into `docs/TESTING.md`. Rule: QB 4 names "TLS-capable engines at line rate on a Pi 4" as an improvement to prove.
+REQ-CL-0075 restated.
+
+**Q-30 RTR far above the other engines over 5G?** (TS 5; REQ-TS-0157; M-08) Choice: treated as unexplained, not as engine
+behaviour: the M-08 analyst finds the cause (same link and time, server, stream count, bytes counted on the interface) before
+the native engine is accepted, and until then that Python figure is no reference value. If the cause turns out to be a
+choice (for example multi-stream by design), the analyst asks then. Rule: QB 6 (the reference is the intended behaviour).
+
+**Q-31 Bloom filter false positives on small routers?** (PP 4; REQ-PP-0078; N-12, X2-01) Choice: a filter hit is confirmed by an
+exact check (a compact exact list, on flash where RAM is short) before a domain is blocked. Rule: QB 6 (blocking a domain on
+no list is a wrong result). REQ-PP-0078 restated.
+
+**Q-32 Mode B when the box fails: fail-open bypass?** (RE 1; REQ-RE-0028, -0315; N-03) Choice: the two READMEs describe different
+faults and both hold: when `nmbd` stops or fails, the kernel bridge keeps passing traffic (required, tested by stopping the
+daemon); when the box itself stops (power, kernel), the connection stops. Bypass hardware is on no step-1 target, so it is
+not supported and the manual says so. Rule: *Generic First* point 3 (nothing assumed that the hardware lacks) and honest
+documentation. REQ-RE-0028 restated.
+
+**Q-34 IPv6 for the LAN on a DHCP or USB WAN, and dual-band with a second radio?** (TS 4; REQ-TS-0244, -0256; N-11, N-07) Choice:
+both in step 1. IPv6 on these WANs is tested between virtual ports in the F-06 QEMU guests; dual-band is used when a second
+radio is detected and is tested under `mac80211_hwsim`; a real-hardware row needs a second USB Wi-Fi adapter and says "not
+tested" until one is used. Rule: *Order of Work* step 1 ("every component, not a subset") and QB 4 (the open items the
+Python version never finished). REQ-TS-0244 restated.
+
+**Q-38 Compatibility names `pihole` and `pivpn`?** (RM1 6, PY 5; REQ-RM-0212; P-10, N-12, N-13) Choice: installed only where no
+command of that name exists, never over one, and removed only if NMB made them; on NMB's own image they are there. Rule:
+*Generic First* point 3 (detect on the running system) and QB 7 (like the teardown that flushed other software's rules,
+NMB never breaks other software).
+
+## For the owner
+
+**Q-05 Which distributions must the native packages support?** (CL 1; REQ-CL-0090, -0091; P-11)
+The Python version installs on Debian, Ubuntu, Alpine, the Fedora/RHEL family and Rocky Linux. The native build has its
+own image (6A, base chosen after the image analysis, work plan 7 point 4).
+- A. The own image, plus packages for every distribution the Python version supports (Debian, Ubuntu, Alpine,
+  Fedora/RHEL, Rocky), each tested in QEMU.
+- B. The own image plus Debian and Ubuntu packages only; the others are listed as a known limit.
+- C. The own image only.
+Recommendation: A. `nmbd` is one static binary without cgo, so each extra distribution costs only its service files
+(systemd or OpenRC), the firewall coexistence (firewalld) and a QEMU install test, all free. Dropping supported
+distributions is a regression that, under QB 3, needs your acceptance item by item.
+
+**Q-12 Should the native Web UI keep the browser terminal?** (PY 3, CL 3; REQ-CL-0416; S-08, U-20)
+The Python terminal (`/api/terminal/exec`) runs commands as root from the browser; it is off unless `terminal_enabled` is
+set. (The other half of the old question, the experimental stop on network traffic, REQ-CL-0414, is settled: carried over,
+off by default, as roadmap 4.4A keeps every function of the Python UI.)
+- A. Leave it out; the manual points to SSH and to the maintenance mode of porting plan 7D for shell work.
+- B. Keep it, hardened: off by default, only from the LAN or Tailscale, only while the maintenance mode is on, the password
+  asked again each time, every command in the audit log (P-05), switching itself off after a set time.
+- C. Keep only a fixed list of read-only diagnostic commands, with no free shell.
+Recommendation: B. Roadmap 4.4A keeps every function of the Python UI, and under B the browser gives no access that SSH in
+maintenance mode does not already give, with the same log and the same time limit.
+
+**Q-15 May the Telegram bot carry secrets: a VPN profile's private key, a Wi-Fi password?** (RM1 4, WP 4; REQ-RM-0104, REQ-AR-0054,
+-0069; S-11, N-13, N-14, N-08)
+A WireGuard QR code and `.conf` file hold the client's private key, and `/wifi connect <ssid> [pw]` puts the Wi-Fi password in
+a chat. Telegram keeps both on its servers (the same reason the backup is now sent encrypted).
+- A. Keep both, with limits: the confirmation tap of 2026-11-11, a warning, the bot deletes its QR message after a few
+  minutes and the user's password message at once, and the VPN peer can be withdrawn with one tap.
+- B. Never through Telegram: the bot points to the Web UI page that shows the QR or asks for the password.
+- C. Off by default; the user switches "secrets over Telegram" on per item, and A's limits apply.
+Recommendation: A. A VPN profile is most needed when you are away from your own network and the Web UI cannot be reached,
+which is why roadmap 4.16 asks for "one-click QR delivery". Deleting the messages leaves the secret in Telegram only for
+minutes, and a peer that leaked can be withdrawn at once.

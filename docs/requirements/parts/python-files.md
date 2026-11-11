@@ -11,6 +11,11 @@ Tests go with the package of the code they test; a test file that checks several
 "not ported" rows still name the package that accounts for them, so the register's check finds every file in exactly one place.
 No REQ ids here: the requirements of each file are written by the package analyst from these ranges (nmb-native-brief).
 
+Rule decided by the orchestrator (round 3, register README *Two rules of the register*): this table maps files to
+packages by their structure; F-02 is not required to read the Python files in full. Each package's analyst reads its own
+files and ranges in full (skill `nmb-native-brief`) and asks the orchestrator to move a file or a range when the mapping
+is wrong. Every line range has exactly one owning package; a file may be split by line range.
+
 ## Package names used for S-02...S-0n and U-02...U-0n
 
 Work plan section 3.5 leaves these open ("one package per area", "one package per page"). The table uses these ids (proposed):
@@ -85,21 +90,21 @@ directory is needed before the notes column can be taken as a complete list of w
 | `bin/nmb-web`@ad3758c | 1-14 | P-10 | thin entry point to nmb/web/server.py (behaviour in S-01) |
 | `bin/nmb-wifi`@ad3758c | 1-190 | N-08 | Wi-Fi client CLI over guest_wifi (scan, connect incl. hidden, disconnect, status, saved, delete) |
 | `components/open-rmbt/Makefile`@ad3758c | 1-55 | M-08 | build of rmbt-client, version string from git describe |
-| `components/open-rmbt/README.md`@ad3758c | 1-119 | M-08 | protocol summary (lines 107-119) and loop-mode UUID rule; no licence file in the repository (see questions) |
-| `components/open-rmbt/src/connection.c`@ad3758c | 1-583 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/connection.h`@ad3758c | 1-53 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/control.c`@ad3758c | 1-562 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/control.h`@ad3758c | 1-102 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/gui.c`@ad3758c | 1-225 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/gui.h`@ad3758c | 1-66 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/main.c`@ad3758c | 1-677 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/pretest.c`@ad3758c | 1-141 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/pretest.h`@ad3758c | 1-14 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/pthread_barrier_compat.h`@ad3758c | 1-57 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/tests.c`@ad3758c | 1-294 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/tests.h`@ad3758c | 1-40 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/uuid_store.c`@ad3758c | 1-53 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
-| `components/open-rmbt/src/uuid_store.h`@ad3758c | 1-8 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); reference and possibly carried as component |
+| `components/open-rmbt/README.md`@ad3758c | 1-119 | M-08 | protocol summary (lines 107-119) and loop-mode UUID rule; no licence file in the repository; Q-22: behaviour reference only, the native build copies nothing from it |
+| `components/open-rmbt/src/connection.c`@ad3758c | 1-583 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/connection.h`@ad3758c | 1-53 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/control.c`@ad3758c | 1-562 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/control.h`@ad3758c | 1-102 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/gui.c`@ad3758c | 1-225 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/gui.h`@ad3758c | 1-66 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/main.c`@ad3758c | 1-677 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/pretest.c`@ad3758c | 1-141 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/pretest.h`@ad3758c | 1-14 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/pthread_barrier_compat.h`@ad3758c | 1-57 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/tests.c`@ad3758c | 1-294 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/tests.h`@ad3758c | 1-40 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/uuid_store.c`@ad3758c | 1-53 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
+| `components/open-rmbt/src/uuid_store.h`@ad3758c | 1-8 | M-08 | native RMBT client in C (control, pretest, ping, multi-thread download/upload, RMBThttp and RMBTws, TLS); behaviour reference only, nothing copied into the native build (Q-22) |
 | `config/nmb.conf.example`@ad3758c | 1-192 | C-01 | every section and default of nmb.conf; part of the F-04 configuration contract; [isp] example values are placeholders |
 | `config/usb-import.example.conf`@ad3758c | 1-18 | P-03 | USB import file: only written keys change, empty or __KEEP_CURRENT__ secret keeps its value, result file names keys never values, applied once |
 | `nmb/__init__.py`@ad3758c | 0 (empty) | P-10 | not ported: empty Python package marker |
@@ -371,26 +376,26 @@ directory is needed before the notes column can be taken as a complete list of w
 | `nmb/web/server.py`@ad3758c | 681-723, 2320-2413 | S-07 (DNS blocker API) | DNS blocker: status, charts, query log, lists, adlists, local DNS, regex, gravity |
 | `nmb/web/server.py`@ad3758c | 912-921, 1154-1189, 1815-1873, 2566-2621 | S-05 (Wi-Fi API) | Wi-Fi: capabilities, status, guest client (scan, saved, connect, disconnect), Wi-Fi share, Wi-Fi uplink |
 | `nmb/web/server.py`@ad3758c | 927-1073, 2729-3082 | S-06 (VPN and remote-access API) | VPN and remote access: DynDNS, WireGuard (peers, config, QR), OpenVPN, proxy, Tailscale |
-| `nmb/web/static/themes/asus_bottom_bg.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/asus_middown_bg.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/asus_title.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/asus_title_bg.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/hago.jpg`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/ndefault_bg_center.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/ndefault_bg_line.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/ndefault_box_header.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/ndefault_header_bg.jpg`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/ndefault_info_bar.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/ndefault_main_top.jpg`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/ndefault_menu_bar.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/ndefault_top_strip.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/tplink_blue.jpg`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/tplink_top1_1.jpg`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/tplink_top1_2.jpg`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/tplink_top_bg.jpg`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/tuf_camo_bg.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/tuf_logo.png`@ad3758c | binary | P-09 | theme image (binary) |
-| `nmb/web/static/themes/tuf_title_bg.png`@ad3758c | binary | P-09 | theme image (binary) |
+| `nmb/web/static/themes/asus_bottom_bg.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/asus_middown_bg.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/asus_title.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/asus_title_bg.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/hago.jpg`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/ndefault_bg_center.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/ndefault_bg_line.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/ndefault_box_header.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/ndefault_header_bg.jpg`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/ndefault_info_bar.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/ndefault_main_top.jpg`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/ndefault_menu_bar.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/ndefault_top_strip.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/tplink_blue.jpg`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/tplink_top1_1.jpg`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/tplink_top1_2.jpg`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/tplink_top_bg.jpg`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/tuf_camo_bg.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/tuf_logo.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
+| `nmb/web/static/themes/tuf_title_bg.png`@ad3758c | binary | P-09 | theme image (binary); not carried over: a native theme carries colours, fonts and spacing only (6B.1, Q-21) |
 | `nmb/web/templates.py`@ad3758c | 1-55 | U-01 | page assembly: CSS/JS/translations/theme/donation injected into the HTML |
 | `os/90-nmb-usb-import.rules`@ad3758c | 1-2 | P-03 | udev: a USB file system starts the import unit |
 | `os/90-nmb.pkla`@ad3758c | 1-15 | P-06 | polkit (old format) grants for the nmb user; cannot limit by unit name |
@@ -411,7 +416,7 @@ directory is needed before the notes column can be taken as a complete list of w
 | `os/storage-setup.sh`@ad3758c | 1-109 | P-11 | OS baseline: nmb user, folders and modes, tmpfs for /tmp, /var/log, live DB, root ext4 noatime/commit, volatile journal sized by RAM, swap off, writeback sysctls, chatty timers off |
 | `setup.sh`@ad3758c | 1-392 | P-11 | installer: Ookla with pinned checksum, OONI binary, room on /var/log, OS and init detection, packages, RMBT build, user, sudoers, storage, sysctls, files to /opt/nmb root-owned, installed commit, config merge, log size fix |
 | `setup.sh`@ad3758c | 393-454 | P-03 | unique Wi-Fi password per box, restore from secrets copy, admin password kept and not printed, first-boot credentials file, boot-partition copy only for the default or a generated password |
-| `setup.sh`@ad3758c | 455-664 | P-11 | low-memory profile, group, symlinks (pivpn, pihole), DB init, Ookla home, /run/nmb and root-only files, units, udev, polkit, OpenRC, summary, donation list |
+| `setup.sh`@ad3758c | 455-664 | P-11 | low-memory profile, group, symlinks (pivpn, pihole; Q-38), DB init, Ookla home, /run/nmb and root-only files, units, udev, polkit, OpenRC, summary, donation list |
 | `systemd/nmb-adblock-update.service`@ad3758c | 1-6, 9-12 | P-10 | weekly blocklist update run |
 | `systemd/nmb-adblock-update.service`@ad3758c | 7-8 | P-04 | user, capabilities and sandbox directives of this unit |
 | `systemd/nmb-adblock-update.timer`@ad3758c | 1-11 | P-10 | Sunday 03:00 with random delay, persistent |
@@ -748,6 +753,8 @@ them generically. No other personal value was copied. `nmb/netd/usb_uplink.py@ad
 as "a mobile hotspot".
 
 ## Questions for the owner
+
+*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 1, 2 → Q-21, 4 → Q-22, 5 → Q-38 (developer's choices); 3 → Q-12 (for the owner). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
 
 1. **Vendor-look add-on themes.** `nmb/web/static/themes/` holds images named after router vendors and a vendor gaming logo
    (`asus_title.png`, `tuf_logo.png`, `tplink_*.jpg`), used by the AsusWRT, AsusCamouflage and TP-Gold themes. May these ship as

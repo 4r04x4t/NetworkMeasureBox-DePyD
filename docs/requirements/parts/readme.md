@@ -4,7 +4,8 @@ Source: `README.md` of the Python repository at commit `ad3758c` (487 lines; thi
 Read in pages: 1-150, 151-300, 301-450, 451-487 (all lines).
 Compared with `README.hu.md@ad3758c` (721 lines, read in pages 1-150, 151-300, 301-450, 451-600, 601-721, all lines): content that exists only in the Hungarian file is listed as its own rows (REQ-RE-0312 to REQ-RE-0338, marked "HU only") or added as a second source to the English row it extends; Hungarian statements that contradict the English file are listed under "Coverage" (README.hu.md table), where the English text wins.
 Package ids from `docs/NATIVE_WORK_PLAN.md@ad3758c:98-218` (section 3) and `:281-294` (image packages I-01..I-10).
-Id range of this part: REQ-RE-0001 to REQ-RE-0340 (0339 and 0340 added in round 1).
+Id range of this part: REQ-RE-0001 to REQ-RE-0341 (0339 and 0340 added in round 1; 0341 in round 3, when `other-docs.md`
+compared README.hu.md line by line again and found the lines 90, 122, 187 and 591 that the Hungarian table below lacked).
 
 Reading notes for the register owner:
 - `NEW: X2-01 Step-2 router tiers` is the holding package proposed in `roadmap-1-507.md` and reused by `porting-plan.md`; it is reused here for the router-target rows of README section 16, so the register keeps one id for it.
@@ -43,7 +44,7 @@ Reading notes for the register owner:
 | REQ-RE-0025 | The access point adapts to the radio and steps down when the access point daemon rejects a setting. | README.md@ad3758c:89 | N-07 | | See REQ-RE-0203 (Wi-Fi 7). |
 | REQ-RE-0026 | Mode B bridges an existing modem/ONT and router at Layer 2; the box requests its own address over DHCP so it can measure, so the upstream must offer one. | README.md@ad3758c:91 | N-03 | N-05 | |
 | REQ-RE-0027 | Mode B measures on the bridge (`br0`). | README.md@ad3758c:92 | N-03 | M-01 | |
-| REQ-RE-0028 | Documented limits of Mode B: if the box stops, the connection stops too; PPPoE or single-address connections are not handled yet. | README.md@ad3758c:92 | N-03 | P-12 | README.hu.md:169 claims a hardware bypass; see Questions. |
+| REQ-RE-0028 | Documented limits of Mode B: when `nmbd` stops or fails, the kernel bridge keeps passing traffic; when the box itself stops (power, kernel), the connection stops too; no hardware bypass is supported in step 1; PPPoE or single-address connections are not handled yet. | README.md@ad3758c:92 | N-03 | P-12 | Q-32 settled (developer's choice): README.md:92 and README.hu.md:169 hold for different faults; bypass hardware is on no step-1 target. Restated in round 3. |
 | REQ-RE-0029 | WAN failover: with WAN2 configured, Mode A moves the default route to WAN2 after failed connectivity checks. | README.md@ad3758c:93 | N-03 | N-01 | |
 | REQ-RE-0030 | The Web UI has a port role matrix that maps physical network cards (PCIe, USB, onboard) to roles: WAN 1 (primary uplink), WAN 2, LAN (`br-lan`), DMZ, guest Wi-Fi client probe. | README.md@ad3758c:96-97; README.hu.md@ad3758c:177-184 | N-01 | U-02…U-0n (page: Ports & Drivers), S-02…S-0n (API: network), C-01 | The "not assigned" role is REQ-RE-0316 (HU only). |
 | REQ-RE-0031 | WAN 2: failover backup, or load balancing through a multipath default route, with its own DHCP or static settings. | README.md@ad3758c:98 | N-03 | N-01 | Python: not tested on real lines (see REQ-RE-0206). |
@@ -296,7 +297,7 @@ Reading notes for the register owner:
 | REQ-RE-0277 | `/backup create` makes a full backup (settings, database, VPN keys). | README.md@ad3758c:419 | S-11 | P-03 | |
 | REQ-RE-0278 | `/backup send <file> [plain]` sends a backup encrypted with the backup passphrase set on the Web UI's Telegram card (a `.gpg` file that `gpg -d` or Kleopatra opens); without a passphrase it sends nothing; `plain` sends it unencrypted; Telegram's 50 MB bot limit applies. | README.md@ad3758c:420 | S-11 | P-03, C-04 | Security review in S-11 (QB 7): `plain` sends secrets in clear. |
 | REQ-RE-0279 | `/tasks`: load, memory and the busiest processes. | README.md@ad3758c:421 | S-11 | C-09 | |
-| REQ-RE-0280 | `/kill <pid> [15\|9\|1\|2]` sends TERM, KILL, HUP or INT to a process the bot may signal; PID 1 and the bot itself are protected; other signals are refused. | README.md@ad3758c:422 | S-11 | C-09, P-04 | |
+| REQ-RE-0280 | `/kill <pid> [15\|9\|1\|2]` sends TERM, KILL, HUP or INT to a process the bot may signal; PID 1 and the bot itself are protected; other signals are refused. | README.md@ad3758c:422 | S-11 | C-09, P-04 | Q-14: confirmation tap for every signal, typed word for KILL or a process outside NMB (owner, 2026-11-11; REQ-AR-0068). |
 | REQ-RE-0281 | `/drivers`: network adapters and their drivers. | README.md@ad3758c:423 | S-11 | N-17 | |
 | REQ-RE-0282 | `/purge [category] confirm` shows or deletes stored data: `measurements`, `events`, `reports`, `backups`, `logs` (NMB logs, logs kept on the SD card, system journal, kernel buffer) or `all`; settings, passwords and VPN keys are kept. | README.md@ad3758c:424 | S-11 | C-08 | |
 | REQ-RE-0283 | `/reboot now` restarts the box (about 1-2 minutes; in router mode the home network is offline meanwhile). | README.md@ad3758c:425 | S-11 | P-06 | |
@@ -327,8 +328,8 @@ Reading notes for the register owner:
 | REQ-RE-0307 | When the OONI package brings Tor, its service is disabled, because NMB does not use it. | README.md@ad3758c:461 | M-13 | P-11 | |
 | REQ-RE-0308 | The Web UI uses HTTP by default, and the user is told to use it only on a trusted network or through a VPN. | README.md@ad3758c:462 | S-01 | P-12 | |
 | REQ-RE-0309 | Changes are listed in `CHANGELOG.md`, linked from the README. | README.md@ad3758c:468 | F-00 | P-12 | Owner rule: update the changelog with each user-visible change. |
-| REQ-RE-0310 | The support section lists donation addresses for Solana, Bitcoin (Native SegWit), Bitcoin (Taproot) and EVM networks (Ethereum, BNB, Polygon, ERC-20). | README.md@ad3758c:478-481 | P-08 |  | Addresses not copied (source names a specific site value; not copied). See Questions. |
-| REQ-RE-0311 | The same donation addresses are shown in the Web UI (Support), by the bot (`/donate`) and by `nmb-cli donate`. | README.md@ad3758c:483 | P-08 | U-02…U-0n (page: Support), S-11, S-10 | `/donate` is missing from the bot command table (lines 389-426). |
+| REQ-RE-0310 | The support section lists donation addresses for Solana, Bitcoin (Native SegWit), Bitcoin (Taproot) and EVM networks (Ethereum, BNB, Polygon, ERC-20); the addresses come from a release data file outside the code base, never from source, defaults or tests, and a build without that file shows no donation section. | README.md@ad3758c:478-481 | P-08 |  | Addresses not copied (source names a specific site value; not copied). Q-20 settled (developer's choice: Quality Bar 8). Restated in round 3. |
+| REQ-RE-0311 | The same donation addresses are shown in the Web UI (Support), by the bot (`/donate`) and by `nmb-cli donate`. | README.md@ad3758c:483 | P-08 | U-02…U-0n (page: Support), S-11, S-10 | `/donate` is missing from the bot command table (lines 389-426). Addresses from the release data file (Q-20, REQ-RE-0310). |
 | REQ-RE-0312 | HU only: the dossier is made with one click as a standalone HTML report with embedded SVG charts and an SLA compliance table against the subscriber contract, ready to hand to the ISP or, in a dispute, to the communications authority. | README.hu.md@ad3758c:60 | R-03 | R-01 | |
 | REQ-RE-0313 | HU only: the device explorer scans the local subnet with ARP continuously (also the guest network) and lists the active clients with IP, MAC, host name, first and last seen; the vendor comes from the MAC OUI. | README.hu.md@ad3758c:100; README.hu.md@ad3758c:349-352 | N-17 | U-02…U-0n (page: Devices), N-08 | |
 | REQ-RE-0314 | HU only: the guest Wi-Fi probe joins the router's guest SSID as a separate client with a second Wi-Fi adapter, checks its availability, signal strength, address assignment, gateway, bandwidth and stability, and checks that it is isolated (does not see the internal network), independent of the main measurements. | README.hu.md@ad3758c:101; README.hu.md@ad3758c:354-358 | N-08 | M-14, N-07 | |
@@ -356,6 +357,7 @@ Reading notes for the register owner:
 | REQ-RE-0336 | HU only: chart generation takes less than 1.5 ms. | README.hu.md@ad3758c:445 | R-03 | P-13 | Python figure; measured again on the native build. |
 | REQ-RE-0337 | HU only: hardware requirements are stated: tested on a Raspberry Pi 4 (Debian 13); hardware with less memory or 32-bit is not tested; recommended for full router mode: Raspberry Pi 4/5 or an x86-64 mini PC with at least 2 Ethernet ports (1 WAN, 1 LAN) and a Wi-Fi adapter. | README.hu.md@ad3758c:620-622 | P-12 | P-11 | |
 | REQ-RE-0338 | HU only: after install, the owner sets the contract values (nominal and guaranteed download and upload) and the network card roles, and the box then starts measuring. | README.hu.md@ad3758c:651 | R-01 | C-01, U-02…U-0n (page: Settings), N-01 | |
+| REQ-RE-0341 | HU only (by its fault): the build's privacy scan also fails on developer machine paths in documentation and code (`file://` links, absolute paths into a home folder such as `/home/<user>/`). | README.hu.md@ad3758c:187 | F-00 | P-12 | Added in round 3 (`other-docs.md`): a link in README.hu.md points to a source file under a developer's home folder (source names a specific site value; not copied). Extends the scan of REQ-RM-1103 to the "developer machine paths" of REQ-RM-1097. |
 
 ## Coverage
 
@@ -372,7 +374,7 @@ Reading notes for the register owner:
 | 9 | badge | REQ-RE-0002 |
 | 10-11 | badge | context: stale language badge (5 of the 11 languages); the languages are REQ-RE-0115 |
 | 12-13 | paragraph (quote) | REQ-RE-0003 |
-| 14-15 | paragraph (quote) | context: link to a separate comparison document with a national regulator's box; that document is not a source of this part |
+| 14-15 | paragraph (quote) | context: link to a separate comparison document with a national regulator's box; that document is the source of `other-docs.md` (REQ-NH rows, country data files) |
 | 16-17 | paragraph (quote) | REQ-RE-0004 |
 | 18-19 | rule | context: separator |
 | 20-21 | heading | context: section heading |
@@ -670,16 +672,18 @@ The other lines of `README.hu.md` translate `README.md` (same content in a diffe
 | 60 | numbered item | REQ-RE-0312 |
 | 66 | bullet | context: Python-only (no pip dependencies); replaced by REQ-RE-0176 |
 | 87 | bullet | context: contradiction; claims every package manager is supported, README.md:117 says untested (REQ-RE-0068, English wins) |
+| 90 | bullet | context: stale (added in round 3); "RTR-NetTest, Cloudflare and iPerf3 run every time" contradicts the per-engine intervals of README.md:133 (REQ-RE-0095, English wins) |
 | 94 | numbered item | context: claim that RMBT is a BEREC standard; no requirement beyond REQ-RE-0083 |
 | 98 | bullet | context: stale ("not tested on 512 MB"); README.md:322 and README.hu.md:677 say tested in a VM (REQ-RE-0209) |
 | 100 | bullet | REQ-RE-0313 |
 | 101 | bullet | REQ-RE-0314 |
 | 109 | bullet | context: "loss > 5 %" alert, see Notes of REQ-RE-0149 |
-| 160-169 | table | REQ-RE-0315; line 169 (software bridge, hardware bypass on failure) contradicts README.md:92: see Questions |
+| 122 | diagram | context: contradiction (added in round 3); the diagram names "embedded router" as a target device, against README.md:39 and the planned-only router ports (REQ-RE-0002, English wins) |
+| 160-169 | table | REQ-RE-0315; line 169 (software bridge, hardware bypass on failure) against README.md:92: Q-32 settled (REQ-RE-0028) |
 | 175 | paragraph | context: lead-in |
 | 181 | bullet | REQ-RE-0032 (DHCP and NAT bound to the bridge), REQ-RE-0030 (LAN role) |
 | 184 | bullet | REQ-RE-0316, REQ-RE-0030 (DMZ role) |
-| 187-190 | paragraph, bullets | REQ-RE-0317 |
+| 187-190 | paragraph, bullets | REQ-RE-0317; REQ-RE-0341 (line 187 links a file under a developer's home folder; not copied) |
 | 196 | paragraph | context: "5 independent layers", lead-in |
 | 199-206 | bullets | REQ-RE-0069 (target list conflict noted), REQ-RE-0070, REQ-RE-0071 |
 | 211 | bullet | REQ-RE-0318 |
@@ -688,7 +692,7 @@ The other lines of `README.hu.md` translate `README.md` (same content in a diffe
 | 225-226 | bullets | context: claims (BEREC-accepted, free of ISP influence); no requirement beyond REQ-RE-0083 |
 | 229-230 | bullets | REQ-RE-0320 |
 | 233 | bullet | context: overclaim ("checks whether the ISP throttles"); README.md:128 wins (REQ-RE-0086) |
-| 259-279 | heading, code block, list, paragraph | REQ-RE-0321 to REQ-RE-0324, REQ-RE-0100, REQ-RE-0101; line 273 (Python garbage collection) is Python-only context |
+| 259-279 | heading, code block, list, paragraph | REQ-RE-0321 to REQ-RE-0324, REQ-RE-0100, REQ-RE-0101; line 273 (Python garbage collection) is Python-only context; line 268 repeats the stale "not tested on 512 MB" of line 98 (REQ-RE-0209) |
 | 285-296 | paragraph, diagram, list | REQ-RE-0325, REQ-RE-0326, REQ-RE-0104 |
 | 302 | paragraph | context: "14 dedicated categories", lead-in to REQ-RE-0327 to -0333 |
 | 305-327 | numbered list | REQ-RE-0327 to REQ-RE-0333 (pages 4 and 10 are REQ-RE-0320 and -0313) |
@@ -696,13 +700,14 @@ The other lines of `README.hu.md` translate `README.md` (same content in a diffe
 | 364 | paragraph | context: why remote access matters |
 | 400 | bullet | REQ-RE-0335 |
 | 417 | bullet | context: overclaim ("determines automatically"); README.md:207 wins (REQ-RE-0142) |
-| 420 | bullet | REQ-RE-0144 |
+| 420 | bullet | REQ-RE-0144; the line also claims a flash wear check, which REQ-RM-0128 (C-08) already requires |
 | 422 | bullet | REQ-RE-0146 |
 | 429 | bullet | REQ-RE-0147 |
 | 445 | bullet | REQ-RE-0336 |
 | 535 | paragraph | context: modular daemons, lead-in |
 | 554 | paragraph | REQ-RE-0285 |
 | 583 | table row | context: fault in the Hungarian text ("official" SLA dossier), against README.md:225 and README.hu.md:440 (REQ-RE-0151) |
+| 591 | table row | context: wording (added in round 3); `/vpn add` "returns the settings" where README.md:403 says it returns the QR code (REQ-RE-0261, English wins) |
 | 620-622 | heading, bullets | REQ-RE-0337 |
 | 649-651 | bullets | REQ-RE-0231 (repeated login), REQ-RE-0338 |
 | 656 | paragraph | REQ-RE-0001 (wording: free to use, modify and embed) |
@@ -715,6 +720,8 @@ The other lines of `README.hu.md` translate `README.md` (same content in a diffe
 - Box identity (REQ-RE-0169) has no package of its own; C-01 is proposed as owner, since the ID is made once at first start and stored with the settings. If the register owner prefers, S-12 can own it.
 
 ## Questions for the owner
+
+*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 1 → Q-32, 4 → Q-20 (developer's choices); 2 → Q-06, 3 → Q-07 (answered in round 1). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
 
 1. Mode B when the box fails: README.md:92 says "if the box stops, the connection stops too", but README.hu.md:169 says that on a software fault the software bridge still passes traffic and bypass hardware lets it through. Is a fail-open bypass (hardware or software) required for the native Mode B, or is the Hungarian row stale? (REQ-RE-0028, -0315)
 2. *(Answered in round 1 by REQ-TS-0018 and QB 6/QB 7; REQ-RE-0288 restated, see QUESTIONS.md, not asked.)* polkit 0.105 (Ubuntu 22.04): the Python rule cannot name units, so there the service user may manage every systemd service (README.md:452). Is that accepted for the native build on Ubuntu 22.04, or must it be fixed (unit control moved to the privileged helper, or 22.04 dropped)? It is a candidate for F-03. (REQ-RE-0288)

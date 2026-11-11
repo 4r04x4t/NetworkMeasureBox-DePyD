@@ -83,7 +83,7 @@ a split that is accepted gets the next free number of its series.
 | N-20 | Box resolver and DNS fallback (optional) | changelog (2), there as "N-19" | 0 / 1 | Rows of changelog lines 210, 224, 254 are the box's own resolver management, not a measurement; if M-12 is too big, `netd/dns.py` is cut into M-12 (audit, lookups) and N-20 (fallback, restore). |
 | M-15 | Scheduler: cron and interval parser, next run, retry timing | python-files (D) | 0 / 0 | M-04 is about 1,930 lines; M-15 = `speed/scheduler.py` (also used by the web server). |
 | M-16 | RMBT protocol client | python-files (D) | 0 / 0 | M-08 is about 1,450 lines of Python and 2,900 of C; M-16 = `speed/rmbt/` and `components/open-rmbt/`. |
-| M-17 | Shared HTTP transfer core (optional) | roadmap-1-507 (4), there as "M-15"; readme | 0 / 0 | Multi-stream worker pool and per-socket interface binding written and tested once for M-06, M-07, M-10 and M-04 (REQ-RM-0026, -0027, and REQ-RE-0193 per the readme part). If not taken, the rows stay with M-06 and M-04. |
+| M-17 | Shared HTTP transfer core (optional) | roadmap-1-507 (4), there as "M-15"; readme | 0 / 0 | Multi-stream worker pool and per-socket interface binding written and tested once for M-06, M-07, M-10 and M-04 (REQ-RM-0026, -0027, REQ-RE-0193 per the readme part, and REQ-NH-0009 per `other-docs.md`). If not taken, the rows stay with M-06 and M-04. |
 | C-12 | Translation data conversion | python-files (D) | 0 / 0 | About 27,000 lines of strings; C-06 keeps the key system and the build checks, C-12 moves every string into the F-04 key files. |
 | U-22 | DynDNS, proxy and Tailscale page | python-files (D) | 0 / 0 | Split from U-09 (HTML 827 + JS 1,573 lines). |
 | U-23 | Wi-Fi page: access point and Wi-Fi client | python-files (D) | 0 / 0 | Split from U-16. |
@@ -202,6 +202,40 @@ The checkers' findings of round 2 changed these rows; no id was renumbered, new 
   and the porting-plan part map 7.1 and 7.7 to X2-01; M1 *Rows by owner* (stale since round 1 for several sections) and M2
   lines 42 and 327 were recomputed from the parts, and `check.sh` now recomputes both.
 - `BY_PACKAGE.md` was regenerated from the parts.
+
+## I. Round 3: question triage (2026-11-11)
+
+The 39 questions of `QUESTIONS.md` were sorted into answered (existing decisions), developer's choices (with the rule they
+follow) and questions for the owner. No id was renumbered and no package changed; the rows the answers settled were
+corrected in place:
+
+- **Withdrawn:** REQ-RM-1260 (native probe writing into the Python database), superseded by *Order of Work* step 1, work plan
+  7 point 5 and 6B.8 point 1 (Q-01); it keeps M-01 as package, and the gate expects no test for it.
+- **Restated:** REQ-RM-1002 (Q-01), -1267 (Q-11), -1271 (Q-08), REQ-RM-0033 (Q-18), -0105, -0107 (Q-37), -0123 (Q-23), -0135
+  (Q-16); REQ-PP-0051 (Q-24), -0078 (Q-31), -0088 (Q-26), -0135 (Q-17); REQ-AR-0012 (Q-13); REQ-DV-0026 (Q-09); REQ-TS-0114
+  (Q-33), -0244 (Q-34), -0302 (Q-28), -0304 (Q-29), -0312 (Q-10); REQ-CL-0075 (Q-27), -0247 (Q-19); REQ-RE-0028 (Q-32),
+  -0310 (Q-20).
+- **Notes only:** the projection rows REQ-RM-1413 to -1437, -1442, -1443, -1456 to -1460 (Q-04), REQ-RM-0013, -1440 (Q-03),
+  -0212 (Q-38), -1277, -1414, -1417, -1418, -1459 (Q-36, Q-11), -1344 (disclaimer wording, owner 2026-11-11); REQ-PP-0053,
+  -0186 (Q-25), -0061 (Q-35), -0193 (Q-39); REQ-WP-0056 (Q-02); REQ-AR-0068, REQ-RE-0280 (Q-14); REQ-TS-0157 (Q-30),
+  -0256 (Q-34); REQ-CL-0414 (Q-12, traffic stop); REQ-RE-0311 (Q-20); REQ-CT-0016, -0022 (Q-09); the theme image,
+  `components/open-rmbt/` and `setup.sh` rows of `parts/python-files.md` (Q-21, Q-22, Q-38).
+- **Still open, pointers only:** REQ-CL-0090, -0091 (Q-05), REQ-CL-0416 (Q-12), REQ-RM-0104, REQ-AR-0054, -0069 (Q-15).
+
+## J. Round 3: the last four documents and the two rules (2026-11-11)
+
+- **New part `parts/other-docs.md`:** coverage tables for `docs/NMHH_SZELESSAVNET_COMPARISON.md` (1-95),
+  `docs/NMHH_SZELESSAVNET_OSSZEHASONLITAS.hu.md` (1-102), `docs/DEV_SETUP_WINDOWS.hu.md` (1-220) and `docs/TESTING.hu.md`
+  (1-399); `OUT_OF_SCOPE` in `check.sh` is empty. New prefix REQ-NH, ids 0001-0013: under Quality Bar 9 they are
+  requirements of the country data files and the neutral default, never built-in behaviour. Owners C-10 (6), P-12 (3),
+  R-03 (2), P-08 (1, the disclaimer of 2026-11-11), M-04 (1); REQ-NH-0009 moves to `NEW: M-17` if that package is accepted
+  (section B). New README id REQ-RE-0341 (F-00, also P-12): the privacy scan also fails on developer machine paths.
+- **No package changed, none proposed.** M1-M3 need no new row: the new sources are neither roadmap sections, `TESTING.md`
+  rows nor Python files, and no owner of a REQ-RM or REQ-TS row changed. `BY_PACKAGE.md` was regenerated (2324 requirements).
+- **Two rules decided by the orchestrator**, written into the register README (*Two rules of the register*) and the header of
+  `parts/python-files.md`: every requirement, every Python file line range and every `TESTING.md` row has exactly one owning
+  package (a roadmap section or a file may be split by line range); the Python files are mapped by structure, and each
+  package's analyst reads its own files in full and asks the orchestrator to move a file or range when the mapping is wrong.
 
 ## M1. Every roadmap section in one package
 
