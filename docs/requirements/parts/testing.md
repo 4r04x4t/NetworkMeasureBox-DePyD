@@ -1,7 +1,7 @@
 # Requirements register, part: TESTING.md
 
 Source: `docs/TESTING.md` of the Python repository at commit `ad3758c` (401 lines; this part covers lines 1-401).
-Read in pages: 1-150, 151-280, 281-401 (all lines). Compared with `docs/TESTING.hu.md@ad3758c` (399 lines, read 1-21, every table row's first cell, and 276-399 in full).
+Read in pages: 1-150, 151-280, 281-401 (all lines). Compared with `docs/TESTING.hu.md@ad3758c` (399 lines): lines 1-21 and 276-399 read in full; lines 22-275 compared by every table row's first cell, by the count of non-empty lines per section (equal in every section) and by every code token and figure (round 2: none is only in Hungarian, apart from two translated placeholders, `selftest-<idő>.json` at line 212 and `--md jelentes.md` at line 237).
 Package ids from `docs/NATIVE_WORK_PLAN.md@ad3758c:98-226` (section 3 and section 4).
 Id range of this part: REQ-TS-0001 to REQ-TS-0314. Every Source cell is written out in full as `docs/TESTING.md@ad3758c:<line>`.
 API and page packages are written as `S-02…S-0n (API: <area>)` and `U-02…U-0n (page: <page>)`, using the areas of work plan line 189, until F-02 fixes their numbers.
@@ -150,7 +150,7 @@ Hungarian comparison: every heading, table row and bullet of `TESTING.md` has a 
 | REQ-TS-0136 | SMTP (e-mail) is still to prove. | docs/TESTING.md@ad3758c:168; docs/TESTING.md@ad3758c:360 | R-05 |  |  |
 | REQ-TS-0137 | OONI is still to prove. | docs/TESTING.md@ad3758c:168; docs/TESTING.md@ad3758c:363 | M-13 |  |  |
 | REQ-TS-0138 | Drive swap (moving the data to another disk) is still to prove. | docs/TESTING.md@ad3758c:168 | C-08 | C-02, P-03 | Python reference not named; meaning of 'drive swap' assumed. |
-| REQ-TS-0139 | On 512 MB RAM (463 MB usable) all services with a test every minute run without swap, OOM or restarts; the web server and probe memory stays flat. | docs/TESTING.md@ad3758c:169 | P-13 | P-10, C-09 | Python: 25 min, 26 of 26 tests, 182-222 MB available. |
+| REQ-TS-0139 | On 512 MB RAM (463 MB usable) all services with a test every minute run without swap, OOM or restarts; the web server and probe memory stays flat. | docs/TESTING.md@ad3758c:169 | P-13 | P-10, C-09, C-08 | Python: 25 min, 26 of 26 tests, 182-222 MB available. Same requirement as REQ-RE-0209 (README.md@ad3758c:322), same owner (round 2). |
 | REQ-TS-0140 | Backup and restore: create, download, list, restore from the list and from an uploaded file; config and all measurements come back. | docs/TESTING.md@ad3758c:170 | P-03 | S-02…S-0n (API: system), U-02…U-0n (page: system) |  |
 | REQ-TS-0141 | A truncated backup upload is refused and changes nothing. | docs/TESTING.md@ad3758c:170 | P-03 |  |  |
 | REQ-TS-0142 | A restore must not lose the restored database to an old journal (WAL), must not be overwritten by the older boot-partition config copy, leaves the config readable by the service user, and an uploaded backup is not world-readable. | docs/TESTING.md@ad3758c:170 | P-03 | C-02, C-04 | Four Python faults found and fixed. |

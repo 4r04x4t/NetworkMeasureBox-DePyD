@@ -2,7 +2,7 @@
 
 Source: `docs/DEPYTHONIZATION_ROADMAP.md` of the Python repository at commit `ad3758c` (1,034 lines; this part covers lines 1-507).
 Read in pages: 1-150, 151-300, 301-450, 451-507 (all lines). Package ids from `docs/NATIVE_WORK_PLAN.md@ad3758c:98-219` (section 3), read with sections 1-2 (lines 1-97) for the step-1 scope.
-Id range of this part: REQ-RM-0001 to REQ-RM-0213 (0213 added in round 1). "RM" below in Source means `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c`, written out in full in every cell.
+Id range of this part: REQ-RM-0001 to REQ-RM-0219 (0213 added in round 1, 0214-0219 in round 2). "RM" below in Source means `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c`, written out in full in every cell.
 Proposed package `NEW: X2-01` is explained in section 3 of this file.
 
 ## Requirements
@@ -19,12 +19,13 @@ Proposed package `NEW: X2-01` is explained in section 3 of this file.
 | REQ-RM-0008 | `nmbd` runs on Linux devices with as little as 16 MB SPI flash and 32-64 MB RAM. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:20 | NEW: X2-01 Step-2 router tiers | P-13 | 32 MB RAM / 16 MB flash is the C tier (line 75); the Go tier is 64 MB+ (REQ-RM-0013). |
 | REQ-RM-0009 | All core and extended components (Open-RMBT, OONI Probe, iPerf3, DNS ad-blocker, WireGuard/OpenVPN gateways, hardware driver installer, self-healing watchdog, real-time task manager) are fully integrated into the native architecture. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:22 | P-13 | M-08, M-13, M-09, N-12, N-13, N-14, N-17, P-01, C-09 | Work plan 1: done only when every component of section 5 passes. |
 | REQ-RM-0010 | Implementation in compiled systems languages: Go (step 1) and C11 (router tiers); no Python at run time. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:22 | F-00 | NEW: X2-01 Step-2 router tiers | |
-| REQ-RM-0011 | Go toolchain 1.23 or newer. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:55 | F-00 | | Work plan F-00: the PC has Go 1.22; F-00 fixes the version. |
+| REQ-RM-0011 | Go toolchain 1.23 or newer. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:55 | F-00 | | Work plan F-00: the PC's installed Go version is older (source names a specific site value; not copied); F-00 fixes the version. |
 | REQ-RM-0012 | The Go build cross-compiles for `linux/mips` (`GOOS=linux GOARCH=mips`) without a C SDK. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:60 | F-00 | C-02 | Work plan 2.4 matrix: mips and mipsle build only. |
 | REQ-RM-0013 | Go is the primary universal target for 64 MB+ RAM devices: Raspberry Pi (Zero, 2, 3, 4, 5), modern GL.iNet routers, x86 appliances, Teltonika routers, all Linux distributions. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:72-73 | P-11 | F-00, NEW: X2-01 Step-2 router tiers | Source names router models (product targets). Pi Zero and Pi 1 are ARMv6; the work plan matrix has arm v7 only: see Questions. Routers are step 2. |
 | REQ-RM-0014 | Static build with `CGO_ENABLED=0`. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:74 | F-00 | P-10 | |
 | REQ-RM-0015 | The whole frontend (HTML, JS, CSS, SVG icons) is embedded in the executable (`//go:embed`); no web files are installed on disk. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:74; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:62; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:150 | U-01 | S-01, P-10 | |
 | REQ-RM-0016 | C11/musl tier for ultra-constrained OpenWrt (classic MIPS routers, 32 MB RAM, 16 MB flash): sub-2 MB RAM, SQLite amalgamation, raw epoll loop, direct rtnetlink calls. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:75-77; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:59 | NEW: X2-01 Step-2 router tiers | F-07 | Step 2; F-07 spec and vectors are its starting point. |
+| REQ-RM-0219 | The binary size of the C11/musl tier is measured and recorded per target; it fits 8 MB / 16 MB SPI flash (estimate: under 1.5 MB, 450 KB-1.2 MB, 280 KB with UPX). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:42; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:57; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:59 | NEW: X2-01 Step-2 router tiers | P-13, T-01 | Added in round 2 (C-tier counterpart of REQ-RM-0003). Figures in the source are estimates; to measure. UPX is optional (it unpacks into RAM). |
 | REQ-RM-0017 | ICMP via `golang.org/x/net/icmp`, with unprivileged ICMP datagram sockets (`SOCK_DGRAM`) or raw ICMP. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:119; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:65 | M-01 | P-04 | Unprivileged ICMP needs `net.ipv4.ping_group_range`; sandbox profile must allow the chosen way. |
 | REQ-RM-0018 | Running mean, variance and jitter in constant memory (Welford's algorithm). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:120-121 | M-01 | R-01 | The jitter definition must equal the Python one (F-05 golden files). |
 | REQ-RM-0019 | Aggregated probe metrics are flushed to the database every 10 s. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:122 | M-01 | C-02 | Check against the Python minute summaries (M-01 brief); flush interval is not the summary period. |
@@ -36,7 +37,7 @@ Proposed package `NEW: X2-01` is explained in section 3 of this file.
 | REQ-RM-0025 | The speed engines sustain multi-gigabit throughput (1-10 Gbps) without saturating the CPU; CPU use during tests is measured. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:139 | M-04 | M-06, M-07, M-08, M-09, M-10, P-13 | Step-1 test hardware is 1 Gbps; above that only on suitable hardware (record as "not tested" otherwise). |
 | REQ-RM-0026 | Multi-stream parallel HTTP/2 and HTTP/1.1 download worker pool (4-16 streams). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:140-141 | M-06 | M-07, M-10 | Shared by HTTP engines; see Proposed package changes (optional M-17). |
 | REQ-RM-0027 | Every engine binds its sockets explicitly to the measuring interface/source address (`SO_BINDTODEVICE` or `IP_BIND_ADDRESS_NO_PORT` via `net.Dialer.Control`). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:142 | M-04 | M-06, M-07, M-08, M-09, M-10, N-08, N-10, C-11 | `SO_BINDTODEVICE` needs `CAP_NET_RAW` (P-04). |
-| REQ-RM-0028 | Native Ookla HTTP protocol engine. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:143 | M-10 | M-05 | Owner decision (work plan section 7): Ookla "whichever works". |
+| REQ-RM-0028 | A native Ookla HTTP protocol engine replaces the sandboxed Ookla program only when it gives the same results on the same line and Ookla's terms allow it; otherwise the native engine is recorded as not done and the sandboxed program stays. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:143; docs/NATIVE_WORK_PLAN.md@ad3758c:313-316 | M-10 | M-05 | The roadmap line asks for the native protocol without a condition; the owner decision (work plan section 7 point 3) makes it conditional, so M-10's gate needs either the equal-results proof and the terms finding, or the not-done record. Same rule as REQ-WP-0180; REQ-RM-1415 treats the Ookla part of line 949 the same way. Round 2: restated. |
 | REQ-RM-0029 | Native Cloudflare speed protocol (`/cdn-cgi/trace` plus chunked download and upload). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:143 | M-06 | | |
 | REQ-RM-0030 | Native RTR-Netztest RMBT protocol in the speed engine. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:143 | M-08 | M-04 | Detail in 4.6 (REQ-RM-0060 to -0063). |
 | REQ-RM-0031 | A concurrent background ICMP ping runs during every speed test and a bufferbloat grade is calculated. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:144 | M-04 | M-01, R-01, U-02 | Grade scale must match the Python reference (F-05). |
@@ -46,7 +47,8 @@ Proposed package `NEW: X2-01` is explained in section 3 of this file.
 | REQ-RM-0035 | C tier web: embedded `mongoose.c` or `libmicrohttpd`; frontend gzipped into a C byte array. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:153-155 | NEW: X2-01 Step-2 router tiers | U-01 | |
 | REQ-RM-0036 | The native Web UI has every function of the Python UI (nothing dropped to make it small); the Python UI is the reference for what pages do, not how they are built. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:159 | U-01 | U-02, P-13 | Each page package U-02…U-0n proves its page against the Python page. |
 | REQ-RM-0037 | A small shell (header, menu, login state, AMOLED black styles) loads first; each page is its own module, loaded only when opened, then kept in the browser cache. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:165 | U-01 | U-02 | |
-| REQ-RM-0038 | Compressed size budgets are checked at every build and the build fails above them: shell with first page at most 60 KB on the PC/Pi class and at most 40 KB on router builds; whole UI at most 150 KB, so it fits the 8 MiB flash of the TL-WR1043ND v1 next to `nmbd`. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:166 | U-01 | F-00 | The TL-WR1043ND v1 is the plans' public first router target, not site data (naming rule in the register README). |
+| REQ-RM-0038 | Compressed size budgets are checked at every build and the build fails above them: shell with first page at most 60 KB on the PC/Pi class; whole UI at most 150 KB. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:166 | U-01 | F-00 | Round 2: the router budget and the flash fit moved to REQ-RM-0214 (split rule of the register README). |
+| REQ-RM-0214 | Router builds: the shell with the first page is at most 40 KB compressed, and the whole UI fits the 8 MiB flash of the TL-WR1043ND v1 next to `nmbd`; the build fails above these budgets. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:166 | NEW: X2-01 Step-2 router tiers | U-01, F-00, T-01 | Split from REQ-RM-0038 in round 2. The TL-WR1043ND v1 is the plans' public first router target, not site data (naming rule in the register README). |
 | REQ-RM-0039 | Each build prints the compressed size per module; growth is a reviewed change. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:166 | U-01 | F-00 | |
 | REQ-RM-0040 | Assets are stored pre-compressed in the binary (gzip, and Brotli where the client accepts it), with content-hash file names, long cache lifetime, strong `ETag` and `304 Not Modified`; HTTP keep-alive (HTTP/2 where the platform has it). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:167 | S-01 | U-01 | |
 | REQ-RM-0041 | Nothing is loaded from the internet (no CDN, no web fonts); the UI works without internet on the box's own LAN. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:167 | U-01 | S-01 | |
@@ -57,10 +59,13 @@ Proposed package `NEW: X2-01` is explained in section 3 of this file.
 | REQ-RM-0046 | No inline scripts or styles; a strict Content Security Policy is served. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:169 | U-01 | S-01 | |
 | REQ-RM-0047 | Every visible text goes through a translation key; only the current language is sent, per page module; the language menu shows each language in its own name; a build check fails on any visible text without a key and any key missing from a language; logic never depends on visible text (states, data attributes). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:170 | C-06 | U-01, U-02 | Python fault (line 161): logic read visible text; F-03. |
 | REQ-RM-0048 | The API answers from data the daemons already hold; expensive values (hardware detection, Wi-Fi capabilities, reports) are computed once and cached, not on every page load. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:171 | S-02 | N-07, N-17, R-03 | Python fault: `/api/config` runs radio detection on each call; F-03 entry. |
-| REQ-RM-0049 | An open UI must not visibly change measurement results: box CPU use with the dashboard open is measured and kept low (target: under 2 % on the Pi 4; under 10 % on the TL-WR1043ND v1). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:171 | U-01 | P-13, NEW: X2-01 Step-2 router tiers | Targets "to measure"; router figure in step 2. |
-| REQ-RM-0050 | Speed of use (targets to confirm by measurement): first useful screen under 1 s on the Pi 4 over Wi-Fi from a mid-range phone (under 2 s on the TL-WR1043ND v1); page switch under 300 ms after first load; no layout jumps while data arrives. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:172 | U-01 | P-13, NEW: X2-01 Step-2 router tiers |  |
+| REQ-RM-0049 | An open UI must not visibly change measurement results: box CPU use with the dashboard open is measured and kept low (target, to measure: under 2 % on the Pi 4). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:171 | U-01 | P-13 | Target to measure. Round 2: the router figure moved to REQ-RM-0215. |
+| REQ-RM-0215 | Router builds: box CPU use with the dashboard open is measured and kept low (target, to measure: under 10 % on the TL-WR1043ND v1). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:171 | NEW: X2-01 Step-2 router tiers | U-01, P-13, T-01 | Split from REQ-RM-0049 in round 2. |
+| REQ-RM-0050 | Speed of use (targets to confirm by measurement): first useful screen under 1 s on the Pi 4 over Wi-Fi from a mid-range phone; page switch under 300 ms after first load; no layout jumps while data arrives. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:172 | U-01 | P-13 | Round 2: the router figure moved to REQ-RM-0216. |
+| REQ-RM-0216 | Router builds (target to confirm by measurement): first useful screen under 2 s on the TL-WR1043ND v1 over Wi-Fi from a mid-range phone. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:172 | NEW: X2-01 Step-2 router tiers | U-01, P-13, T-01 | Split from REQ-RM-0050 in round 2. |
 | REQ-RM-0051 | The UI works on a phone screen, with the keyboard alone, and with enough contrast. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:172 | U-01 | U-02 | |
-| REQ-RM-0052 | A headless browser test opens every page in every language on the PC build and records size, load time, requests and console errors; the numbers go into `docs/TESTING.md` next to the Python UI's; the release checklist includes the router build. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:173 | U-01 | P-13, NEW: X2-01 Step-2 router tiers | |
+| REQ-RM-0052 | A headless browser test opens every page in every language on the PC build and records size, load time, requests and console errors; the numbers go into `docs/TESTING.md` next to the Python UI's. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:173 | U-01 | P-13 | Round 2: the router build's place in the release checklist moved to REQ-RM-0217. |
+| REQ-RM-0217 | The release checklist includes the router build (the headless browser figures of REQ-RM-0052 for the router build). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:173 | NEW: X2-01 Step-2 router tiers | U-01, P-13 | Split from REQ-RM-0052 in round 2; there is no router build in step 1. |
 | REQ-RM-0053 | Every page and sub-page has its own readable path (e.g. `/speed`, `/speed/schedule`, `/router/wifi`) set with the History API; no `#` fragments and no single `/` for everything. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:174 | U-01 | U-02 | Owner, 2026-11-10. |
 | REQ-RM-0054 | Reload, bookmark, shared link, new tab, and back/forward all land on that page, in its state where it makes sense (selected log source, filter). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:174 | U-01 | U-02 | |
 | REQ-RM-0055 | The server answers every page path with the shell; an unknown path gets a proper "not found" page, not the dashboard. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:174 | S-01 | U-01 | |
@@ -76,7 +81,7 @@ Proposed package `NEW: X2-01` is explained in section 3 of this file.
 | REQ-RM-0065 | OONI runs in-process as a Go module (upstream probe-engine / `libminiooni`). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:199-201 | M-13 | P-08 | Upstream merged into `probe-cli`; `libminiooni` lives under `internal/` and may not be importable from another module: analyst verifies (external docs skill). Licence (GPL-3.0) affects the project licence. |
 | REQ-RM-0066 | OONI with zero external process spawning and no external package (no `ooniprobe` Debian package or PPA). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:202-204 | M-13 | | |
 | REQ-RM-0067 | OONI results (DNS tampering, TCP blocking, HTTP diff, Web Connectivity) are streamed in memory into the database. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:205 | M-13 | C-02 | |
-| REQ-RM-0068 | Lightweight OONI configuration for routers: the heavy WebSockets and WebRTC tests are stripped so a run stays within an 8 MB RAM envelope. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:206 | M-13 | NEW: X2-01 Step-2 router tiers | RSS during a run is measured. |
+| REQ-RM-0068 | Lightweight OONI configuration for routers: the heavy WebSockets and WebRTC tests are stripped so a run stays within an 8 MB RAM envelope. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:206 | NEW: X2-01 Step-2 router tiers | M-13, T-01 | RSS during a run is measured. Round 2: owner moved from M-13 to X2-01 (router-only row). |
 | REQ-RM-0069 | Native iPerf3 client protocol: TCP/UDP stream framing with JSON control negotiation on port 5201. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:211-212 | M-09 | | Source says "RFC-compliant"; iPerf3 has no RFC, the protocol is defined by the iperf3 sources (two-source rule). |
 | REQ-RM-0070 | Zero-fork iPerf3 throughput, jitter and packet-loss measurement for LAN benchmarks and remote WAN tests. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:213 | M-09 | | |
 | REQ-RM-0071 | C tier: stripped `libiperf.a` (<300 KB) linked into `nmbd`. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:214-215 | NEW: X2-01 Step-2 router tiers | M-09 | |
@@ -114,7 +119,8 @@ Proposed package `NEW: X2-01` is explained in section 3 of this file.
 | REQ-RM-0103 | Telegram bot: asynchronous worker long-polling `getUpdates` over HTTPS. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:294-295 | S-11 | | |
 | REQ-RM-0104 | Bot inline-keyboard menus for: status and instant ping matrix; on-demand speed test (Ookla, Cloudflare, RMBT, iPerf3); SLA dossier (.html) and LLM diagnostic snapshot (.md) export; Tailscale, WireGuard and OpenVPN status and one-click QR delivery. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:296-300 | S-11 | M-04, R-03, R-04, N-13, N-14, N-15 | QR delivery puts a VPN private key into Telegram: see Questions. |
 | REQ-RM-0105 | Bot language switcher with zero mixed-language leaks. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:301 | S-11 | C-06 | Source lists 5 languages; line 406 says 11: see Questions. |
-| REQ-RM-0106 | Bot memory target: under 1.5 MB RAM in Go (under 200 KB in C11). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:302 | S-11 | P-13, NEW: X2-01 Step-2 router tiers | Target to measure. |
+| REQ-RM-0106 | Bot memory target: under 1.5 MB RAM in Go. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:302 | S-11 | P-13 | Target to measure. Round 2: the C11 figure moved to REQ-RM-0218. |
+| REQ-RM-0218 | Bot memory target in the C11 code base: under 200 KB RAM. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:302 | NEW: X2-01 Step-2 router tiers | S-11, P-13, T-01 | Target to measure. Split from REQ-RM-0106 in round 2. |
 | REQ-RM-0107 | Dossier templates (HTML skeleton, CSS, translation dictionaries) compiled into the binary. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:307-308 | R-03 | C-06 | Source lists 5 languages; line 406 says the report locales have 11: see Questions. |
 | REQ-RM-0108 | In-process SVG chart renderer: responsive `<svg viewBox="0 0 800 380">`, cubic Bézier curves, dual y-axes (Mbps and ms), SLA threshold baselines, touch dot overlays. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:309 | R-03 | | |
 | REQ-RM-0109 | Neutral dossier title ("Broadband Quality & ISP SLA Performance Dossier"), regulator-neutral, following BEREC guidelines and international telecom standards. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:310 | R-03 | C-06 | |
@@ -153,7 +159,7 @@ Proposed package `NEW: X2-01` is explained in section 3 of this file.
 | REQ-RM-0142 | Collector keeps the password-protected pages: search by box ID, name, current or earlier case number, customer number and provider; averages against subscribed speeds; CSV. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:392 | S-13 | R-02 | |
 | REQ-RM-0143 | Collector keeps the three consents and the fixed command list. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:392 | S-13 | S-12 | |
 | REQ-RM-0144 | Collector serves HTTPS itself (`--cert`, `--key`). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:392 | S-13 | | |
-| REQ-RM-0145 | Of the Python updater the native build keeps only the update status file format (`update_status.json`), so the Web UI and `nmb-cli update` work unchanged; the rest of the Python updater (downloading the source) is not carried over and is replaced by P-02's updates. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:393 | P-02 | S-10, U-02, F-04 | Source line names routers (firmware or package updates); the status-file rule holds for every target. |
+| REQ-RM-0145 | Of the Python updater the native build keeps the update status file format (`update_status.json`), so the Web UI and `nmb-cli update` work unchanged. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:393 | P-02 | S-10, U-02, F-04 | Status-file rule only (round 2: narrowed to what the line says). That the source is not downloaded comes from this line for routers (REQ-RM-0146) and, for the Pi and x86-64 boxes, from docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:794 (A/B slots replace setup.sh upgrades, REQ-RM-1281, P-02). |
 | REQ-RM-0146 | Routers update by firmware or package (`opkg`), not by downloading the source. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:393 | NEW: X2-01 Step-2 router tiers | P-02 | |
 | REQ-RM-0147 | The scheduler keeps `ookla_interval_min` (never below 60), `rtr_interval_min` and `cloudflare_interval_min`. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:394 | M-04 | C-01 | |
 | REQ-RM-0148 | The Ookla cooldown is persisted (`ookla_cooldown.json`). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:394 | M-05 | M-10, F-04 | |
@@ -247,13 +253,13 @@ Each range includes the blank line(s) that end it. Every line 1-507 is in exactl
 | 23-25 | separator | context: horizontal rule |
 | 26-27 | heading | context: section 2 title |
 | 28-29 | paragraph | context: introduces the language evaluation |
-| 30-52 | code block | context: Mermaid evaluation diagram; estimates restated as targets in REQ-RM-0002, -0003, -0013, -0016 |
+| 30-52 | code block | context: Mermaid evaluation diagram; estimates restated as targets in REQ-RM-0002, -0003, -0013, -0016, REQ-RM-0219 (line 42, C-tier binary size) |
 | 53-54 | heading | context: 2.1 title |
 | 55 | table row | REQ-RM-0011 |
 | 56 | table row | context: alignment row |
-| 57 | table row | REQ-RM-0003 |
+| 57 | table row | REQ-RM-0003, REQ-RM-0219 |
 | 58 | table row | REQ-RM-0002 |
-| 59 | table row | REQ-RM-0003, REQ-RM-0016 |
+| 59 | table row | REQ-RM-0003, REQ-RM-0016, REQ-RM-0219 |
 | 60 | table row | REQ-RM-0012 |
 | 61 | table row | context: concurrency model per language, a design choice with nothing to check |
 | 62 | table row | REQ-RM-0032, REQ-RM-0015 |
@@ -270,7 +276,7 @@ Each range includes the blank line(s) that end it. Every line 1-507 is in exactl
 | 83-84 | paragraph | context: introduces the per-component blueprints |
 | 85-115 | code block | REQ-RM-0210 (component map into the unified binary; each component is covered by its own section) |
 | 116 | heading | context: 4.1 title |
-| 117 | bullet | context: Python bottleneck figures (CPU, RAM), motivation only |
+| 117 | bullet | context: Python bottleneck figures (CPU, RAM), motivation only; the probe cadence it names (5 targets every 500 ms) is taken from the Python reference (M-01 brief), not from this line |
 | 118-119 | bullet | REQ-RM-0017 |
 | 120-121 | bullet | REQ-RM-0018 |
 | 122 | bullet | REQ-RM-0019 |
@@ -298,14 +304,14 @@ Each range includes the blank line(s) that end it. Every line 1-507 is in exactl
 | 161-162 | paragraph | context: measured baseline of the Python UI (sizes, 11 timers, missing translations); the requirements below answer it (REQ-RM-0042, -0047) |
 | 163-164 | paragraph | context: "Requirements" label |
 | 165 | bullet | REQ-RM-0037 |
-| 166 | bullet | REQ-RM-0038, REQ-RM-0039 |
+| 166 | bullet | REQ-RM-0038, REQ-RM-0039, REQ-RM-0214 |
 | 167 | bullet | REQ-RM-0040, REQ-RM-0041 |
 | 168 | bullet | REQ-RM-0042, REQ-RM-0043, REQ-RM-0044 |
 | 169 | bullet | REQ-RM-0045, REQ-RM-0046 |
 | 170 | bullet | REQ-RM-0047 |
-| 171 | bullet | REQ-RM-0048, REQ-RM-0049 |
-| 172 | bullet | REQ-RM-0050, REQ-RM-0051 |
-| 173 | bullet | REQ-RM-0052 |
+| 171 | bullet | REQ-RM-0048, REQ-RM-0049, REQ-RM-0215 |
+| 172 | bullet | REQ-RM-0050, REQ-RM-0051, REQ-RM-0216 |
+| 173 | bullet | REQ-RM-0052, REQ-RM-0217 |
 | 174-175 | bullet | REQ-RM-0053, REQ-RM-0054, REQ-RM-0055, REQ-RM-0056, REQ-RM-0057 |
 | 176 | heading | context: 4.5 title |
 | 177 | bullet | context: Python bottleneck, motivation only |
@@ -386,7 +392,7 @@ Each range includes the blank line(s) that end it. Every line 1-507 is in exactl
 | 294-295 | bullet | REQ-RM-0103 |
 | 296-300 | bullet | REQ-RM-0104 |
 | 301 | bullet | REQ-RM-0105 |
-| 302-303 | bullet | REQ-RM-0106 |
+| 302-303 | bullet | REQ-RM-0106, REQ-RM-0218 |
 | 304 | heading | context: 4.17 title |
 | 305 | bullet | context: current Python architecture |
 | 306 | bullet | context: target choice |
@@ -433,7 +439,8 @@ Each range includes the blank line(s) that end it. Every line 1-507 is in exactl
 | 383 | bullet | REQ-RM-0132 |
 | 384 | bullet | REQ-RM-0133 |
 | 385 | bullet | REQ-RM-0134 |
-| 386-389 | bullet | REQ-RM-0135 (line 388 is a horizontal rule) |
+| 386 | bullet | REQ-RM-0135 |
+| 387-389 | separator | context: horizontal rule |
 | 390 | heading | context: 4.25 title |
 | 391 | bullet | REQ-RM-0136, REQ-RM-0137, REQ-RM-0138, REQ-RM-0139 |
 | 392 | bullet | REQ-RM-0140, REQ-RM-0141, REQ-RM-0142, REQ-RM-0143, REQ-RM-0144 |
@@ -448,7 +455,8 @@ Each range includes the blank line(s) that end it. Every line 1-507 is in exactl
 | 403 | bullet | REQ-RM-0161, REQ-RM-0162, REQ-RM-0163 |
 | 404 | bullet | REQ-RM-0164 |
 | 405 | bullet | REQ-RM-0165, REQ-RM-0166, REQ-RM-0167, REQ-RM-0168, REQ-RM-0169, REQ-RM-0170, REQ-RM-0171, REQ-RM-0172, REQ-RM-0173, REQ-RM-0174 (test device not copied) |
-| 406-409 | bullet | REQ-RM-0175 (line 408 is a horizontal rule) |
+| 406 | bullet | REQ-RM-0175 |
+| 407-409 | separator | context: horizontal rule |
 | 410-411 | heading | context: 4.27 title |
 | 412-413 | paragraph | REQ-RM-0174, REQ-RM-0176 (test device not copied) |
 | 414 | paragraph | REQ-RM-0165 (label: detection from sysfs, no tools) |
@@ -487,7 +495,7 @@ Each range includes the blank line(s) that end it. Every line 1-507 is in exactl
 | 456-457 | bullet | REQ-RM-0208, REQ-RM-0209 |
 | 458-459 | heading | context: section 5 title |
 | 460-461 | paragraph | REQ-RM-0210 |
-| 462-493 | code block | context: architecture diagram of section 5; its contents are stated in REQ-RM-0034 (port 80/8080), REQ-RM-0059 (RAM SQLite) and REQ-RM-0210; "in-memory channels" is a design choice |
+| 462-493 | code block | context: architecture diagram of section 5; its contents are stated in REQ-RM-0034 (port 80/8080), REQ-RM-0059 (RAM SQLite) and REQ-RM-0210; "in-memory channels" is a design choice; the "QoS" in the netd box (line 471) is a diagram label whose function the roadmap specifies nowhere else, so it holds no requirement (the Python bandwidth monitor page, tab id `tab-qos`, reaches U-15 through `parts/python-files.md`) |
 | 494 | heading | REQ-RM-0211 |
 | 495 | paragraph | REQ-RM-0211 |
 | 496-504 | bullet | REQ-RM-0212 |
@@ -495,7 +503,7 @@ Each range includes the blank line(s) that end it. Every line 1-507 is in exactl
 
 ## Proposed package changes
 
-1. **NEW: X2-01 Step-2 router tiers (C11/musl and OpenWrt/RouterOS integration).** Work plan section 1 says the C11 tier and everything router-specific start with step 2, and section 3 has no package for them, yet the roadmap states requirements for them. Without an owner, the register's check would fail. Rows: REQ-RM-0008, -0016, -0020, -0024, -0035, -0064, -0071, -0082, -0086, -0091, -0146, -0163, -0180, -0181, -0182 (owner); also in REQ-RM-0010, -0013, -0049, -0050, -0052, -0068, -0106, -0139, -0174. Proposal: keep X2-01 as one holding package in step 1 (its requirements go into `spec/` through F-07 so step 2 starts from them). When step 2 is planned, split it per component in the same way as the step-1 packages (probe, netd, web, RMBT, iPerf3, VPN, driver finder, updater, storage guard, USB tethering on OpenWrt, RouterOS container).
+1. **NEW: X2-01 Step-2 router tiers (C11/musl and OpenWrt/RouterOS integration).** Work plan section 1 says the C11 tier and everything router-specific start with step 2, and section 3 has no package for them, yet the roadmap states requirements for them. Without an owner, the register's check would fail. Rows: REQ-RM-0008, -0016, -0020, -0024, -0035, -0064, -0068, -0071, -0082, -0086, -0091, -0146, -0163, -0180, -0181, -0182, -0214 to -0219 (owner); also in REQ-RM-0010, -0013, -0139, -0174. Round 2: the router and C11 halves of REQ-RM-0038, -0049, -0050, -0052 and -0106 were split off as REQ-RM-0214 to -0218, REQ-RM-0068 (router-only OONI configuration) moved here from M-13, and REQ-RM-0219 (C-tier binary size) was added. Proposal: keep X2-01 as one holding package in step 1 (its requirements go into `spec/` through F-07 so step 2 starts from them). When step 2 is planned, split it per component in the same way as the step-1 packages (probe, netd, web, RMBT, iPerf3, VPN, driver finder, updater, storage guard, USB tethering on OpenWrt, RouterOS container).
 2. **Optional split of M-12** into M-12a "DNS resolver matrix and hijack check" (4.20: REQ-RM-0116 to -0119) and M-12b "STUN, NAT type and WAN topology, public address" (4.21: REQ-RM-0120 to -0123). Together with `netd/dns.py` and `netd/geoip.py` these are two protocols, above the one-protocol size rule of section 3.
 3. **Optional split of N-10** (17 requirements from 4.26 and 4.27) into N-10a "USB detection, uplink, table 152, data limit, only-internet fallback" (REQ-RM-0165 to -0171, -0176, -0177) and N-10b "Router mode on USB and LAN-port sharing upstream" (REQ-RM-0172, -0173), if the analyst finds `netd/usb_uplink.py` plus tests above the size rule.
 4. **Optional NEW: M-17 Shared HTTP transfer core** (multi-stream worker pool and per-socket interface binding, REQ-RM-0026, -0027), used by M-06, M-07, M-10 and M-04, so the binding rule is written and tested once. If not taken, the rows stay with M-06 and M-04 as assigned.

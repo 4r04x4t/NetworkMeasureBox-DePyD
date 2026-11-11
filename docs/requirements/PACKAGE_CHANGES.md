@@ -53,7 +53,11 @@ numbering is not used anywhere and is withdrawn by this merge.
 | Developer console | U-12 Logs page (the tab is "Developer & System Logs") |
 | tools | several: U-10, U-13, U-06, U-21, U-20 (the changelog part's tools page) |
 | pages: Ping, Speed (, Outages); pages: Traceroute, Port check, RTR | one row for several pages: each page package takes it, the first named owns it |
-| SLA, Exports, Results, results and logout, Support, Outages | no Python tab of their own (they sit inside other tabs or are public pages): open, decided in the U-01 brief |
+| SLA | U-16 Router page: the ISP profile and the live SLA audit card are `nmb/web/assets/dashboard.html@ad3758c:3704-3780`, a range of U-16 in `parts/python-files.md` (round 2) |
+| Exports | U-04 Speed results page, which holds the speed, broadband, outage and event CSV buttons (`dashboard.html@ad3758c:237-240`); the ping CSV button is on U-03 (`:193`) and takes the row there too; the exports themselves are R-02 and the API S-09 (round 2) |
+| Results, results and logout | U-01: the logout page (`nmb/web/assets/logout.html`, `dashboard.js@ad3758c:8300-8331`) is U-01 in `parts/python-files.md`; the public `/results` page is served by S-09 (`nmb/web/results_page.py`) and its look and texts are U-01's (round 2) |
+| Support | U-01: the Support button, donation dialog and footer are `dashboard.html@ad3758c:1-109, 5221-5239`, U-01 in `parts/python-files.md` (round 2) |
+| Outages | U-03 Ping telemetry page: the 24-hour latency and outage telemetry is in the ping tab (`dashboard.html@ad3758c:186-226`); the outages CSV button is on U-04 (round 2) |
 
 **Bare `S-02` and `U-02`.** Some rows (mostly in the roadmap parts and REQ-WP-0134, which copies work plan line 215) write
 `S-02` or `U-02` where the series is meant. They are counted under the numbers S-02 (owns 3, Also in 18) and U-02 (owns 2,
@@ -67,16 +71,16 @@ a split that is accepted gets the next free number of its series.
 
 | Id | Name | Proposed in | Owns / Also in | Reason |
 | :--- | :--- | :--- | :--- | :--- |
-| X2-01 | Step-2 router tiers (holding package) | roadmap-1-507 (1), porting-plan (1), workplan (4), testing (3), readme | 128 / 49 | Work plan section 1 puts the C11 tier and all router work in step 2, and section 3 has no package for it; without an owner these rows would fail the check. Every row that concerns only the C code base or only router targets is owned here, with the step-1 package under *Also in* (round 1, section G). Stays one holding package in step 1 (its rows go into `spec/` through F-07); split when step 2 is planned. |
-| T-01 | First router backends, TL-WR1043ND v1 | roadmap-508-1034 (2) | 3 / 23 | Step 2 writes code (ath79 switch, ath9k, procd/fw4, flash layout, C11/musl build, Go-to-C port, optional UPX) that no package owns; I-10 only analyses images. **Child of X2-01** (porting-plan 1); later routers get T-02 ... in the owner's order. |
-| P-14 | Maker's firmware round trip | roadmap-508-1034 (1) | 9 / 9 | Back to stock firmware (6B.3): per-target write method, optional fetch from the maker, recovery path, round-trip test on each router. Step 2 and per-device; keeping it in P-02 would block P-02's step-1 acceptance. Generic safety rules stay in P-02. |
+| X2-01 | Step-2 router tiers (holding package) | roadmap-1-507 (1), porting-plan (1), workplan (4), testing (3), readme | 141 / 44 | Work plan section 1 puts the C11 tier and all router work in step 2, and section 3 has no package for it; without an owner these rows would fail the check. Every row that concerns only the C code base or only router targets is owned here, with the step-1 package under *Also in* (round 1, section G). Stays one holding package in step 1 (its rows go into `spec/` through F-07); split when step 2 is planned. |
+| T-01 | First router backends, TL-WR1043ND v1 | roadmap-508-1034 (2) | 3 / 29 | Step 2 writes code (ath79 switch, ath9k, procd/fw4, flash layout, C11/musl build, Go-to-C port, optional UPX) that no package owns; I-10 only analyses images. **Child of X2-01** (porting-plan 1); later routers get T-02 ... in the owner's order. |
+| P-14 | Maker's firmware round trip | roadmap-508-1034 (1) | 9 / 10 | Back to stock firmware (6B.3): per-target write method, optional fetch from the maker, recovery path, round-trip test on each router. Step 2 and per-device; keeping it in P-02 would block P-02's step-1 acceptance. Generic safety rules stay in P-02. |
 | P-15 | Endurance and hostile-network campaign | testing (1) | 3 / 0 | The 24-72 h run, the 24 h low-memory run and the hostile-network suite need days of box or VM time; inside P-13 they would make the release proof too big. P-15 runs before P-13 and hands it its results. |
 | P-16 | SSH access (keys only) | changelog (1), there as "P-14" | 2 / 0 | No package owns the box's SSH server setting (keys-only switch, check that sshd takes it, automatic switch back). Alternative: merge into P-05 (maintenance mode also gives keys-only access). |
 | P-17 | Guided live scenarios | python-files (D, there as "P-14"), testing (2, there as "P-07b") | 0 / 0 | `nmb/selftest/` is 2,837 lines; P-07 keeps the live self-test groups (`live.py`, testing's "P-07a"), P-17 takes `scenario*.py` with their restore safety. Rows stay in P-07 until accepted. |
 | S-14 | Bot commands: measuring, reports, mode, VPN | python-files (D) | 0 / 0 | `nmb/bot/` is about 4,100 lines; S-14 = `commands.py@ad3758c:249-1061`. |
 | S-15 | Bot commands: DynDNS, blocker, healing, tasks, Wi-Fi, backup, drivers, reboot | python-files (D) | 0 / 0 | S-15 = `commands.py@ad3758c:1062-1725`. **Other proposal** (workplan 2): S-11a commands and menus, S-11b alert monitor (REQ-AR-0072 to -0078). The two cuts are compatible: if the alert monitor is split too, it gets the next free number; the S-11 analyst decides. |
-| N-19 | Blocker lists: gravity update, allow/deny/regex lists, adlists, local DNS records | python-files (D) | 0 / 0 | N-12 is about 2,600 lines with its CLI; N-19 = `netd/adblock.py@ad3758c:1003-1515`. |
-| N-20 | Box resolver and DNS fallback (optional) | changelog (2), there as "N-19" | 0 / 0 | Rows of changelog lines 210, 224, 254 are the box's own resolver management, not a measurement; if M-12 is too big, `netd/dns.py` is cut into M-12 (audit, lookups) and N-20 (fallback, restore). |
+| N-19 | Blocker lists: gravity update, allow/deny/regex lists, adlists, local DNS records | python-files (D) | 0 / 1 | N-12 is about 2,600 lines with its CLI; N-19 = `netd/adblock.py@ad3758c:1003-1515`. |
+| N-20 | Box resolver and DNS fallback (optional) | changelog (2), there as "N-19" | 0 / 1 | Rows of changelog lines 210, 224, 254 are the box's own resolver management, not a measurement; if M-12 is too big, `netd/dns.py` is cut into M-12 (audit, lookups) and N-20 (fallback, restore). |
 | M-15 | Scheduler: cron and interval parser, next run, retry timing | python-files (D) | 0 / 0 | M-04 is about 1,930 lines; M-15 = `speed/scheduler.py` (also used by the web server). |
 | M-16 | RMBT protocol client | python-files (D) | 0 / 0 | M-08 is about 1,450 lines of Python and 2,900 of C; M-16 = `speed/rmbt/` and `components/open-rmbt/`. |
 | M-17 | Shared HTTP transfer core (optional) | roadmap-1-507 (4), there as "M-15"; readme | 0 / 0 | Multi-stream worker pool and per-socket interface binding written and tested once for M-06, M-07, M-10 and M-04 (REQ-RM-0026, -0027, and REQ-RE-0193 per the readme part). If not taken, the rows stay with M-06 and M-04. |
@@ -87,7 +91,7 @@ a split that is accepted gets the next free number of its series.
 
 **Children of X2-01** proposed by the porting-plan part (not ids yet; they get numbers when step 2 is planned): one
 package per router target (T-01 first); Asuswrt/Merlin integration (REQ-PP-0042 to -0054); C tier storage and budgets
-(REQ-PP-0055 to -0066, -0175 to -0183); missing parts from the maker's firmware, 7H (REQ-PP-0106 to -0115, next to I-10);
+(REQ-PP-0055 to -0066, -0175 to -0184); missing parts from the maker's firmware, 7H (REQ-PP-0106 to -0115, next to I-10);
 remote access, recovery and brick risk per target (REQ-PP-0144, -0150, -0162, -0171); MikroTik and MediaTek families
 (REQ-PP-0021 to -0026). The roadmap part 1-507 proposes the split per component instead (probe, netd, web, RMBT, iPerf3,
 VPN, driver finder, updater, storage guard, USB tethering on OpenWrt, RouterOS container). Both are step-2 decisions.
@@ -131,8 +135,8 @@ VPN, driver finder, updater, storage guard, USB tethering on OpenWrt, RouterOS c
 ## E. Porting-plan sections (part author's map, for information)
 
 The work plan's rule names roadmap sections, not porting-plan sections; the porting-plan part maps them anyway:
-1, 1.1-1.3, 2, 4, 5, 6, 7G, 7H, 8 (C parts), 9, 10 to X2-01; 3 to P-10; 7.1 N-15; 7.2 S-11 (C form X2-01); 7.3 R-03;
-7.4 M-14; 7.5 C-09; 7.6 M-12; 7.7 N-12; 7.8 M-04; 7.9 P-01; 7.10 at line 505 N-16; 7.10 at line 698 S-12 (the plan has two
+1, 1.1-1.3, 2, 4, 5, 6, 7G, 7H, 8 (C parts), 9, 10 to X2-01; 3 to P-10; 7.1 X2-01 (N-15 Also in); 7.2 S-11 (C form X2-01);
+7.3 R-03; 7.4 M-14; 7.5 C-09; 7.6 M-12; 7.7 X2-01 (N-12 owns REQ-PP-0079); 7.8 M-04; 7.9 P-01; 7.10 at line 505 N-16; 7.10 at line 698 S-12 (the plan has two
 sections numbered 7.10: cite lines, not the number); 7A N-06; 7B M-03; 7F F-04; 7E P-13; 7D P-05; 7C P-11; 8 (Go part) F-00.
 
 ## F. Mechanical changes made by the merge
@@ -171,11 +175,40 @@ The checkers' findings of round 1 changed these owners and rows; no id was renum
   `parts/contributing.md` (REQ-CT-0001 to -0026), which no part covered before.
 - `BY_PACKAGE.md` was regenerated from the parts.
 
+## H. Round 2 of the checks (2026-11-11)
+
+The checkers' findings of round 2 changed these rows; no id was renumbered, new ids took the next free number.
+
+- **Split into a step-1 row and a router or C row owned by X2-01** (step-1 package and T-01 under *Also in*): REQ-RM-0214
+  (from -0038, router UI budget and flash fit), -0215 (from -0049), -0216 (from -0050), -0217 (from -0052), -0218 (from
+  -0106, C11 bot memory), -1456 (from -1413), -1457 (from -1414), -1458 (from -1416), -1459 (from -1418), -1460 (from -1422).
+- **Split per protocol owner:** REQ-RM-1066 keeps DHCP and PPPoE (N-05); DNS went to -1461 (N-12) and -1462 (M-12), UPnP
+  to -1463 (N-11). REQ-WP-0148 keeps `cpio`, `xorriso`/`bsdtar` and `ostree` (now F-00); the router-firmware readers went
+  to REQ-WP-0197 (I-10).
+- **Moves:** REQ-RM-0068 M-13 to X2-01; REQ-RM-1073 S-01 to F-00 (a rule for every change, like -1060 and -1061);
+  REQ-PP-0184 P-13 to X2-01 (a router-tier design target like -0175 to -0183); REQ-WP-0016, -0141, -0142, -0149, -0150,
+  -0151 I-01 to F-00 (shared image-method rules; each I package proves them for its own image); REQ-RE-0209 C-08 to P-13
+  (one owner with REQ-TS-0139).
+- **Restated:** REQ-RM-0028 (native Ookla engine only under owner decision 3), -0145 (status file only), -1301 (the
+  condition of the fourth candidate); REQ-PP-0029 (scope of REQ-RM-0006, with the sandboxed third-party programs and vendor
+  tools as exceptions), -0099 (the source's "should"), -0185 (source narrowed to line 584); REQ-AR-0021 ("only" removed);
+  REQ-CL-0232, -0249, -0319, -0343, -0386; REQ-WP-0028, -0057 and the notes of REQ-RM-0011, REQ-DV-0009, REQ-RE-0176 (the
+  development PC's figures and Go version no longer copied, Quality Bar 8).
+- **New rows:** REQ-RM-0219 (C-tier binary size), REQ-RM-1464 (pass criteria of the firewall namespace test), REQ-WP-0196
+  (each role a separate agent), REQ-CL-0453 (iPerf3 port from a server's port range).
+- **Process rules:** rules no test of the owner's code can prove carry `process rule:` in Notes and are listed in
+  `BY_PACKAGE.md` *Flags* (register README, *Owner and Also in*).
+- **Mappings:** section A maps the open page labels SLA, Exports, Results, Support and Outages to page packages; section E
+  and the porting-plan part map 7.1 and 7.7 to X2-01; M1 *Rows by owner* (stale since round 1 for several sections) and M2
+  lines 42 and 327 were recomputed from the parts, and `check.sh` now recomputes both.
+- `BY_PACKAGE.md` was regenerated from the parts.
+
 ## M1. Every roadmap section in one package
 
 Every `##` and `###` heading of `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c` outside code blocks (69), with the lines up to the
 next such heading. *Package* is the one package the section belongs to: the package that owns most of the section's rows,
-unless *Basis* says otherwise. *Rows* counts the owners of the REQ-RM rows whose first cited line is in the section.
+unless *Basis* says otherwise. *Rows* counts the owners of the REQ-RM rows that cite a line of the section (a row that cites
+lines of two sections counts in both; round 2: recomputed from the parts, and `check.sh` now recomputes it).
 `check.sh` fails when a heading is missing here, listed twice, or has no valid package.
 
 | Line | Lines | Section | Package | Basis | Rows by owner |
@@ -184,8 +217,8 @@ unless *Basis* says otherwise. *Rows* counts the owners of the REQ-RM rows whose
 | 6 | 6-7 | 1. Executive Summary & Problem Formulation | P-13 | context: chapter heading; 1.1 and 1.2 below are mapped | none |
 | 8 | 8-18 | 1.1 The Embedded Reality | P-13 | majority | P-13 3, P-10 2, M-01 1 |
 | 19 | 19-25 | 1.2 Strategic Goal: The De-Pythonization Objective | F-00 | tie: language and toolchain goal (REQ-RM-0010 to -0014 are F-00) | F-00 1, P-10 1, P-13 1, X2-01 1 |
-| 26 | 26-52 | 2. Technology Evaluation: Go (Golang) vs. C (C11) vs. C++ (C++17) | F-00 | context: language evaluation, decided as the toolchain of F-00 | none |
-| 53 | 53-68 | 2.1 Detailed Comparison Matrix | F-00 | tie (F-00 2, P-13 2): comparison of the languages, toolchain of F-00 | F-00 2, P-13 2, C-02 1, M-01 1, N-01 1, S-01 1, U-01 1, X2-01 1 |
+| 26 | 26-52 | 2. Technology Evaluation: Go (Golang) vs. C (C11) vs. C++ (C++17) | F-00 | context: language evaluation, decided as the toolchain of F-00 | X2-01 1 |
+| 53 | 53-68 | 2.1 Detailed Comparison Matrix | F-00 | tie (F-00 2, P-13 2, X2-01 2): comparison of the languages, toolchain of F-00 | F-00 2, P-13 2, X2-01 2, C-02 1, M-01 1, N-01 1, S-01 1, U-01 1 |
 | 69 | 69-70 | 3. Recommended Architectural Decision | F-00 | context: chapter heading of the language decision | none |
 | 71 | 71-80 | 🎯 Two-Tier Tiered Strategy: | F-00 | tie: one row each; the tier split is the toolchain decision (C tier rows in X2-01) | F-00 1, P-11 1, U-01 1, X2-01 1 |
 | 81 | 81-115 | 4. Component-by-Component Migration Blueprint | P-10 | majority | P-10 1 |
@@ -193,10 +226,10 @@ unless *Basis* says otherwise. *Rows* counts the owners of the REQ-RM rows whose
 | 128 | 128-137 | 4.2 Dynamic Network & Route Daemon (`nmb-netd`) | N-01 | majority | N-01 2, N-02 1, X2-01 1 |
 | 138 | 138-145 | 4.3 High-Throughput Speedtest Engine (`nmb-speed`) | M-04 | majority | M-04 3, M-06 2, M-08 1, M-10 1 |
 | 146 | 146-156 | 4.4 Web Server, REST API & Embedded Dashboard (`nmb-web`) | S-01 | plan | S-01 3, U-01 1, X2-01 1 |
-| 157 | 157-175 | 4.4A Optimised Web Interface for the Native Build (Owner, 2026-11-10; Planned) | U-01 | majority | U-01 15, S-01 4, S-02 2, C-06 1 |
+| 157 | 157-175 | 4.4A Optimised Web Interface for the Native Build (Owner, 2026-11-10; Planned) | U-01 | majority | U-01 15, S-01 4, X2-01 4, S-02 2, C-06 1 |
 | 176 | 176-182 | 4.5 In-Memory Database & Persistence (`nmb-db`) | C-02 | majority | C-02 2 |
 | 183 | 183-195 | 4.6 Native RTR-NetzTest (Open-RMBT) Engine (`rmbt-client`) | M-08 | majority | M-08 4, X2-01 1 |
-| 196 | 196-207 | 4.7 Censorship & Neutrality Engine: In-Process OONI Probe (`ooniprobe`) | M-13 | majority | M-13 4 |
+| 196 | 196-207 | 4.7 Censorship & Neutrality Engine: In-Process OONI Probe (`ooniprobe`) | M-13 | majority | M-13 3, X2-01 1 |
 | 208 | 208-216 | 4.8 High-Precision Local/WAN Bandwidth Engine: iPerf3 Protocol Client | M-09 | majority | M-09 2, X2-01 1 |
 | 217 | 217-227 | 4.9 Embedded DNS Ad-Blocker & Privacy Shield (`nmb-adblock` / Pi-hole Alternative) | N-12 | majority | N-12 5 |
 | 228 | 228-243 | 4.10 Dual-Hub VPN (WireGuard + OpenVPN EC) & Tailscale Mesh (`tsnet`) | N-13 | plan names N-13, N-14 and N-15 for 4.10; majority N-13 | N-13 2, N-14 1, N-15 1, N-18 1, X2-01 1 |
@@ -205,7 +238,7 @@ unless *Basis* says otherwise. *Rows* counts the owners of the REQ-RM rows whose
 | 262 | 262-274 | 4.13 Real-Time Task Manager & Hardware Monitor (`/proc` Telemetry Engine) | C-09 | majority | C-09 4 |
 | 275 | 275-282 | 4.14 Dedicated Guest Wi-Fi & Station Multi-SSID Wireless Controller | N-07 | majority | N-07 3 |
 | 283 | 283-290 | 4.15 Invasive Diagnostic Logger & Crash Trap (`nmb-invasive-log`) | R-05 | majority; plan names C-03 and R-05 for 4.15 | R-05 4 |
-| 291 | 291-303 | 4.16 Multilingual Telegram Chatbot & Interactive Menus in Native Code | S-11 | majority | S-11 4 |
+| 291 | 291-303 | 4.16 Multilingual Telegram Chatbot & Interactive Menus in Native Code | S-11 | majority | S-11 4, X2-01 1 |
 | 304 | 304-312 | 4.17 Regulatory-Grade Broadband SLA Dossier & Pure SVG Vector Engine | R-03 | majority; plan names R-01 and R-03 for 4.17 | R-03 4 |
 | 313 | 313-322 | 4.18 Micro-Outage Detection & Loss Pattern Correlation Engine | M-02 | majority | M-02 3 |
 | 323 | 323-334 | 4.19 Wi-Fi RF & PHY Telemetry via `nl80211` Netlink | M-14 | majority | M-14 2 |
@@ -218,32 +251,32 @@ unless *Basis* says otherwise. *Rows* counts the owners of the REQ-RM rows whose
 | 396 | 396-409 | 4.26 Features Added in November 2026 (the Python Reference the Native Build Must Match) | N-10 | majority; the section collects several features (C-06, C-08, M-07, N-08 also cite it) | N-10 9, M-07 5, N-08 5, C-08 2, C-06 1, M-04 1, M-09 1, N-05 1, P-13 1, X2-01 1 |
 | 410 | 410-435 | 4.27 USB Tethering & Mobile Uplink (Phones, 5G/4G Hotspots, Cellular Modems) | N-10 | majority | N-10 12, X2-01 3, N-05 2, N-08 1, P-11 1 |
 | 436 | 436-445 | 4.28 Automatic Mode (`mode = auto`, the Owner's Rule) | N-04 | majority | N-04 7 |
-| 446 | 446-457 | 4.29 The Measurement Setup on Every Result (Owner, 2026-11-10) | C-11 | majority | C-11 9, C-02 1, R-01 1, R-02 1, R-03 1, R-04 1, R-05 1, S-10 1, S-11 1, S-12 1, U-02 1 |
+| 446 | 446-457 | 4.29 The Measurement Setup on Every Result (Owner, 2026-11-10) | C-11 | majority | C-11 10, C-02 1, R-01 1, R-02 1, R-03 1, R-04 1, R-05 1, S-10 1, S-11 1, S-12 1, U-02 1 |
 | 458 | 458-493 | 5. Architectural Proposal: The Unified Single-Binary Monolith (`nmbd`) | P-10 | plan (section 5) | C-02 1, P-10 1, S-01 1 |
 | 494 | 494-507 | Multi-Call CLI Compatibility (Busybox-style): | P-10 | majority | P-10 2 |
 | 508 | 508-535 | 6. Four-Phase Hybrid Migration Roadmap | P-13 | tie (P-13 2, P-11 2): generic first, proven on the PC and the Pi 4 | P-11 2, P-13 2, P-01 1 |
-| 536 | 536-541 | Where the Native Files Live (Owner, 2026-11-10) | F-00 | majority | F-00 5, F-02 1 |
-| 542 | 542-557 | Generic First: Platform- and Architecture-Independent Code | F-00 | majority | F-00 5, P-13 3, F-04 2, N-17 1 |
-| 558 | 558-571 | Order of Work (Owner, 2026-11-10) | I-09 | part: step-1 image analysis first (majority F-03 3, I-09 2, I-10 2) | F-03 3, I-09 2, I-10 2, F-00 1, F-06 1, I-01 1, P-08 1, P-13 1, P-14 1, T-01 1 |
-| 572 | 572-605 | Quality Bar: At Least as Good as the Python Version, and Better | P-13 | plan: P-13 names QB 1, 4, 5, 7 (majority F-00 14, P-13 10) | F-00 14, P-13 10, C-10 8, P-03 6, F-03 4, P-02 4, S-01 4, C-01 3, C-06 3, F-06 3, P-04 2, R-03 2, R-04 2, S-11 2, C-03 1, C-04 1, C-05 1, F-05 1, N-02 1, N-05 1, N-07 1, P-06 1, P-11 1, S-10 1, S-13 1, U-01 1 |
+| 536 | 536-541 | Where the Native Files Live (Owner, 2026-11-10) | F-00 | majority | F-00 6 |
+| 542 | 542-557 | Generic First: Platform- and Architecture-Independent Code | F-00 | majority | F-00 6, P-13 3, F-04 2 |
+| 558 | 558-571 | Order of Work (Owner, 2026-11-10) | I-09 | part: step-1 image analysis first (tie F-03 3, I-09 3; I-10 2) | F-03 3, I-09 3, I-10 2, F-00 1, F-06 1, P-08 1, P-13 1, P-14 1, T-01 1 |
+| 572 | 572-605 | Quality Bar: At Least as Good as the Python Version, and Better | P-13 | plan: P-13 names QB 1, 4, 5, 7 (majority F-00 14, P-13 10) | F-00 14, P-13 10, C-10 8, P-03 6, F-03 4, P-02 4, X2-01 4, C-01 3, C-06 3, F-06 3, S-01 3, R-03 2, R-04 2, S-11 2, C-03 1, C-04 1, C-05 1, F-05 1, M-12 1, N-02 1, N-05 1, N-07 1, N-11 1, N-12 1, P-04 1, P-06 1, P-11 1, S-10 1, S-13 1, U-01 1 |
 | 606 | 606-620 | Register of Python Faults the Native Build Must Not Repeat (owner, 2026-11-10) | F-03 | plan: F-03 is the roadmap's register (majority N-02 7) | N-02 7, M-04 6, S-11 5, F-03 4, R-04 4, N-12 3, N-14 3, C-11 2, M-02 2, P-06 2, R-02 2, C-01 1, C-04 1, C-07 1, F-06 1, M-01 1, M-10 1, M-12 1, P-02 1, P-03 1, R-01 1, S-02 1, U-02 1 |
-| 621 | 621-758 | Phase 0: Freeze Behaviour Before Rewriting | F-05 | plan: F-05 is the Phase 0 reference (majority F-00 18) | F-00 18, S-10 12, M-03 11, P-13 7, C-01 6, M-05 5, S-01 3, F-05 2, M-04 2, N-01 2, N-03 2, N-05 2, P-03 2, P-04 2, P-11 2, C-02 1, C-08 1, F-04 1, F-06 1, M-01 1, M-06 1, M-09 1, M-10 1, N-02 1, N-14 1, N-17 1, P-02 1, P-06 1, P-10 1 |
+| 621 | 621-758 | Phase 0: Freeze Behaviour Before Rewriting | F-05 | plan: F-05 is the Phase 0 reference (majority F-00 18) | F-00 18, M-03 11, S-10 11, P-13 7, C-01 6, M-05 5, N-03 3, S-01 3, F-05 2, M-04 2, N-01 2, N-05 2, P-02 2, P-03 2, P-11 2, X2-01 2, C-02 1, C-08 1, F-04 1, F-06 1, M-06 1, M-09 1, M-10 1, N-02 1, N-14 1, N-17 1, P-04 1, P-06 1, P-10 1 |
 | 759 | 759-763 | Phase 1: High-ROI Micro-Engine Replacements | M-01 | tie: first step of the phase (probe) | C-09 1, M-01 1, M-04 1 |
 | 764 | 764-768 | Phase 2: Dynamic Routing, DNS Ad-Blocker & Wi-Fi IPC | N-01 | tie: first step of the phase (routing daemon) | N-01 1, N-07 1, N-12 1 |
 | 769 | 769-773 | Phase 3: WireGuard VPN, In-Process OONI & Unified Monolith (`nmbd`) | N-13 | tie: first step of the phase (WireGuard) | M-13 1, N-13 1, P-10 1 |
 | 774 | 774-780 | Phase 4: Self-Healing Watchdog, Driver Autodiscovery & OpenWrt Packaging | P-01 | tie: first step of the phase (watchdog) | N-17 1, P-01 1, P-11 1 |
 | 781 | 781-840 | 6A. NMB's Own Linux Distribution: Python-Free (Planned) | P-11 | plan: P-11 names 6A (majority I-09 15, P-11 12) | I-09 15, P-11 12, P-02 3, C-08 2, C-02 1, I-01 1, I-06 1, I-07 1, I-08 1, N-07 1, P-03 1, P-13 1 |
 | 841 | 841-844 | 6B. Product Decisions for the Native Build (Owner, 2026-11-10; Planned) | F-00 | tie: scope rule of the 6B decisions (REQ-RM-1314) | F-00 1, P-08 1, U-01 1 |
-| 845 | 845-851 | 6B.1 Look: AMOLED black by default, other themes only as add-ons | P-09 | majority | P-09 4, U-01 1 |
+| 845 | 845-851 | 6B.1 Look: AMOLED black by default, other themes only as add-ons | P-09 | majority | P-09 3, U-01 1, X2-01 1 |
 | 852 | 852-857 | 6B.2 CLI: no colour by default, colour as an add-on | S-10 | majority | S-10 3, P-09 1 |
 | 858 | 858-865 | 6B.3 Firmware and software from a file, and back to the maker's firmware | P-02 | plan (tie P-02 8, P-14 8) | P-02 8, P-14 8 |
 | 866 | 866-872 | 6B.3A Licence information and disclaimer for every component (owner, 2026-11-10) | P-08 | majority | P-08 6 |
-| 873 | 873-883 | 6B.5 Sandboxing as a built-in option (owner, 2026-11-10) | P-04 | majority | P-04 11, F-06 1, N-03 1, P-02 1 |
-| 884 | 884-899 | 6B.6 Captive portals on a Wi-Fi uplink (owner, 2026-11-10) | N-09 | majority | N-09 18 |
+| 873 | 873-883 | 6B.5 Sandboxing as a built-in option (owner, 2026-11-10) | P-04 | majority | P-04 11, F-06 1, N-02 1, N-03 1, P-02 1 |
+| 884 | 884-899 | 6B.6 Captive portals on a Wi-Fi uplink (owner, 2026-11-10) | N-09 | majority | N-09 18, X2-01 1 |
 | 900 | 900-916 | 6B.7 Full user manual and command-line reference (owner, 2026-11-10) | P-12 | majority | P-12 18 |
-| 917 | 917-930 | 6B.8 One behaviour, two languages: the Go and the C code bases learn from each other (owner, 2026-11-10) | F-07 | majority | F-07 11, F-00 1, F-05 1, T-01 1 |
+| 917 | 917-930 | 6B.8 One behaviour, two languages: the Go and the C code bases learn from each other (owner, 2026-11-10) | F-07 | majority | F-07 11, F-00 1, F-05 1, T-01 1, X2-01 1 |
 | 931 | 931-942 | 6B.4 Downloaded images and firmware to work with | I-09 | part (tie) | F-00 1, I-09 1, I-10 1 |
-| 943 | 943-975 | 7. Component Language & Dependency Elimination Matrix | P-10 | part (rows spread, M-12 2, C-09 2) | C-09 2, M-12 2, C-02 1, C-04 1, C-08 1, M-01 1, M-02 1, M-04 1, M-08 1, M-09 1, M-13 1, M-14 1, N-01 1, N-07 1, N-12 1, N-13 1, N-15 1, N-17 1, P-01 1, P-10 1, R-03 1, R-05 1, S-01 1, S-11 1 |
+| 943 | 943-975 | 7. Component Language & Dependency Elimination Matrix | P-10 | part (step-1 rows spread, M-12 2, C-09 2; the 5 X2-01 rows are the C halves split from step-1 rows in round 2) | X2-01 5, C-09 2, M-12 2, C-02 1, C-04 1, C-08 1, M-01 1, M-02 1, M-04 1, M-08 1, M-09 1, M-13 1, M-14 1, N-01 1, N-07 1, N-12 1, N-13 1, N-15 1, N-17 1, P-01 1, P-10 1, R-03 1, R-05 1, S-01 1, S-11 1 |
 | 976 | 976-999 | 8. Cross-Compilation Matrix (Go) | F-00 | majority | F-00 2 |
 | 1000 | 1000-1008 | UPX Binary Compression (Optional for SPI Flash): | T-01 | majority | T-01 1 |
 | 1009 | 1009-1019 | 9. Conclusion & Performance Projections | P-13 | majority | P-13 2, M-04 1, P-10 1, P-11 1 |
@@ -258,7 +291,7 @@ other packages own single rows of the section (see *Rows by owner*), which the r
 Every data row of every table of `docs/TESTING.md@ad3758c` and every item of *Known limits* (212 rows; header and
 separator rows left out). Only line numbers are given: some rows name the test site (Quality Bar 8). *Package* is the owner
 of most of the row's REQ-TS rows; on a tie, the owner of the row's first REQ-TS id. `check.sh` fails when a row is missing,
-listed twice, or has no valid package.
+listed twice, or has no valid package, and (round 2) when the owners column or the package differs from what the parts give.
 
 | Line | Package | REQ-TS rows | Owners of those rows |
 | ---: | :--- | :--- | :--- |
@@ -276,7 +309,7 @@ listed twice, or has no valid package.
 | 39 | P-04 | TS-0021, TS-0022, TS-0023 | M-08 1, P-04 1, P-10 1 |
 | 40 | P-11 | TS-0024 | P-11 1 |
 | 41 | P-11 | TS-0025, TS-0026 | P-04 1, P-11 1 |
-| 42 | P-11 | TS-0027, TS-0028 | P-01 1, P-11 1 |
+| 42 | P-11 | TS-0027, TS-0028 | P-06 1, P-11 1 |
 | 43 | P-11 | TS-0029 | P-11 1 |
 | 49 | M-10 | TS-0030, TS-0031 | M-05 1, M-10 1 |
 | 50 | M-08 | TS-0032 | M-08 1 |
@@ -421,7 +454,7 @@ listed twice, or has no valid package.
 | 319 | N-07 | TS-0244 | N-07 1 |
 | 320 | P-13 | TS-0245 | P-13 1 |
 | 321 | X2-01 | TS-0246 | X2-01 1 |
-| 327 | N-01 | TS-0247, TS-0248, TS-0249, TS-0250, TS-0251 | N-01 2, M-08 1, N-07 1, S-11 1 |
+| 327 | S-11 | TS-0247, TS-0248, TS-0249, TS-0250, TS-0251 | M-08 1, M-12 1, N-01 1, N-07 1, S-11 1 |
 | 328 | N-04 | TS-0252, TS-0253 | N-04 1, N-06 1 |
 | 329 | P-07 | TS-0254, TS-0255 | N-16 1, P-07 1 |
 | 330 | N-11 | TS-0256 | N-11 1 |

@@ -41,7 +41,7 @@ Reading notes for the register owner:
 | REQ-PP-0026 | Planned implementation per MediaTek SoC: MT7620N/A and MT7628 C11/musl with Tier 2 limits; MT7621A/AT C11/musl or Go (`GOARCH=mipsle`, soft float) with gigabit tests to be measured; MT7622, MT7981B, MT7986A and MT7988A Go static binary. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:103-108 | NEW: X2-01 Step-2 router tiers | | Example device column not copied (source names example products, one of which may be a device of the owner's site; not copied). |
 | REQ-PP-0027 | Generic First: every device family uses the same code as on the PC and the Pi 4; only the backends (service control, firewall, Wi-Fi, flash layout, offload) differ. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:110 | F-04 | NEW: X2-01 Step-2 router tiers | |
 | REQ-PP-0028 | Runtime pauses (interpreter lock, garbage collection) must not put latency spikes into sub-millisecond jitter, bufferbloat tracking or microsecond ICMP timing. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:125-126 | M-01 | M-04, R-01 | Go has a garbage collector too: proof is the timestamp spread under load (same as REQ-RM-0005). |
-| REQ-PP-0029 | No subprocess spawning (`ip`, `ps`, `wpa_cli` and the like) in normal operation, because on small CPUs it causes CPU spikes, false packet drops and interface congestion. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:127-128 | P-13 | N-01, N-07, C-09, M-14 | Same as REQ-RM-0006; P-13 checks the whole binary. |
+| REQ-PP-0029 | No routine spawning of external tools (`ip`, `ps`, `wpa_cli` and the like) for scans, polling and telemetry, because on small CPUs it causes CPU spikes, false packet drops and interface congestion. Exceptions: the third-party programs that run in the stricter sandbox (Ookla's own program, REQ-WP-0179, under REQ-RM-1350) and the vendor user-space tools of REQ-PP-0110; both are started for their task, not for polling. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:127-128 | P-13 | N-01, N-07, C-09, M-14 | Round 2: narrowed to the scope of REQ-RM-0006; lines 127-128 give the reason (forks on 400/575 MHz MIPS CPUs), not a ban on every program. Without the exceptions P-13 could not pass while M-10 meets REQ-WP-0179. Each package proves its own part; P-13 checks the whole binary (scan for exec calls outside the exceptions). |
 | REQ-PP-0030 | The whole suite is one multicall binary, in variants `nmbd` (Tier 1, Go/C11), `nmbd-tiny` (Tier 2, C11) and `nmbd-micro` (Tier 3, C11). | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:134-137 | P-10 | NEW: X2-01 Step-2 router tiers | Step 1 builds `nmbd` only. |
 | REQ-PP-0031 | Event loop: Linux `epoll`, `timerfd`, `signalfd` and non-blocking sockets. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:143 | NEW: X2-01 Step-2 router tiers | P-10 | For Go the runtime's poller does this; the C tiers implement it. |
 | REQ-PP-0032 | Probe engine: direct raw ICMP/UDP sockets with Welford running statistics. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:144 | M-01 | P-04 | Raw sockets need `CAP_NET_RAW` (P-04); the roadmap also allows unprivileged ICMP datagram sockets (REQ-RM-0017). |
@@ -111,7 +111,7 @@ Reading notes for the register owner:
 | REQ-PP-0096 | The test's own traffic is separated by subtracting it using its sockets or by reading client-side ports; the WAN counter alone is never assumed to be client traffic. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:544 | M-03 | M-04 | |
 | REQ-PP-0097 | Wi-Fi radios count as client-side ports, because their traffic may not cross the wired LAN ports. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:545 | M-03 | M-14, N-07 | |
 | REQ-PP-0098 | If traffic cannot be read, the network is treated as busy, as the Python version does. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:546 | M-03 | M-04 | |
-| REQ-PP-0099 | Stopping a test on client traffic (counter reads and a cancel signal) stays available on targets with a reduced feature set. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:547-548 | NEW: X2-01 Step-2 router tiers | M-03, M-04 | |
+| REQ-PP-0099 | Stopping a test on client traffic should stay available on targets with a reduced feature set, because it needs only counter reads and a cancel signal. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:547-548 | NEW: X2-01 Step-2 router tiers | M-03, M-04 | Round 2: the source's modality ("should") kept; the X2-01 brief records each target where it is not available, with the reason. |
 | REQ-PP-0100 | Each port passes the Phase 0 checks of the roadmap as far as its hardware allows. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:549-550 | NEW: X2-01 Step-2 router tiers | F-05 | |
 | REQ-PP-0101 | `nmb-cli` depends on neither Python nor full `curses`; a target that cannot hold the menu keeps the JSON commands. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:553 | S-10 | NEW: X2-01 Step-2 router tiers | |
 | REQ-PP-0102 | Ports follow the clean code rules: hardware differences stay behind one interface per feature, in separate files per target, never as `#ifdef` or device checks spread through shared code. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:554 | F-04 | F-00, NEW: X2-01 Step-2 router tiers | F-00's gate can check build tags / device checks outside backend files. |
@@ -196,8 +196,8 @@ Reading notes for the register owner:
 | REQ-PP-0181 | Design target, to measure: CPU load during a 2.5 Gbps test on Tier 1 11.5 % (Python cannot reach 2.5 Gbps). | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:683 | NEW: X2-01 Step-2 router tiers | P-13 | |
 | REQ-PP-0182 | Design target, to measure: `/proc` task scan time Tier 1 0.8 ms, Tier 2 1.4 ms, Tier 3 2.1 ms (Python: 22 ms). | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:684 | NEW: X2-01 Step-2 router tiers | C-09, P-13 | |
 | REQ-PP-0183 | Design target, to measure: ICMP probe jitter added by the engine Tier 1 under 0.04 ms, Tier 2 under 0.08 ms, Tier 3 under 0.12 ms (Python: 2.5 ms from garbage collection). | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:685 | NEW: X2-01 Step-2 router tiers | M-01, P-13 | |
-| REQ-PP-0184 | Zero subprocess forks per minute on every tier (Python: 120 per minute). | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:686-687 | P-13 | NEW: X2-01 Step-2 router tiers | Same rule as REQ-PP-0029, as a counted figure. |
-| REQ-PP-0185 | On the Raspberry Pi 4 the native build is measured for every parameter of the performance table and compared with the Python column, and is better where it can be (Quality Bar point 5). | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:675-686; docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:584 | P-13 |  | Derived (round 1): line 584 (QB 5, at least as flawless as the Python version on the Pi 4) applied to the table's Python column; the table itself gives router design targets. The Tier 1 column is not a Pi 4 target. |
+| REQ-PP-0184 | Design target, to measure: zero subprocess forks per minute on Tier 1, Tier 2 and Tier 3 (Python on the Pi 4: 120 per minute); starts of the sandboxed programs excepted in REQ-PP-0029 are counted and reported apart. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:686-687 | NEW: X2-01 Step-2 router tiers | P-13 | Round 2: a router-tier design target like REQ-PP-0175 to -0183 (line 673: the router columns are design targets); owner moved from P-13 to X2-01. Step-1 coverage comes through REQ-PP-0029 and REQ-PP-0185. |
+| REQ-PP-0185 | On the Raspberry Pi 4 the native build is measured for the parameters of the performance table of section 9 (idle and test RAM, flash, idle and test CPU, /proc scan time, probe jitter, forks per minute) and compared with the Python version, and is better where it can be. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:584 | P-13 |  | Derived (round 1) from line 584 (QB 5: at least as flawless as the Python version on the Pi 4, measurably better where it can). The parameter list is that of the table at lines 675-686, whose figures are router design targets only; the Tier 1 column is not a Pi 4 target. Round 2: the source narrowed to line 584, the table rows no longer name this id. |
 | REQ-PP-0186 | Goal: the RT-AXE7800 becomes a multi-gigabit probe capable of 2.5 Gbps line-rate tests, CAKE shaping and native Tailscale management, without slowing gaming or Wi-Fi 6E performance. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:693 | NEW: X2-01 Step-2 router tiers | | "Without slowing" must be measured (forwarding throughput and latency with NMB idle and active). |
 | REQ-PP-0187 | Goal: the RT-N12+ becomes an SLA probe with web reporting and Telegram alerts. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:694 | NEW: X2-01 Step-2 router tiers | | |
 | REQ-PP-0188 | Goal: the TL-WR740N v4 runs a reduced diagnostic suite, aiming at 178 KB of flash and 1.4 MB of RAM. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:695 | NEW: X2-01 Step-2 router tiers | | The reduced suite is not listed; it must at least keep stopping tests on traffic (REQ-PP-0099) and the collector subset (REQ-PP-0192). |
@@ -462,17 +462,17 @@ Each range includes the blank line(s) that end it. Every line 1-700 is in exactl
 | 669-670 | separator | context: horizontal rule |
 | 671-672 | heading | context: section 9 title |
 | 673-674 | paragraph | REQ-PP-0001 |
-| 675-676 | table row | REQ-PP-0185 (header naming the Python column and the tiers); alignment row |
-| 677 | table row | REQ-PP-0175, REQ-PP-0185 |
-| 678 | table row | REQ-PP-0176, REQ-PP-0185 |
-| 679 | table row | REQ-PP-0177, REQ-PP-0185 |
-| 680 | table row | REQ-PP-0178, REQ-PP-0185 |
-| 681 | table row | REQ-PP-0179, REQ-PP-0185 |
-| 682 | table row | REQ-PP-0180, REQ-PP-0185 |
-| 683 | table row | REQ-PP-0181, REQ-PP-0185 |
-| 684 | table row | REQ-PP-0182, REQ-PP-0185 |
-| 685 | table row | REQ-PP-0183, REQ-PP-0185 |
-| 686-687 | table row | REQ-PP-0184, REQ-PP-0185 |
+| 675-676 | table row | context: table header (Python column and the three router tiers) and alignment row; REQ-PP-0185 takes its parameter list from this table |
+| 677 | table row | REQ-PP-0175 |
+| 678 | table row | REQ-PP-0176 |
+| 679 | table row | REQ-PP-0177 |
+| 680 | table row | REQ-PP-0178 |
+| 681 | table row | REQ-PP-0179 |
+| 682 | table row | REQ-PP-0180 |
+| 683 | table row | REQ-PP-0181 |
+| 684 | table row | REQ-PP-0182 |
+| 685 | table row | REQ-PP-0183 |
+| 686-687 | table row | REQ-PP-0184 |
 | 688-689 | separator | context: horizontal rule |
 | 690-691 | heading | context: section 10 title |
 | 692 | paragraph | context: lead-in ("if implemented and the targets are met") |
@@ -485,17 +485,17 @@ Each range includes the blank line(s) that end it. Every line 1-700 is in exactl
 
 ## Proposed package changes
 
-1. **NEW: X2-01 Step-2 router tiers** (same id and name as proposed in `roadmap-1-507.md`). Work plan section 1 says the C11 tier and everything router-specific start after step 1, and section 3 has no package for them; most of this plan is router work, so without X2-01 the register's check fails. Owner of 89 rows here: REQ-PP-0001, -0003, -0004, -0008 to -0026, -0031, -0042 to -0066, -0068, -0069, -0078, -0093 to -0095, -0099, -0100, -0103 to -0115, -0144, -0150, -0162, -0171, -0173 to -0183, -0186 to -0189, -0192. Proposal: keep X2-01 as one holding package in step 1 (its rows go into `spec/` through F-07 so step 2 starts from them) and split it when step 2 is planned:
+1. **NEW: X2-01 Step-2 router tiers** (same id and name as proposed in `roadmap-1-507.md`). Work plan section 1 says the C11 tier and everything router-specific start after step 1, and section 3 has no package for them; most of this plan is router work, so without X2-01 the register's check fails. Owner of 93 rows here (after rounds 1 and 2): REQ-PP-0001, -0003, -0004, -0008 to -0026, -0031, -0041 to -0069, -0077, -0078, -0093 to -0095, -0099, -0100, -0103 to -0115, -0144, -0150, -0162, -0171, -0173 to -0184, -0186 to -0189, -0192. Proposal: keep X2-01 as one holding package in step 1 (its rows go into `spec/` through F-07 so step 2 starts from them) and split it when step 2 is planned:
    - one package per router target, starting with the TL-WR1043ND v1 (REQ-PP-0003; this is the `NEW: T-01` of `roadmap-508-1034.md`, which the register owner should make a child of X2-01 rather than a second holding package), then T-02... in the owner's order (REQ-PP-0004);
    - X2-01a Tier 1 Asuswrt/Merlin integration (4.2-4.4: REQ-PP-0042 to -0054);
-   - X2-01b C tier storage and budgets (5.3, 6.2, section 9: REQ-PP-0055 to -0066, -0175 to -0183);
+   - X2-01b C tier storage and budgets (5.3, 6.2, section 9: REQ-PP-0055 to -0066, -0175 to -0184);
    - X2-01c Missing parts from the maker's firmware (7H: REQ-PP-0106 to -0115), next to I-10 (REQ-PP-0116);
    - X2-01d Remote access, recovery and brick risk per target (7D: REQ-PP-0144, -0150, -0162, -0171);
    - X2-01e MikroTik and MediaTek families (1.3: REQ-PP-0021 to -0026).
 2. **Duplicate section number.** The plan has two sections "7.10" (DynDNS at line 505, collector client at line 698). The work plan's N-16 row cites "porting plan 7.10" for DynDNS; the register should cite lines, not the number, and S-12 also owns the second 7.10 (REQ-PP-0190, -0191).
-3. **Porting plan sections to their main package** (for the register's "every section in exactly one package" check): 1, 1.1, 1.2, 1.3, 2 (rationale), 4, 5, 6, 7G, 7H, 8 (C parts), 9, 10 → X2-01; 3 → P-10; 7.1 → N-15; 7.2 → S-11 (C form X2-01); 7.3 → R-03; 7.4 → M-14; 7.5 → C-09; 7.6 → M-12; 7.7 → N-12; 7.8 → M-04 (engines M-06 to M-10); 7.9 → P-01; 7.10 (line 505) → N-16; 7.10 (line 698) → S-12; 7A → N-06; 7B → M-03; 7F → F-04; 7E → P-13; 7D → P-05 (with N-18, C-03, P-02, R-04); 7C → P-11; 8 (Go part) → F-00.
+3. **Porting plan sections to their main package** (for the register's "every section in exactly one package" check): 1, 1.1, 1.2, 1.3, 2 (rationale), 4, 5, 6, 7G, 7H, 8 (C parts), 9, 10 → X2-01; 3 → P-10; 7.1 → X2-01 (N-15 under Also in; both 7.1 rows, REQ-PP-0067 and -0068, are owned by X2-01 since round 1); 7.2 → S-11 (C form X2-01); 7.3 → R-03; 7.4 → M-14; 7.5 → C-09; 7.6 → M-12; 7.7 → X2-01 (its main rows REQ-PP-0077 and -0078 are owned by X2-01 since round 1; N-12 owns REQ-PP-0079); 7.8 → M-04 (engines M-06 to M-10); 7.9 → P-01; 7.10 (line 505) → N-16; 7.10 (line 698) → S-12; 7A → N-06; 7B → M-03; 7F → F-04; 7E → P-13; 7D → P-05 (with N-18, C-03, P-02, R-04); 7C → P-11; 8 (Go part) → F-00.
 4. **Round 1 moves.** REQ-PP-0041 (RAM ring buffer), -0067 (Tier 1 `tsnet`) and -0077 (Tier 1 radix trie) are owned by
-   X2-01, with C-02, N-15 and N-12 under *Also in* for their step-1 choice; X2-01 now owns 92 rows here. REQ-PP-0080 (Ookla
+   X2-01, with C-02, N-15 and N-12 under *Also in* for their step-1 choice; X2-01 owned 92 rows here after round 1, 93 after round 2 (REQ-PP-0184, a router-tier design target). REQ-PP-0080 (Ookla
    protocol emulation) is withdrawn, superseded by REQ-WP-0179 and -0180.
 5. No other split or merge proposed from this source. P-05 owns 7 rows from 7D and N-18 owns 8; both stay within one sitting by the size rule as far as this source shows.
 

@@ -50,6 +50,9 @@ plant "Python file not mapped" PACKAGE_CHANGES.md '/^| `setup.sh` |/d'
 plant "Python file mapped to unknown package" PACKAGE_CHANGES.md 's/^| `setup.sh` | P-11 |/| `setup.sh` | Q-11 |/'
 plant "cited line in a coverage row without the id" parts/roadmap-1-507.md 's/^| 414 | paragraph | REQ-RM-0165 ([^|]*|/| 414 | paragraph | context: label |/'
 plant "CONTRIBUTING coverage gap" parts/contributing.md '/^| 8 | bullet |/d'
+plant "M2 owners column stale" PACKAGE_CHANGES.md 's/^| 42 | P-11 | TS-0027, TS-0028 | P-06 1, P-11 1 |/| 42 | P-11 | TS-0027, TS-0028 | P-01 1, P-11 1 |/'
+plant "M2 package against its tie rule" PACKAGE_CHANGES.md 's/^| 327 | S-11 |/| 327 | N-01 |/'
+plant "M1 rows by owner stale" PACKAGE_CHANGES.md 's/^\(| 116 | 116-127 | .*| \)M-01 3, X2-01 1 |$/\1M-01 4 |/'
 
 if [ "$failures" -eq 0 ]; then echo "check_test: OK"; exit 0; fi
 echo "check_test: $failures FAILED"

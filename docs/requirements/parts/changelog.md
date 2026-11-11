@@ -3,7 +3,7 @@
 Source: `CHANGELOG.md` of the Python repository at commit `ad3758c` (423 lines; this part covers lines 1-423).
 Read in pages: 1-75, 76-150, 151-220, 221-290, 291-360, 361-423 (all lines).
 Package ids from `docs/NATIVE_WORK_PLAN.md@ad3758c:98-226` (section 3 and section 4).
-Id range of this part: REQ-CL-0001 to REQ-CL-0452 (0452 added in round 1). Every Source cell is written out in full as `CHANGELOG.md@ad3758c:<line>`.
+Id range of this part: REQ-CL-0001 to REQ-CL-0453 (0452 added in round 1, 0453 in round 2). Every Source cell is written out in full as `CHANGELOG.md@ad3758c:<line>`.
 API and page packages are written as `S-02…S-0n (API: <area>)` and `U-02…U-0n (page: <page>)`, using the areas of work plan line 189, until F-02 fixes their numbers (same convention as the TESTING.md part).
 
 Rules used: an Added or Changed entry that describes behaviour of the box is a requirement; a Fixed or Security entry is a requirement stating the correct behaviour, marked `fault` in Notes so F-03 can cross-reference it (the native build must not repeat the fault). Entries that only add or change a plan, a development note or a document with no box behaviour are listed as context in the Coverage table, with the part of the register that holds their requirements. One changelog bullet that states several checkable things is split into several rows with the same source line. "Python proof" in Notes records how the Python version proved it, as a hint for the native test.
@@ -243,11 +243,12 @@ Rules used: an Added or Changed entry that describes behaviour of the box is a r
 | REQ-CL-0229 | Making a report only reads: it never changes the Wi-Fi regulatory domain; the access point sets it when it starts. | CHANGELOG.md@ad3758c:199 | R-04 | N-07 | fault |
 | REQ-CL-0230 | Tests never ask a public GeoIP service and never set the regulatory domain. | CHANGELOG.md@ad3758c:199 | F-06 | N-07, M-12 | fault |
 | REQ-CL-0231 | A test checks that every file the installer installs or the README names is in the repository. | CHANGELOG.md@ad3758c:200 | P-11 | P-13, F-00 | fault |
-| REQ-CL-0232 | At boot in router mode the box counts as online with one active connection (the LAN bridge in router mode, the uplink in standalone mode), so dependent services start without a timeout; a box with no network at all still fails it. (source names a specific site value; not copied) | CHANGELOG.md@ad3758c:201 | P-10 | N-03, N-13, N-14 | fault |
+| REQ-CL-0232 | At boot the box counts as online with one active connection (the LAN bridge in router mode, the uplink in standalone mode), so dependent services start without a timeout; a box with no network at all still fails it. (source names a specific site value; not copied) | CHANGELOG.md@ad3758c:201 | P-10 | N-03, N-13, N-14 | fault. Round 2: "in router mode" removed from the start; the rule holds in both modes. |
 | REQ-CL-0233 | Tests never read the box's real state (network mode, line idle state, a running service): they use fixed inputs. | CHANGELOG.md@ad3758c:202 | F-06 | P-02 | fault |
 | REQ-CL-0234 | Unit tests do not depend on the machine they run on: no system tools, no real commands, no internet, no order between tests, no real database, no time-of-boot or wall-clock boundary; they run on fixed inputs and throwaway files. | CHANGELOG.md@ad3758c:203 | F-06 |  | fault |
-| REQ-CL-0235 | Address flushes are limited to DHCP addresses. | CHANGELOG.md@ad3758c:203 | N-07 | N-08 | fault; the second rule of the line (cable on another port preferred) is REQ-CL-0452 (split in round 1). |
+| REQ-CL-0235 | Address flushes are limited to DHCP addresses. | CHANGELOG.md@ad3758c:203 | N-07 | N-08 | fault; the second rule of the line (cable on another port preferred) is REQ-CL-0452 (split in round 1), the third (the port read from a server range) REQ-CL-0453 (round 2). |
 | REQ-CL-0452 | With the measuring link on automatic, a cable on another port than the configured WAN is still preferred as the measuring interface. | CHANGELOG.md@ad3758c:203 | N-01 | N-08, M-04 | fault; split from REQ-CL-0235 in round 1. Python: `find_preferred_measurement_interface` in `nmb/netd/interfaces.py@ad3758c:465` (N-01 in python-files.md), checked by `tests/test_wifi_uplink.py`. |
+| REQ-CL-0453 | For a public iPerf3 server listed with a port range, the port is read from that range (a port inside the listed range, the first one as in Python), the range is kept, and a missing or unreadable port falls back to 5201. | CHANGELOG.md@ad3758c:203 | M-09 | F-06 | fault; the third stricter check of the line (round 2). Python: `nmb/speed/iperf_directory.py@ad3758c:113-132`; the test runs on fixed inputs (no internet). |
 | REQ-CL-0236 | The update's test run never runs as root on the live box and never touches real settings, database, locks, DynDNS state, blocker lists, crash reports, bundles, backups or kept logs: everything points at throwaway files; a test that reaches a real file fails and the update is refused. | CHANGELOG.md@ad3758c:204 | P-02 | F-06, C-01 | fault; security; data loss |
 | REQ-CL-0237 | Proof: after the test run the settings, secrets copy, boot copy and blocker files are byte for byte unchanged. | CHANGELOG.md@ad3758c:204 | P-02 |  | Python proof: checked as root on the box |
 | REQ-CL-0238 | The diagnostic bundle never packs secrets: tokens and passwords become `<redacted, N chars>`. | CHANGELOG.md@ad3758c:205 | R-04 | C-04 | fault; security |
@@ -261,7 +262,7 @@ Rules used: an Added or Changed entry that describes behaviour of the box is a r
 | REQ-CL-0246 | Log sizes fit the log disk (smaller on boards with a small log RAM disk). | CHANGELOG.md@ad3758c:211 | P-11 | C-03 | fault |
 | REQ-CL-0247 | The installer never prints or stores a Web UI password the owner set, and warns on every run while the factory login is still set. | CHANGELOG.md@ad3758c:211 | P-11 | P-03 | fault; security |
 | REQ-CL-0248 | The developer log default is 5 MB with 2 copies. | CHANGELOG.md@ad3758c:212 | C-03 |  | fault |
-| REQ-CL-0249 | The documentation has the full bot command list in every language, and describes the storage guard, the update check and the 5 GHz result as they work. | CHANGELOG.md@ad3758c:213 | P-12 | S-11, C-08, P-02 |  |
+| REQ-CL-0249 | The documentation has the full bot command list with the current `/mode` values and all 11 languages; it describes the storage guard, the update check and the 5 GHz result as they work. | CHANGELOG.md@ad3758c:213 | P-12 | S-11, C-08, P-02 | Round 2: restated; the Python docs listed 5 languages and old `/mode` values. |
 | REQ-CL-0250 | The installed version is recorded as a full commit id, so the update check knows it; deploy instructions run the install detached with its log on persistent storage. | CHANGELOG.md@ad3758c:213 | P-02 | P-12 | fault |
 | REQ-CL-0251 | The bot does not wait for the network-online target; it retries Telegram by itself. | CHANGELOG.md@ad3758c:214 | S-11 | P-10 | fault |
 | REQ-CL-0252 | The storage guard also keeps 20 % of a separate log disk free (rotated logs first, oldest first, then active NMB logs over 1 MB emptied). | CHANGELOG.md@ad3758c:215 | C-08 | C-03 | fault |
@@ -331,7 +332,7 @@ Rules used: an Added or Changed entry that describes behaviour of the box is a r
 | REQ-CL-0316 | An iPerf3 server whose last five tests all failed is left out for 6 hours. | CHANGELOG.md@ad3758c:269 | M-09 |  | fault |
 | REQ-CL-0317 | No shared factory Wi-Fi password exists in defaults or example config; the installer first restores the owner's password from the root-only copy and generates a new one only when there is none. | CHANGELOG.md@ad3758c:270 | P-03 | N-07, C-01, P-11 | fault; security |
 | REQ-CL-0318 | After setting up, router mode drops the wired LAN ports' link for 4 seconds so devices ask for addresses again. | CHANGELOG.md@ad3758c:271 | N-03 | N-05 | fault |
-| REQ-CL-0319 | The DHCP guard stops serving within about a minute after another router appears. | CHANGELOG.md@ad3758c:271 | N-05 | N-10 | Python proof: live on USB tethering |
+| REQ-CL-0319 | When another router (DHCP server) appears on the port, the DHCP guard stops the box's DHCP serving within seconds, as REQ-RE-0050 ("at once") and REQ-TS-0240 ("within seconds") require; the time is measured. | CHANGELOG.md@ad3758c:271 | N-05 | N-10 | Python proof: live on USB tethering, serving stopped 50 s after the home router came back; that Python figure is looser than README.md@ad3758c:105 and docs/TESTING.md@ad3758c:315, so the native build is held to theirs and the N-05 brief records the Python gap (F-03). Round 2: aligned. |
 | REQ-CL-0320 | The scenario packet counter uses a valid firewall rule; the "laptop got an address" check never counts the simulated client's lease. | CHANGELOG.md@ad3758c:272 | P-07 |  | fault |
 | REQ-CL-0321 | Default routes through a port with no link or no address are removed, and the kernel ignores routes on a port without link; the self-test fails on such a route. | CHANGELOG.md@ad3758c:273 | N-01 | N-08, N-10 | fault |
 | REQ-CL-0322 | Secrets the owner typed are kept in a root-only copy for 30 days; the self-test reports one that went missing and a root command puts it back; the USB scenario restores them itself. | CHANGELOG.md@ad3758c:274 | C-04 | P-07, P-11 |  |
@@ -355,7 +356,7 @@ Rules used: an Added or Changed entry that describes behaviour of the box is a r
 | REQ-CL-0340 | Every bot command is tested against the functions it calls (heal, Wi-Fi, scan, connect, tasks, kill, Tailscale, backup, drivers), so a changed interface cannot break it silently. | CHANGELOG.md@ad3758c:292 | S-11 | F-06 | fault |
 | REQ-CL-0341 | An install or upgrade restarts every service, so none keeps old code. | CHANGELOG.md@ad3758c:293 | P-11 | P-02, P-10, S-11 | fault; owner moved from P-02 in round 1: one owner (P-11) with REQ-TS-0168 and REQ-CT-0018 |
 | REQ-CL-0342 | A bot error with no text names the error type. | CHANGELOG.md@ad3758c:294 | S-11 |  | fault |
-| REQ-CL-0343 | The bot reads the SLA result from its code, never by matching words (a non-compliant result showed as compliant). | CHANGELOG.md@ad3758c:295 | S-11 | R-01 | fault |
+| REQ-CL-0343 | A non-compliant SLA result is never shown as compliant (no partial word match decides the verdict). | CHANGELOG.md@ad3758c:295 | S-11 | R-01 | fault. Python matched the shorter word inside the longer one first; its fix is a longest-match rule (`get_sla_verdict`, see `parts/python-files.md`). The mechanism is left to S-11. Round 2: restated without prescribing one. |
 | REQ-CL-0344 | Web UI texts describe the current behaviour in every language. | CHANGELOG.md@ad3758c:296 | C-06 | U-01 | fault |
 | REQ-CL-0345 | The Ookla program has its own home in the box's state directory, so it keeps its settings; an accepted licence carries over. | CHANGELOG.md@ad3758c:297 | M-10 | P-04 | fault |
 | REQ-CL-0346 | Settings saves run one at a time, each with its own temporary file, so two programs saving at once never leave a broken file. | CHANGELOG.md@ad3758c:298 | C-01 |  | fault |
@@ -398,7 +399,7 @@ Rules used: an Added or Changed entry that describes behaviour of the box is a r
 | REQ-CL-0383 | A new config uses the real network interface names, not a fixed name. | CHANGELOG.md@ad3758c:335 | N-17 | P-11, C-01 | fault |
 | REQ-CL-0384 | PPPoE redials after the line drops. | CHANGELOG.md@ad3758c:336 | N-05 |  | fault |
 | REQ-CL-0385 | The DHCP/DNS server of router mode does not conflict with the DNS blocker. | CHANGELOG.md@ad3758c:337 | N-12 | N-03 | fault |
-| REQ-CL-0386 | The box connects to WPA3 access points (cipher set). | CHANGELOG.md@ad3758c:338 | N-07 |  | fault |
+| REQ-CL-0386 | WPA3 (SAE) access points of the box accept clients: the access point configuration sets the WPA3 cipher. | CHANGELOG.md@ad3758c:338 | N-07 |  | fault. The box's own access point (wireless router mode group, CHANGELOG lines 331-340; the Python fix adds `rsn_pairwise=CCMP` to the generated hostapd configuration); the check is REQ-TS-0106. Round 2: restated, it had been read as a Wi-Fi client capability. |
 | REQ-CL-0387 | Network settings saved in the Web UI take effect without a restart. | CHANGELOG.md@ad3758c:339 | N-03 | S-02…S-0n (API: network) | fault |
 | REQ-CL-0388 | The diagnostic snapshot copies nothing big into the system journal and is written to the boot drive at most once an hour. | CHANGELOG.md@ad3758c:340 | R-04 | C-03 | fault |
 | REQ-CL-0389 | The privileged helper does only what NMB needs: runs from a fixed place with no code loaded from the caller's folder, repairs only NMB's own links and folders, restores settings only from the boot copy through the normal merge, installs engine programs only to their fixed places and only files root prepared itself, and installs only the packages NMB lists. | CHANGELOG.md@ad3758c:344 | P-06 | P-13 | fault; security |
@@ -673,7 +674,7 @@ Every line 1-423 in order; no gaps. Blank lines are listed as such.
 | 200 | bullet | REQ-CL-0231 |
 | 201 | bullet | REQ-CL-0232 |
 | 202 | bullet | REQ-CL-0233 |
-| 203 | bullet | REQ-CL-0234, REQ-CL-0235, REQ-CL-0452 |
+| 203 | bullet | REQ-CL-0234, REQ-CL-0235, REQ-CL-0452, REQ-CL-0453 |
 | 204 | bullet | REQ-CL-0236, REQ-CL-0237 |
 | 205 | bullet | REQ-CL-0238, REQ-CL-0239 |
 | 206 | bullet | REQ-CL-0240 |

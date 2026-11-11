@@ -13,22 +13,24 @@ valid when the Python files change later.
 
 | Prefix | Source | Part | Ids |
 | :--- | :--- | :--- | ---: |
-| REQ-RM | `docs/DEPYTHONIZATION_ROADMAP.md` lines 1-507 (ids 0001-0213) and 508-1034 (ids 1001-1455) | `parts/roadmap-1-507.md`, `parts/roadmap-508-1034.md` | 668 |
+| REQ-RM | `docs/DEPYTHONIZATION_ROADMAP.md` lines 1-507 (ids 0001-0219) and 508-1034 (ids 1001-1464) | `parts/roadmap-1-507.md`, `parts/roadmap-508-1034.md` | 683 |
 | REQ-PP | `docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md` (porting plan) | `parts/porting-plan.md` | 193 |
-| REQ-WP | `docs/NATIVE_WORK_PLAN.md` | `parts/workplan-architecture-devsetup.md` | 195 |
+| REQ-WP | `docs/NATIVE_WORK_PLAN.md` | `parts/workplan-architecture-devsetup.md` | 197 |
 | REQ-AR | `docs/ARCHITECTURE.md` | `parts/workplan-architecture-devsetup.md` | 78 |
 | REQ-DV | `docs/DEV_SETUP_WINDOWS.md` | `parts/workplan-architecture-devsetup.md` | 26 |
 | REQ-TS | `docs/TESTING.md` (compared with `docs/TESTING.hu.md`) | `parts/testing.md` | 314 |
 | REQ-RE | `README.md` and the content only in `README.hu.md` | `parts/readme.md` | 340 |
-| REQ-CL | `CHANGELOG.md` | `parts/changelog.md` | 452 |
+| REQ-CL | `CHANGELOG.md` | `parts/changelog.md` | 453 |
 | REQ-CT | `CONTRIBUTING.md` (compared with `CONTRIBUTING.hu.md`) | `parts/contributing.md` | 26 |
 | (none) | every other tracked file (code, tests, units, assets), file by file with line ranges | `parts/python-files.md` | - |
-| | | **Total** | **2292** |
+| | | **Total** | **2310** |
 
 Documents of the commit without a coverage table of their own (`check.sh` names them in `OUT_OF_SCOPE` and fails on any
 other document without one):
 
-- `docs/TESTING.hu.md`: compared line by line in `parts/testing.md`; the English file is the source.
+- `docs/TESTING.hu.md`: compared with the English file in `parts/testing.md` (lines 1-21 and 276-399 read in full, lines
+  22-275 compared by row, by section size and by every code token and figure; the header of that part says how); the
+  English file is the source.
 - `docs/DEV_SETUP_WINDOWS.hu.md`: the Hungarian translation of `docs/DEV_SETUP_WINDOWS.md`; not compared yet (the English
   file is the source of the REQ-DV rows).
 - `docs/NMHH_SZELESSAVNET_COMPARISON.md` and its Hungarian version: out of scope. The F-02 row of the work plan does not
@@ -48,7 +50,7 @@ of that package writes the requirements of its ranges in the brief (skill `nmb-n
 | `PACKAGE_CHANGES.md` | Proposed new, split, merged and moved packages, de-duplicated; and the mappings of every roadmap section (M1), every `TESTING.md` row (M2) and every Python file (M3) to one package. |
 | `QUESTIONS.md` | The owner's questions from all parts, de-duplicated. |
 | `check.sh` | The register's check (POSIX `sh` and `awk`). |
-| `check_test.sh` | Test of the check: the real register must pass, 24 planted faults in copies must each fail. |
+| `check_test.sh` | Test of the check: the real register must pass, 27 planted faults in copies must each fail. |
 
 ## Names and site data (Quality Bar 8)
 
@@ -65,8 +67,8 @@ without them. This rule was made one for all parts in round 1.
 - A row that is wrong is corrected in place (text, source, package); a row that is no longer wanted keeps its id and
   says *withdrawn* with the reason in Notes: the Requirement cell starts with `*Withdrawn.*`, the Notes cell with
   `withdrawn: <reason>` (for example `withdrawn: superseded by REQ-WP-0179, -0180`). New requirements of a source get the
-  next free number of its prefix (REQ-RM-0214 for roadmap lines 1-507, REQ-RM-1456 for 508-1034, REQ-PP-0194, REQ-RE-0341,
-  REQ-CL-0453, REQ-CT-0027, and so on).
+  next free number of its prefix (REQ-RM-0220 for roadmap lines 1-507, REQ-RM-1465 for 508-1034, REQ-PP-0194, REQ-WP-0198,
+  REQ-RE-0341, REQ-CL-0454, REQ-CT-0027, and so on).
 - Requirements that a package analyst finds in a Python file are written in the brief with the file's line range as their
   source; if the register should hold them, they get ids of a new prefix agreed with F-02 (not one of the nine above).
 - Proposed package ids (section B of `PACKAGE_CHANGES.md`) follow the same rule: a rejected id is not reused.
@@ -76,6 +78,11 @@ without them. This rule was made one for all parts in round 1.
 - **Package** is the one package that must build the requirement and prove it with a test (work plan 2.4: a requirement
   id of a package without a test at the end is a failed gate). A withdrawn row keeps its package for the trace; the brief
   lists it as withdrawn and the gate expects no test for it (`BY_PACKAGE.md`, *Flags*, lists them).
+- A **process rule** is a rule for how the work is done (roles, the development PC, a rented server, tokens and passwords,
+  how images are handled) that no test of the package's code can prove. Its Notes cell starts with `process rule:` and
+  names who checks it: the orchestrator, or a gate script where one is possible. The owning package lists it in its brief
+  and the gate expects no test for it (`BY_PACKAGE.md`, *Flags*, lists them). A brief that finds another owned row of this
+  kind reports it to F-02, which adds the flag (added in round 2).
 - Rows that concern only the C code base or only router targets (step 2, `docs/NATIVE_WORK_PLAN.md@ad3758c:19-22`) are
   owned by `NEW: X2-01`, with the step-1 package under *Also in*; a row that mixes both is split.
 - **Also in** lists packages that must keep to the requirement, show or store what it produces, or test their side of it;
@@ -92,7 +99,9 @@ The brief of a package (skill `nmb-native-brief`) starts with its trace table:
 2. Cite each id with its source, as the part gives it, for example:
    `REQ-RM-0005 (docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:16): probe timing ... - test: <name>`.
 3. Add the package's ranges from `parts/python-files.md` (M3 of `PACKAGE_CHANGES.md` gives each file's main package)
-   and the roadmap sections and `TESTING.md` rows mapped to it (M1, M2).
+   and the roadmap sections and `TESTING.md` rows mapped to it (M1, M2). Most ranges were assigned from the files'
+   structure, not read line by line (that part's *Not done as asked* note): the analyst confirms every range boundary
+   and Notes cell of its files while reading them, and reports each moved boundary to F-02.
 4. If the analyst finds a row that belongs to another package, or a requirement the register lacks, the brief says so
    and F-02 changes the part (and regenerates `BY_PACKAGE.md`); the brief never renumbers an id.
 
@@ -115,10 +124,11 @@ every id in a coverage row and every id of a coverage row defined; every line a 
 source in a coverage row that names the id (added in round 1); every Python file of the commit (without `docs/` and the
 top-level `*.md`) in `parts/python-files.md` with each line exactly once; `BY_PACKAGE.md` equal to the parts; every work
 plan package present; and M1-M3 of `PACKAGE_CHANGES.md` mapping each roadmap heading, `TESTING.md` row and Python file
-exactly once to a known package; and every document of the commit (top-level `*.md`, `docs/`) either the source of a
+exactly once to a known package, with each M2 row's owners column and package recomputed from `parts/testing.md` and each M1 row's
+*Rows by owner* from the roadmap parts (both added in round 2); and every document of the commit (top-level `*.md`, `docs/`) either the source of a
 coverage table or named in `OUT_OF_SCOPE`.
 
 `BY_PACKAGE.md` and sections M1-M3 of `PACKAGE_CHANGES.md` were generated by the F-02 merge step from the parts. The
-generator is not in this repository yet (it was a one-off script of the merge, and again of round 1; a POSIX or Go version
+generator is not in this repository yet (it was a one-off script of the merge, and again of rounds 1 and 2; a POSIX or Go version
 belongs with F-00's tools). Until then, after a change to a part, edit `BY_PACKAGE.md` and M1-M3 to match; `check.sh` names every place that
 disagrees.

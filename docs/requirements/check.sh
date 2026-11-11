@@ -16,7 +16,9 @@
 #   5. BY_PACKAGE.md disagrees with the parts (owner and Also-in lists, counts), or a work plan package
 #      has no section in it;
 #   6. PACKAGE_CHANGES.md does not map every roadmap section, every TESTING.md row and every Python
-#      file to exactly one valid package;
+#      file to exactly one valid package, or an M2 row's owners column or package differs from what the
+#      owners of its REQ-TS rows in parts/testing.md give, or an M1 row's "Rows by owner" differs from the
+#      owners of the REQ-RM rows that cite a line of the section (both added in round 2);
 #   7. a document of the source commit (a top-level *.md or a file under docs/) is neither the source of a
 #      coverage table nor named in OUT_OF_SCOPE below.
 # Exit 2: the register or the source cannot be read.
@@ -317,6 +319,50 @@ FILENAME == ARGV[4] { want["M3\t" $2] = "Python file " $2; next }
 }
 END { for (key in want) if (!(key in got)) print "FAIL: PACKAGE_CHANGES.md does not map the " want[key] }
 ' "$T/keys" "$T/rmheads" "$T/tsrows" "$T/nlines" "$T/maps" > "$T/o"; [ -s "$T/o" ] && { sort "$T/o"; fail=1; }
+# 6b: each M2 row's owners column and package agree with the owners of its REQ-TS rows in parts/testing.md
+# (owners: "<package> <count>", most first, then by name; package: the most frequent owner, on a tie the first id's owner)
+awk '
+FILENAME == ARGV[1] { if ($2 == "testing.md") { id = $1; sub(/^REQ-/, "", id); own[id] = $4 }; next }
+/^## / { s = ($0 ~ /^## M2\./); next }
+s && /^\| [0-9]+ \|/ {
+	split($0, c, "|"); ln = c[2]; gsub(/ /, "", ln); pk = c[3]; gsub(/ /, "", pk)
+	ow = c[5]; gsub(/^ +| +$/, "", ow)
+	n = split(c[4], ids, ","); split("", cnt); nk = 0; bad = ""
+	for (i = 1; i <= n; i++) {
+		x = ids[i]; gsub(/ /, "", x)
+		if (!(x in own)) { bad = x; break }
+		if (!(own[x] in cnt)) key[++nk] = own[x]
+		cnt[own[x]]++
+	}
+	if (bad != "") { print "FAIL: PACKAGE_CHANGES.md M2 line " ln " names " bad ", which parts/testing.md does not define"; next }
+	for (i = 1; i <= nk; i++) for (j = i + 1; j <= nk; j++)
+		if (cnt[key[j]] > cnt[key[i]] || (cnt[key[j]] == cnt[key[i]] && key[j] < key[i])) { t = key[i]; key[i] = key[j]; key[j] = t }
+	want = ""; for (i = 1; i <= nk; i++) want = want (i > 1 ? ", " : "") key[i] " " cnt[key[i]]
+	x = ids[1]; gsub(/ /, "", x)
+	wpk = (nk > 1 && cnt[key[1]] == cnt[key[2]]) ? own[x] : key[1]
+	if (ow != want) print "FAIL: PACKAGE_CHANGES.md M2 line " ln " gives owners \"" ow "\", the parts give \"" want "\""
+	if (pk != wpk) print "FAIL: PACKAGE_CHANGES.md M2 line " ln " maps to " pk ", its rule gives " wpk
+}' "$T/req" "$R/PACKAGE_CHANGES.md" > "$T/o"; [ -s "$T/o" ] && { cat "$T/o"; fail=1; }
+# 6c: each M1 row's "Rows by owner" column agrees with the owners of the REQ-RM rows that cite a line of the section
+awk '
+FILENAME == ARGV[1] { own[$1] = $4; next }
+FILENAME == ARGV[2] { if ($4 == "docs/DEPYTHONIZATION_ROADMAP.md" && $2 ~ /^REQ-RM-/) { nr[$2]++; ra[$2, nr[$2]] = $5; rb[$2, nr[$2]] = $6 }; next }
+/^## / { s = ($0 ~ /^## M1\./); next }
+s && /^\| [0-9]+ \|/ {
+	split($0, c, "|"); ln = c[2]; gsub(/ /, "", ln); r = c[3]; gsub(/ /, "", r)
+	a = r; b = r; if (index(r, "-")) { a = substr(r, 1, index(r, "-") - 1); b = substr(r, index(r, "-") + 1) }
+	a += 0; b += 0; have = c[7]; gsub(/^ +| +$/, "", have)
+	split("", cnt); nk = 0
+	for (id in nr) for (i = 1; i <= nr[id]; i++) if (ra[id, i] <= b && rb[id, i] >= a) {
+		if (!(own[id] in cnt)) key[++nk] = own[id]
+		cnt[own[id]]++; break
+	}
+	for (i = 1; i <= nk; i++) for (j = i + 1; j <= nk; j++)
+		if (cnt[key[j]] > cnt[key[i]] || (cnt[key[j]] == cnt[key[i]] && key[j] < key[i])) { t = key[i]; key[i] = key[j]; key[j] = t }
+	want = ""; for (i = 1; i <= nk; i++) want = want (i > 1 ? ", " : "") key[i] " " cnt[key[i]]
+	if (want == "") want = "none"
+	if (have != want) print "FAIL: PACKAGE_CHANGES.md M1 line " ln " gives rows by owner \"" substr(have, 1, 60) "\", the parts give \"" substr(want, 1, 60) "\""
+}' "$T/req" "$T/srcs" "$R/PACKAGE_CHANGES.md" > "$T/o"; [ -s "$T/o" ] && { cat "$T/o"; fail=1; }
 
 # ---- 7: every document of the commit has a coverage table or is named out of scope
 cut -d' ' -f3 "$T/manifest2" | sort -u > "$T/docsrc"
