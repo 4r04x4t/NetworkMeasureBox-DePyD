@@ -36,7 +36,7 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public). First push 2026
 ## Core, measuring, network, reports, surfaces, product
 
 Briefs started early (code waits for F-04..F-06): C-03, C-04, C-05, C-07, C-08, C-09, C-10, C-11 (state: brief).
-Early briefs (research, code waits): M-06 accepted; M-07..M-10 in review; M-11..M-14, N-12..N-16 started 2026-11-11.
+Early briefs (research, code waits): M-06 accepted; M-07..M-10 in review; M-11..M-14, N-12..N-16 and N-05, N-09, N-10, N-11, N-17, N-18 started 2026-11-11.
 Core briefs C-01..C-11: written, held for the reconciliation round after F-04 per-part acceptance.
 Waiting: the rest of M, N, R, S, U, P.
 
