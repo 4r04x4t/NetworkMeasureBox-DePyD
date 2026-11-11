@@ -42,7 +42,7 @@ procedure of work plan section 7 point 5; that is a later step. Every field that
 - **usign signature of the list.** `usign` is not installed on the PC, so the Ed25519 signature was checked with
   OpenSSL 3.0.13 instead: the key number in `sha256sums.sig` is `b5043e70f9a75cde`; the public key of that number was
   taken from the keyring repository (`usign/b5043e70f9a75cde`, comment "Public usign key for unattended snapshot
-  builds", file SHA-256 `d7ac10f9…228f`); its 32 key bytes were wrapped in an Ed25519 SubjectPublicKeyInfo and
+  builds", file SHA-256 `d7ac10f9ed1b38033855f3d27c9327d558444fca804c685b17d9dcfb0648228f`); its 32 key bytes were wrapped in an Ed25519 SubjectPublicKeyInfo and
   `openssl pkeyutl -verify -pubin -rawin -in sha256sums -sigfile sig.bin` printed "Signature Verified Successfully"
   (exit 0). Control: the same check on a copy of the list with one byte appended printed "Signature Verification
   Failure" (exit 1).
@@ -122,7 +122,7 @@ Listed with `mdir -/ -i p1.img ::` (exit 0) and copied out with `mcopy -s -n -i 
 | `partuuid.txt` | 9 | `f3f8bc0be8a418dcdb360250a7d6ef66a42cf006dc73e87b293bf986351aa310` (content `d9cce260`) |
 | `COPYING.linux` | 496 | `fb5a425bd3b3cd6071a3a9aff9909a859e7c1158d54d32e07658398cd67eb6a0` |
 | `LICENCE.broadcom` | 1,594 | `c7283ff51f863d93a275c66e3b4cb08021a5dd4d8c1e7acc47d872fbe52d3d6b` |
-| `overlays/` (353 `.dtbo` + `README`) | 1,103,079 | SHA-256 of the sorted `sha256sum *.dtbo` output: `274ef126fac1bab4dbab0706fa6faf6bb23684ba04f7c2909f4fa0368b662a89`; `README` `8ada23f1…12e1` |
+| `overlays/` (353 `.dtbo` + `README`) | 1,103,079 | SHA-256 of the `sha256sum` list of the `.dtbo` files in name order: `cd overlays && LC_ALL=C sha256sum *.dtbo | sha256sum` (same value with `| sort -k2` before the last `sha256sum`) = `274ef126fac1bab4dbab0706fa6faf6bb23684ba04f7c2909f4fa0368b662a89`; `README` `8ada23f1a0a1406ac6da1eec8b443a23964b2ab80d8c35bf64dd9c1dc47912e1` |
 
 - **VideoCore firmware build** (`strings start4*.elf | grep VC_BUILD_ID`): all three are branch `bcm2711_2`, built
   Apr 30 2025, version `5560078dcc8591a00f57b9068d13e5544aeef3aa (clean)`, platform `raspberrypi_linux`; variants
@@ -179,7 +179,7 @@ Listed with `mdir -/ -i p1.img ::` (exit 0) and copied out with `mcopy -s -n -i 
 - **Source used instead: the official `kmod-ikconfig` for this exact kernel build** (`CONFIG_IKCONFIG=m`).
   - Address: `https://downloads.openwrt.org/releases/25.12.6/targets/bcm27xx/bcm2711/kmods/6.12.112-1-46807ee337a11df7be7d383dc0872b8e/kmod-ikconfig-6.12.112-r1.apk`,
     fetched 2026-11-11, 50,776 bytes, checked against the signed `sha256sums` (`sha256sum -c`, OK, exit 0).
-  - The kmods folder hash `46807ee3…2b8e` equals the hash in the installed `kernel` package's version.
+  - The kmods folder hash `46807ee337a11df7be7d383dc0872b8e` equals the hash in the installed `kernel` package's version.
   - The apk (ADB, magic `ADBd`, raw deflate) was inflated with a short script run with `python3 -I`, kept outside
     the data folder; the gzip blob between `IKCFG_ST` and `IKCFG_ED` was decompressed (exit 0).
   - Result: 8,366 lines, `# Linux/arm64 6.12.112 Kernel Configuration`,
@@ -283,7 +283,10 @@ Listed with `mdir -/ -i p1.img ::` (exit 0) and copied out with `mcopy -s -n -i 
 - **Firmware version** (`strings cyfmac43455-sdio.bin`): `43455c0-roml/43455_sdio-pno-aoe-pktfilter-pktctx-wfds-mfp-
   dfsradar-wowlpf-noclminc-clm_min-obss-obssdump-swdiv-gtkoe-roamprof-txbf-ve-extsae-dpp-sr-okc-bpd Version: 7.45.250
   (70e9766 CY) … Date: Fri 2022-07-29 … FWID 01-e53e306b`. `brcmfmac43143.bin`: `Version: 6.10.198.66`, 2014-04-03.
-  `brcmfmac43236b.bin`: no version string found by `strings`.
+  `brcmfmac43236b.bin`: no labelled `Version:` line (`strings -n 4 … | grep -c Version:` = 0), but a bare
+  version-shaped string `5.90.188.22` followed by `Nov 30 2011` and `17:33:42` (`strings -n 6`), the same form as the
+  bare `6.10.198.66 (r467479)` in `brcmfmac43143.bin`, whose labelled line confirms that form: likely version
+  5.90.188.22, built 2011-11-30.
 - **Pi 4 NVRAM file**: header "NVRAM config file for the BCM43455 WiFi/BT chip as found on the Raspberry Pi 4 Model B",
   `SPDX-License-Identifier: GPL-2.0+`, `(C) Copyright 2018 Raspberry Pi (Trading) Ltd.`; `devid=0x43ab`,
   `boardtype=0x6e4`, `boardrev=0x1304`, `aa2g=1`, `aa5g=1`, `txchain=1`, `rxchain=1`. It also contains a fixed
@@ -462,7 +465,7 @@ unless marked.
 - Overlay size and free space after the first boot (squashfs image): not determined, needs a boot on the Pi 4, later
   step.
 
-## 12. Boot test
+## 12. QEMU boot test (not run: Pi 4 image)
 
 **Not run, by the package's rule.** The Pi 4 image is not booted in QEMU on this PC and is not written to a card here.
 The boot on the owner's Pi 4 is a later step under work plan section 7 point 5 (full backup of settings, database and
@@ -493,14 +496,15 @@ Fields 5.2 takes from a boot, all **not determined: needs a boot on the Pi 4, la
 - **Which kernel file and which `start4*.elf` the firmware picks**: not determined; `config.txt` names neither.
 - **`/proc/cmdline`**: not determined; how the firmware merges the DT `bootargs` with `cmdline.txt` is not visible in
   the files.
-- **`brcmfmac43236b.bin` version**: no version string found by `strings`.
+- **`brcmfmac43236b.bin` version**: only likely, not certain: a bare `5.90.188.22` (build date Nov 30 2011) and no
+  labelled `Version:` line (section 5a).
 - **Licence field of six firmware packages**: empty in the apk database.
 - **SDK, toolchain, ImageBuilder and kernel-debug of bcm27xx/bcm2711** (5.3 point 4): not in the set, not downloaded
   and not analysed. The signed publisher list names them:
-  `openwrt-sdk-25.12.6-bcm27xx-bcm2711_gcc-14.3.0_musl.Linux-x86_64.tar.zst` (`d5faf36e…8df8e`),
-  `openwrt-toolchain-25.12.6-bcm27xx-bcm2711_gcc-14.3.0_musl.Linux-x86_64.tar.zst` (`b1bf188a…b579`),
-  `openwrt-imagebuilder-25.12.6-bcm27xx-bcm2711.Linux-x86_64.tar.zst` (`78191c19…4d2a`), `kernel-debug.tar.zst`
-  (`766423ec…dc78`) and `llvm-bpf-21.1.6.Linux-x86_64.tar.zst` (`3f07164c…f574`). From the image alone: GCC 14.3.0,
+  `openwrt-sdk-25.12.6-bcm27xx-bcm2711_gcc-14.3.0_musl.Linux-x86_64.tar.zst` (`d5faf36e92bc7311f138607606e8dd9fc4a6bda3fcf5277b0a5647515758df8e`),
+  `openwrt-toolchain-25.12.6-bcm27xx-bcm2711_gcc-14.3.0_musl.Linux-x86_64.tar.zst` (`b1bf188a11e0b211c1eaad0133e5cdb53f5b2c3418465417abf25cfc2e183579`),
+  `openwrt-imagebuilder-25.12.6-bcm27xx-bcm2711.Linux-x86_64.tar.zst` (`78191c1909358925bd92fc2200da29c1e4a0a8a949a4af77bd97650471604d2a`), `kernel-debug.tar.zst`
+  (`766423ecba86e7a6ceacc993611a3b4a6e858f5e7b0afda339450856540fdc78`) and `llvm-bpf-21.1.6.Linux-x86_64.tar.zst` (`3f07164c83d2965bc8685bbb1f1efda4539e9c86e42779f52808655b039df574`). From the image alone: GCC 14.3.0,
   GNU ld (binutils) 2.44, musl 1.2.5, target `aarch64_cortex-a72`. Use: the ImageBuilder would assemble an NMB Pi 4
   image from these packages without rebuilding; the native `nmbd` for arm64 can be built with the `armsr/armv8` SDK
   of I-02 if its compiler and musl match (I-09 to compare).
