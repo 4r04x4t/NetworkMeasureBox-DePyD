@@ -4,7 +4,7 @@ Source: `README.md` of the Python repository at commit `ad3758c` (487 lines; thi
 Read in pages: 1-150, 151-300, 301-450, 451-487 (all lines).
 Compared with `README.hu.md@ad3758c` (721 lines, read in pages 1-150, 151-300, 301-450, 451-600, 601-721, all lines): content that exists only in the Hungarian file is listed as its own rows (REQ-RE-0312 to REQ-RE-0338, marked "HU only") or added as a second source to the English row it extends; Hungarian statements that contradict the English file are listed under "Coverage" (README.hu.md table), where the English text wins.
 Package ids from `docs/NATIVE_WORK_PLAN.md@ad3758c:98-218` (section 3) and `:281-294` (image packages I-01..I-10).
-Id range of this part: REQ-RE-0001 to REQ-RE-0338.
+Id range of this part: REQ-RE-0001 to REQ-RE-0340 (0339 and 0340 added in round 1).
 
 Reading notes for the register owner:
 - `NEW: X2-01 Step-2 router tiers` is the holding package proposed in `roadmap-1-507.md` and reused by `porting-plan.md`; it is reused here for the router-target rows of README section 16, so the register keeps one id for it.
@@ -16,7 +16,7 @@ Reading notes for the register owner:
 
 | Id | Requirement | Source | Package | Also in | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| REQ-RE-0001 | The README states the project's licence with a badge, a link to `LICENSE` and a licence section; the Python version is under the MIT License, free for personal, community and commercial use. | README.md@ad3758c:5; README.md@ad3758c:485-487 | P-08 | P-12 | The native build's licence follows from its components (owner decision, native folder). This row asks for a licence statement of the same kind, not for MIT. |
+| REQ-RE-0001 | The README states the project's licence with a badge, a link to `LICENSE` and a licence section; the Python version is under the MIT License, free for personal, community and commercial use. | README.md@ad3758c:5; README.md@ad3758c:487 | P-08 | P-12 | The native build's licence follows from its components (owner decision, native folder). This row asks for a licence statement of the same kind, not for MIT. |
 | REQ-RE-0002 | Router ports are documented as planned only: NMB is developed and run on the Raspberry Pi 4, no router software or firmware exists, and router figures are design targets, not measurements. | README.md@ad3758c:9; README.md@ad3758c:265 | P-12 | NEW: X2-01 Step-2 router tiers, P-13 | Honest results rule. Stays true until a router build has passed live. |
 | REQ-RE-0003 | The English README links the full Hungarian guide (`README.hu.md`). | README.md@ad3758c:12 | P-12 | | |
 | REQ-RE-0004 | The README points to a support section: NMB is free and open source and developed in free time; a donation helps; the section tells the reader to double-check a pasted address and to send only the asset of that network. | README.md@ad3758c:16; README.md@ad3758c:474 | P-08 | P-12 | |
@@ -32,7 +32,7 @@ Reading notes for the register owner:
 | REQ-RE-0014 | A router appearing on the WAN port switches automatic mode to `standalone` at once. | README.md@ad3758c:82 | N-04 | N-01 | |
 | REQ-RE-0015 | A fixed mode, a manual override or the owner's own passthrough or aggregation settings always win over the automatic choice. | README.md@ad3758c:82 | N-04 | N-03, N-06 | |
 | REQ-RE-0016 | Automatic mode is proven by unit tests and live before it is called working (the source says "Unit-tested; not yet tested live"). | README.md@ad3758c:82 | N-04 | P-13 | Stale in the source: Tested Status (line 314) says automatic mode chose router mode on a real PPPoE line on 2026-11-09. |
-| REQ-RE-0017 | Mode A router WAN: DHCP, static IP or PPPoE; PPPoE in the kernel, with 802.1Q VLAN tagging and MSS clamping. | README.md@ad3758c:84 | N-05 | N-03 | Python: tested on a real 1000/300 Mbps PPPoE line on 2026-11-09. |
+| REQ-RE-0017 | Mode A router WAN: DHCP, static IP or PPPoE; PPPoE in the kernel, with 802.1Q VLAN tagging and MSS clamping. | README.md@ad3758c:84 | N-05 | N-03 | Python: tested on a real PPPoE line on 2026-11-09 (source names a specific site value; not copied). |
 | REQ-RE-0018 | PPPoE redials after a dropped line and waits longer after a refused login. | README.md@ad3758c:84 | N-05 | | |
 | REQ-RE-0019 | In Mode A the WAN is closed to the internet except replies, ICMP and the VPN ports that are on; a home router in front keeps full access for the owner. | README.md@ad3758c:85 | N-02 | N-03, N-13, N-14 | |
 | REQ-RE-0020 | Port forwarding, switchable in the Web UI (Router > Port forwarding): rules for TCP, UDP or both, single ports or ranges, with hairpin NAT. | README.md@ad3758c:86 | N-11 | N-02, U-02…U-0n (page: Router), S-02…S-0n (API: network) | |
@@ -113,7 +113,7 @@ Reading notes for the register owner:
 | REQ-RE-0095 | The schedule sets how often the box checks; each engine has its own minimum interval under `[speedtest]` or in the Web UI (`ookla_interval_min` at least 60; `rtr_interval_min` and `cloudflare_interval_min`, 0 = every run; `fastcom_interval_min`, 0 by default), so RTR can run every minute while Ookla runs hourly. | README.md@ad3758c:133 | M-04 | C-01 | |
 | REQ-RE-0096 | iPerf3 runs on the same schedule with its own `iperf3_interval_min`, against one or more servers (`target_host` and `extra_servers`; default 4 TCP streams, 10 s, download then upload), alone or in the mixed run, but only when an iPerf3 server is set under `[iperf]` and answers; otherwise it is left out without an empty row. | README.md@ad3758c:133 | M-09 | M-04, C-01 | |
 | REQ-RE-0097 | The speed test list shows only real measurements; skipped and failed runs are counted in one line. | README.md@ad3758c:133 | U-02…U-0n (page: Speed) | S-02…S-0n (API: speed), M-04 | |
-| REQ-RE-0098 | Scheduled tests run as long as the scheduling service runs, and upgrades keep the configured schedule. | README.md@ad3758c:133 | P-02 | M-04, C-01 | In Python `nmb-web` starts scheduled tests; in the native build the scheduler is M-04 inside `nmbd`. |
+| REQ-RE-0098 | Scheduled tests run as long as the scheduling service runs, and upgrades keep the configured schedule. | README.md@ad3758c:133 | M-04 | P-02, C-01 | In Python `nmb-web` starts scheduled tests; in the native build the scheduler is M-04 inside `nmbd`. Owner moved from P-02 in round 1; P-02 keeps the schedule across upgrades. |
 | REQ-RE-0099 | Memory-saving profiles exist for constrained Linux systems; the documentation says where they have run (Python: only on the Raspberry Pi 4, not on routers). | README.md@ad3758c:136 | C-08 | P-12 | |
 | REQ-RE-0100 | `low` profile: hot database in RAM limited to 48 MB, SQLite cache 2 MB (mmap 2 MB), TCP buffers limited to 8 MB. | README.md@ad3758c:137; README.hu.md@ad3758c:270-271 | C-08 | C-02, P-11 | mmap from the Hungarian file. |
 | REQ-RE-0101 | Unused heap memory is released back to the kernel proactively (periodically and after measurements). | README.md@ad3758c:138; README.hu.md@ad3758c:272 | C-08 | | Python does it with `malloc_trim(0)` and garbage collection; the native mechanism is the runtime's own. |
@@ -206,7 +206,7 @@ Reading notes for the register owner:
 | REQ-RE-0188 | NMB's own distribution (planned): a minimal image for the Raspberry Pi 4 and later x86-64, built on `nmbd`, with a read-only system, a separate data partition and A/B updates with automatic rollback. | README.md@ad3758c:293 | P-11 | P-02 | |
 | REQ-RE-0189 | The base of the distribution (Debian, OpenWrt, Alpine or another network-oriented one) is chosen by a written comparison. | README.md@ad3758c:293 | I-09 | P-11 | The owner decides (work plan I-09). |
 | REQ-RE-0190 | The distribution uses the stock kernel of its base unchanged (the Raspberry Pi kernel on the Pi 4, the base's LTS kernel on x86-64). | README.md@ad3758c:293 | P-11 | I-05, I-06 | |
-| REQ-RE-0191 | No device runs Python. | README.md@ad3758c:293 | P-13 | P-10 | |
+| REQ-RE-0191 | No device runs Python. | README.md@ad3758c:293 | P-11 | P-10, P-13 | Same rule as REQ-CL-0104; one owner (P-11, packages and images) in round 1, was P-13. |
 | REQ-RE-0192 | Router DNS sinkhole: a 512 KB counting Bloom filter (MurmurHash3, 0.1 % false positives) and a trie, under 640 KB RAM on 32 MB routers. | README.md@ad3758c:295 | NEW: X2-01 Step-2 router tiers | N-12 | Design target. |
 | REQ-RE-0193 | Speed engines are in-process TCP/TLS clients towards Ookla, Cloudflare, Fast.com and RTR, without external binaries (zero-copy buffers). | README.md@ad3758c:296 | M-04 | M-06, M-07, M-08, M-10, NEW: X2-01 Step-2 router tiers | In-process Ookla conflicts with the official-binary engine (REQ-RE-0072); owner decision: Ookla "whichever works". `roadmap-1-507.md` proposes `NEW: M-17` shared HTTP transfer core, which would own this row. |
 | REQ-RE-0194 | Self-healing is a multi-tier watchdog: service restart, link bounce, driver offload toggling, configuration rollback. | README.md@ad3758c:297 | P-01 | C-01, N-17 | |
@@ -214,7 +214,7 @@ Reading notes for the register owner:
 | REQ-RE-0196 | The README has a tested-status section that says what has actually been run, and links the full testing record. | README.md@ad3758c:307 | P-12 | P-13 | |
 | REQ-RE-0197 | Every speed, CPU and timing figure names the line and hardware it came from; untested line classes (much slower, much faster) are stated, and so is the Pi 4's limit above about 1 Gbps (one gigabit port and its CPU). | README.md@ad3758c:309 | P-13 | P-12 | The test line's ISP, country and router model are not copied (source names a specific site value; not copied). |
 | REQ-RE-0198 | The native build is in daily use on a Raspberry Pi 4 with Debian 13 in `standalone` mode (the Python status) before it replaces the Python version. | README.md@ad3758c:313 | P-13 | | |
-| REQ-RE-0199 | Router mode on a real PPPoE line on the Pi 4 is proven: automatic mode chooses it, kernel PPPoE at about 900/320 Mbit/s, redial, a real phone on the box's Wi-Fi, the WAN closed when seen from another network, the box's IPv6 and IPv6 for a LAN client, port forwarding and UPnP reached from another network. | README.md@ad3758c:314 | P-13 | N-04, N-05, N-07, N-02, N-11 | Python figures from the test line. |
+| REQ-RE-0199 | Router mode on a real PPPoE line on the Pi 4 is proven: automatic mode chooses it, kernel PPPoE reaches close to the line's plan, redial, a real phone on the box's Wi-Fi, the WAN closed when seen from another network, the box's IPv6 and IPv6 for a LAN client, port forwarding and UPnP reached from another network. | README.md@ad3758c:314 | P-13 | N-04, N-05, N-07, N-02, N-11 | (source names a specific site value; not copied) The source gives the speeds measured on the test line (restated in round 1). |
 | REQ-RE-0200 | Clean install on x86-64 is tested on the supported systems (Python: Debian 13 and 12, Ubuntu 26.04, 24.04 and 22.04 LTS, Fedora 45, AlmaLinux 10, Rocky Linux 10, Alpine 3.22 and 3.20): install, services, Web UI, a real speed test, reinstall and reboot. | README.md@ad3758c:315; README.md@ad3758c:339 | P-11 | P-13, F-06 | |
 | REQ-RE-0201 | `mode_a` router and `mode_b` bridge are tested with DHCP, NAT, DMZ isolation and client traffic (Python: in virtual machines only, not on Raspberry Pi hardware). | README.md@ad3758c:316 | N-03 | F-06, P-13 | Owner decision: everything is tested on the Pi 4 too. |
 | REQ-RE-0202 | Wi-Fi access point is proven: WPA2 on 2.4 and 5 GHz and WPA3 on 2.4 GHz with simulated radios and a real client; on the Pi 4 radio router mode on 2.4 GHz 802.11n 20 MHz and on 5 GHz 802.11ac 80 MHz with real clients over IPv4 and IPv6; one radio serves one band at a time. | README.md@ad3758c:317 | N-07 | F-06, P-13 | Python: about 85-95 Mbit/s on 5 GHz, the limit of the Pi 4 radio as an access point. |
@@ -253,6 +253,7 @@ Reading notes for the register owner:
 | REQ-RE-0235 | `nmb-speed --trigger manual`, `--engine ookla\|cloudflare\|fastcom\|rtr\|iperf3\|all`, `--interface <name>`. | README.md@ad3758c:368 | P-10 | M-04 | |
 | REQ-RE-0236 | `nmb-ooni status` and `nmb-ooni run websites`. | README.md@ad3758c:369 | P-10 | M-13 | |
 | REQ-RE-0237 | `nmb-report --window 24h --html <file>`, `--json-summary`, `--send-email`. | README.md@ad3758c:370 | P-10 | R-01, R-03, R-05 | |
+| REQ-RE-0340 | The box can send the SLA dossier or an ISP fault ticket by SMTP e-mail. | README.md@ad3758c:53 | R-05 | R-03 | From the overview diagram (round 1); details in REQ-CL-0161, REQ-CL-0144, REQ-RE-0220 (tested) and REQ-RE-0237 (CLI flag). |
 | REQ-RE-0238 | `nmb-adblock status`, `update`, `-b <domain>`. | README.md@ad3758c:371 | P-10 | N-12 | |
 | REQ-RE-0239 | `nmb-heal audit`, `status`, `fix`. | README.md@ad3758c:372 | P-10 | P-01 | |
 | REQ-RE-0240 | `nmb-driver scan`, `missing`, and `install` (as root). | README.md@ad3758c:373 | P-10 | N-17, P-06 | |
@@ -302,10 +303,11 @@ Reading notes for the register owner:
 | REQ-RE-0284 | `/lang [code]` switches the bot language: `hu`, `en`, `de`, `fr`, `uk`, `ro`, `it`, `es`, `pt`, `pt-br`, `zh`. | README.md@ad3758c:426 | S-11 | C-06 | |
 | REQ-RE-0285 | The whole suite is grouped under one service target (`nmb.target`), each component with its own unit; status and restart of the whole suite go through the target. | README.md@ad3758c:432-439; README.hu.md@ad3758c:554 | P-10 | P-04 | Native: one `nmbd` binary; units per role are P-10's design. |
 | REQ-RE-0286 | Each service's log can be followed live with the system journal (for example the probe, and the scheduled speed tests under the service that runs the schedule). | README.md@ad3758c:440-446 | C-03 | P-10 | |
-| REQ-RE-0287 | The web server runs as the unprivileged `nmb` user with only the network capabilities it needs; polkit lets it manage its own services and reboot; the privileged helper does every other privileged task, so the CLI terminal and the task manager cannot act as root. | README.md@ad3758c:452 | P-04 | P-06 | |
-| REQ-RE-0288 | Known Python limit: on polkit 0.105 (Ubuntu 22.04) the rule cannot name units, so there the service user may manage any systemd service. | README.md@ad3758c:452 | P-04 | F-03 | See Questions. |
+| REQ-RE-0287 | The web server runs as the unprivileged service user with only the network capabilities it needs. | README.md@ad3758c:452 | P-04 | P-06, S-01 | The privilege part of line 452 is REQ-RE-0339 (split in round 1). |
+| REQ-RE-0288 | The service account may manage only NMB's own units on every base and every polkit or service-manager version; the Python limit (on polkit 0.105, Ubuntu 22.04, it may manage any systemd service) is not carried over. | README.md@ad3758c:452 | P-06 | P-04, P-11, F-03 | Restated in round 1 from a Python known limit as the native behaviour (QB 6, QB 7); same rule as REQ-TS-0018 and REQ-CL-0365. Readme question 2 is answered by these rows. |
+| REQ-RE-0339 | The service user may manage only NMB's own services and reboot the box; the privileged helper does every other privileged task, so the CLI terminal and the task manager cannot act as root. | README.md@ad3758c:452 | P-06 | P-04, S-01, P-11 | Split from REQ-RE-0287 in round 1. One owner (P-06, which holds `os/90-nmb.rules` and the `.pkla` file in python-files.md) for the privilege rule of REQ-TS-0014, REQ-TS-0018 and REQ-CL-0365. |
 | REQ-RE-0289 | The public-address guard blocks ports 80, 53 and 5201 from public IPv4 and IPv6 addresses; local networks, VPN and Tailscale still work, and the box's own outgoing tests are not affected. | README.md@ad3758c:453 | N-02 | | |
-| REQ-RE-0290 | Known Python limit: the guard needs systemd and `nftables`, so it is not installed on Alpine. | README.md@ad3758c:453 | N-02 | P-11, F-03 | See Questions. |
+| REQ-RE-0290 | The public-address guard runs on every base and service manager, Alpine with OpenRC included; the Python limit (the guard needs systemd and `nftables`, so it is not installed on Alpine) is not carried over. | README.md@ad3758c:453 | N-02 | P-11, F-03 | Restated in round 1 from a Python known limit as the native behaviour (QB 6, QB 7: nothing listens on the WAN side unless the owner turned it on, docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:587); same rule as REQ-TS-0129 and REQ-CL-0205. Readme question 3 is answered by these rows. |
 | REQ-RE-0291 | The boot partition copy (`/boot/firmware/nmb.conf`) shows `__KEEP_CURRENT__` instead of passwords and tokens: leaving the mark keeps the value, typing a new value changes it; `nmb_credentials.txt` stays there only while the password is the default or was generated at install. | README.md@ad3758c:454 | C-01 | C-04, P-03, F-04 | |
 | REQ-RE-0292 | Factory reset needs `--yes` in the CLI and `RESET` in the API. | README.md@ad3758c:455 | P-03 | S-10, S-02…S-0n (API: system) | |
 | REQ-RE-0293 | Data and log purges need `PURGE`. | README.md@ad3758c:455 | C-08 | S-02…S-0n (API: system), S-11 | |
@@ -318,14 +320,14 @@ Reading notes for the register owner:
 | REQ-RE-0300 | The position (direct or behind a router) comes from the address, not from the mode; what cannot be told for sure is shown as unknown. | README.md@ad3758c:458 | C-11 | M-12 | |
 | REQ-RE-0301 | The dossier lists the setups of the period; the CSVs carry them as columns (`box_mode`, `uplink_kind`, `isp_path`, `setup_source`); the Web UI, the bot and the collector show them. | README.md@ad3758c:458 | C-11 | R-02, R-03, U-02…U-0n, S-02…S-0n, S-10, S-11, S-12, S-13 | |
 | REQ-RE-0302 | Rows from before the setup was recorded are reconstructed once from the event log and the stored interface and address, and are marked `derived`. | README.md@ad3758c:458 | C-11 | C-02 | Native: the migration from a Python database (C-02) keeps the `derived` marks. |
-| REQ-RE-0303 | Results without password (optional, off by default): with `public_results = true` in `[web]`, devices on the local network or VPN can open `/results` and download the report and CSV files without login; only these read-only pages open; settings, tests and the diagnostic bundle still need the password, and requests from public addresses always do. | README.md@ad3758c:459 | S-01 | C-01, U-02…U-0n (page: Results), R-02, R-03 | `/export/events.csv` stays password-only (REQ-RE-0295). |
+| REQ-RE-0303 | Results without password (optional, off by default): with `public_results = true` in `[web]`, devices on the local network or VPN can open `/results` and download the report and CSV files without login; only these read-only pages open; settings, tests and the diagnostic bundle still need the password, and requests from public addresses always do. | README.md@ad3758c:459 | S-01 | C-01, U-02…U-0n (page: Results), R-02, R-03 | `/export/events.csv` stays password-only (REQ-RE-0295). Same behaviour as REQ-TS-0125 and REQ-CL-0092 (one owner, S-01). |
 | REQ-RE-0304 | The collector stores tokens and its admin password only as hashes. | README.md@ad3758c:460 | S-13 | | |
 | REQ-RE-0305 | The collector refuses admin forms from other sites. | README.md@ad3758c:460 | S-13 | | |
 | REQ-RE-0306 | The collector token is masked in the boot partition copy. | README.md@ad3758c:460 | C-01 | C-04, S-12 | |
 | REQ-RE-0307 | When the OONI package brings Tor, its service is disabled, because NMB does not use it. | README.md@ad3758c:461 | M-13 | P-11 | |
 | REQ-RE-0308 | The Web UI uses HTTP by default, and the user is told to use it only on a trusted network or through a VPN. | README.md@ad3758c:462 | S-01 | P-12 | |
 | REQ-RE-0309 | Changes are listed in `CHANGELOG.md`, linked from the README. | README.md@ad3758c:468 | F-00 | P-12 | Owner rule: update the changelog with each user-visible change. |
-| REQ-RE-0310 | The support section lists donation addresses for Solana, Bitcoin (Native SegWit), Bitcoin (Taproot) and EVM networks (Ethereum, BNB, Polygon, ERC-20). | README.md@ad3758c:476-481 | P-08 | | Addresses not copied (source names a specific site value; not copied). See Questions. |
+| REQ-RE-0310 | The support section lists donation addresses for Solana, Bitcoin (Native SegWit), Bitcoin (Taproot) and EVM networks (Ethereum, BNB, Polygon, ERC-20). | README.md@ad3758c:478-481 | P-08 |  | Addresses not copied (source names a specific site value; not copied). See Questions. |
 | REQ-RE-0311 | The same donation addresses are shown in the Web UI (Support), by the bot (`/donate`) and by `nmb-cli donate`. | README.md@ad3758c:483 | P-08 | U-02…U-0n (page: Support), S-11, S-10 | `/donate` is missing from the bot command table (lines 389-426). |
 | REQ-RE-0312 | HU only: the dossier is made with one click as a standalone HTML report with embedded SVG charts and an SLA compliance table against the subscriber contract, ready to hand to the ISP or, in a dispute, to the communications authority. | README.hu.md@ad3758c:60 | R-03 | R-01 | |
 | REQ-RE-0313 | HU only: the device explorer scans the local subnet with ARP continuously (also the guest network) and lists the active clients with IP, MAC, host name, first and last seen; the vendor comes from the MAC OUI. | README.hu.md@ad3758c:100; README.hu.md@ad3758c:349-352 | N-17 | U-02…U-0n (page: Devices), N-08 | |
@@ -379,7 +381,7 @@ Reading notes for the register owner:
 | 26-27 | paragraph | REQ-RE-0006, REQ-RE-0007, REQ-RE-0008 |
 | 28-29 | rule | context: separator |
 | 30-31 | heading | context: section heading |
-| 32-75 | code block | REQ-RE-0009, REQ-RE-0010; the rest of the diagram restates rows of the sections below: REQ-RE-0017, -0026, -0029, -0069 to -0072, -0077, -0078, -0083, -0086, -0087, -0100, -0101, -0103 to -0106, -0113, -0117, -0149, -0154, -0162, -0285. Its engine list stops after RTR (iPerf3 missing): context |
+| 32-75 | code block | REQ-RE-0009, REQ-RE-0010; the rest of the diagram restates rows of the sections below: REQ-RE-0017, -0026, -0029, -0069 to -0072, -0077, -0078, -0083, -0086, -0087, -0100, -0101, -0103 to -0106, -0113, -0117, -0149, -0154, -0162, -0285; line 53 (SMTP dispatch of ISP fault tickets): REQ-RE-0340. Its engine list stops after RTR (iPerf3 missing): context |
 | 76-80 | rule, heading | context: separator and section heading |
 | 81 | heading | context: section heading |
 | 82 | bullet | REQ-RE-0011 to REQ-RE-0016 |
@@ -635,7 +637,7 @@ Reading notes for the register owner:
 | 431-432 | paragraph | REQ-RE-0285 |
 | 433-446 | code block | REQ-RE-0285, REQ-RE-0286 |
 | 447-451 | rule, heading | context: separator and section heading |
-| 452 | bullet | REQ-RE-0287, REQ-RE-0288 |
+| 452 | bullet | REQ-RE-0287, REQ-RE-0288, REQ-RE-0339 |
 | 453 | bullet | REQ-RE-0289, REQ-RE-0290 |
 | 454 | bullet | REQ-RE-0291 |
 | 455 | bullet | REQ-RE-0292, REQ-RE-0293 |
@@ -675,8 +677,8 @@ The other lines of `README.hu.md` translate `README.md` (same content in a diffe
 | 109 | bullet | context: "loss > 5 %" alert, see Notes of REQ-RE-0149 |
 | 160-169 | table | REQ-RE-0315; line 169 (software bridge, hardware bypass on failure) contradicts README.md:92: see Questions |
 | 175 | paragraph | context: lead-in |
-| 181 | bullet | REQ-RE-0032 (DHCP and NAT bound to the bridge) |
-| 184 | bullet | REQ-RE-0316 |
+| 181 | bullet | REQ-RE-0032 (DHCP and NAT bound to the bridge), REQ-RE-0030 (LAN role) |
+| 184 | bullet | REQ-RE-0316, REQ-RE-0030 (DMZ role) |
 | 187-190 | paragraph, bullets | REQ-RE-0317 |
 | 196 | paragraph | context: "5 independent layers", lead-in |
 | 199-206 | bullets | REQ-RE-0069 (target list conflict noted), REQ-RE-0070, REQ-RE-0071 |
@@ -715,6 +717,6 @@ The other lines of `README.hu.md` translate `README.md` (same content in a diffe
 ## Questions for the owner
 
 1. Mode B when the box fails: README.md:92 says "if the box stops, the connection stops too", but README.hu.md:169 says that on a software fault the software bridge still passes traffic and bypass hardware lets it through. Is a fail-open bypass (hardware or software) required for the native Mode B, or is the Hungarian row stale? (REQ-RE-0028, -0315)
-2. polkit 0.105 (Ubuntu 22.04): the Python rule cannot name units, so there the service user may manage every systemd service (README.md:452). Is that accepted for the native build on Ubuntu 22.04, or must it be fixed (unit control moved to the privileged helper, or 22.04 dropped)? It is a candidate for F-03. (REQ-RE-0288)
-3. Public-address guard on Alpine: the Python guard needs systemd and nftables and is not installed on Alpine (README.md:453), so ports 80, 53 and 5201 stay open to public addresses there. Must the native firewall (N-02, "for every mode") also cover Alpine/OpenRC, or is Alpine without the guard accepted? (REQ-RE-0290)
+2. *(Answered in round 1 by REQ-TS-0018 and QB 6/QB 7; REQ-RE-0288 restated, see QUESTIONS.md, not asked.)* polkit 0.105 (Ubuntu 22.04): the Python rule cannot name units, so there the service user may manage every systemd service (README.md:452). Is that accepted for the native build on Ubuntu 22.04, or must it be fixed (unit control moved to the privileged helper, or 22.04 dropped)? It is a candidate for F-03. (REQ-RE-0288)
+3. *(Answered in round 1 by QB 7, docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:587, REQ-TS-0129 and REQ-CL-0205; REQ-RE-0290 restated, not asked.)* Public-address guard on Alpine: the Python guard needs systemd and nftables and is not installed on Alpine (README.md:453), so ports 80, 53 and 5201 stay open to public addresses there. Must the native firewall (N-02, "for every mode") also cover Alpine/OpenRC, or is Alpine without the guard accepted? (REQ-RE-0290)
 4. Donation addresses: README.md:476-483 shows the owner's crypto addresses in the README, the Web UI, the bot and the CLI. Quality Bar 8 keeps personal data out of the native code. Do the addresses go into the native build as product data (as now), or are they given at build or release time from outside the code? (REQ-RE-0310, -0311)

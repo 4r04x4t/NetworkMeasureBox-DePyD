@@ -5,7 +5,7 @@ three mappings the work plan asks for (`docs/NATIVE_WORK_PLAN.md@ad3758c:217-218
 section and every `TESTING.md` row in exactly one package). Nothing here is decided: the owner (F-01) or the analyst of
 the package named accepts or rejects each proposal. Ids are permanent; a proposed id that is rejected is not reused.
 
-Sections A to F are written by hand; sections M1 to M3 are generated from the parts and checked by `check.sh`.
+Sections A to G are written by hand; sections M1 to M3 are generated from the parts and checked by `check.sh`.
 
 ## A. Numbers for the open series
 
@@ -57,7 +57,7 @@ numbering is not used anywhere and is withdrawn by this merge.
 
 **Bare `S-02` and `U-02`.** Some rows (mostly in the roadmap parts and REQ-WP-0134, which copies work plan line 215) write
 `S-02` or `U-02` where the series is meant. They are counted under the numbers S-02 (owns 3, Also in 18) and U-02 (owns 2,
-Also in 49) in `BY_PACKAGE.md`. The S-02 and U-02 analysts must hand rows that belong to another area or page to it.
+Also in 50) in `BY_PACKAGE.md`. The S-02 and U-02 analysts must hand rows that belong to another area or page to it.
 
 ## B. New packages (de-duplicated)
 
@@ -67,8 +67,8 @@ a split that is accepted gets the next free number of its series.
 
 | Id | Name | Proposed in | Owns / Also in | Reason |
 | :--- | :--- | :--- | :--- | :--- |
-| X2-01 | Step-2 router tiers (holding package) | roadmap-1-507 (1), porting-plan (1), workplan (4), testing (3), readme | 116 / 50 | Work plan section 1 puts the C11 tier and all router work in step 2, and section 3 has no package for it; without an owner these rows would fail the check. Stays one holding package in step 1 (its rows go into `spec/` through F-07); split when step 2 is planned. |
-| T-01 | First router backends, TL-WR1043ND v1 | roadmap-508-1034 (2) | 3 / 18 | Step 2 writes code (ath79 switch, ath9k, procd/fw4, flash layout, C11/musl build, Go-to-C port, optional UPX) that no package owns; I-10 only analyses images. **Child of X2-01** (porting-plan 1); later routers get T-02 ... in the owner's order. |
+| X2-01 | Step-2 router tiers (holding package) | roadmap-1-507 (1), porting-plan (1), workplan (4), testing (3), readme | 128 / 49 | Work plan section 1 puts the C11 tier and all router work in step 2, and section 3 has no package for it; without an owner these rows would fail the check. Every row that concerns only the C code base or only router targets is owned here, with the step-1 package under *Also in* (round 1, section G). Stays one holding package in step 1 (its rows go into `spec/` through F-07); split when step 2 is planned. |
+| T-01 | First router backends, TL-WR1043ND v1 | roadmap-508-1034 (2) | 3 / 23 | Step 2 writes code (ath79 switch, ath9k, procd/fw4, flash layout, C11/musl build, Go-to-C port, optional UPX) that no package owns; I-10 only analyses images. **Child of X2-01** (porting-plan 1); later routers get T-02 ... in the owner's order. |
 | P-14 | Maker's firmware round trip | roadmap-508-1034 (1) | 9 / 9 | Back to stock firmware (6B.3): per-target write method, optional fetch from the maker, recovery path, round-trip test on each router. Step 2 and per-device; keeping it in P-02 would block P-02's step-1 acceptance. Generic safety rules stay in P-02. |
 | P-15 | Endurance and hostile-network campaign | testing (1) | 3 / 0 | The 24-72 h run, the 24 h low-memory run and the hostile-network suite need days of box or VM time; inside P-13 they would make the release proof too big. P-15 runs before P-13 and hands it its results. |
 | P-16 | SSH access (keys only) | changelog (1), there as "P-14" | 2 / 0 | No package owns the box's SSH server setting (keys-only switch, check that sshd takes it, automatic switch back). Alternative: merge into P-05 (maintenance mode also gives keys-only access). |
@@ -98,16 +98,20 @@ VPN, driver finder, updater, storage guard, USB tethering on OpenWrt, RouterOS c
 | :--- | :--- | :--- | :--- |
 | M-12 | Split into DNS resolver matrix and hijack check (4.20, REQ-RM-0116 to -0119) and STUN, NAT type, WAN topology and public address (4.21, REQ-RM-0120 to -0123) | roadmap-1-507 (2), optional | **Conflict:** python-files C.2-C.4 moves more code *into* M-12 (public addresses from `interfaces.py`, NAT/STUN/DNS interception from `llm_bundle.py`), and changelog proposes N-20 out of it. Taken together M-12 needs a split; its analyst decides the cut. |
 | N-10 | Split into detection, uplink, table 152, data limit, fallback (REQ-RM-0165 to -0171, -0176, -0177) and router mode on USB with LAN-port sharing (REQ-RM-0172, -0173) | roadmap-1-507 (3), optional | Only if `netd/usb_uplink.py` plus tests is above the size rule. |
-| F-00 | Split into repository skeleton, toolchain and licence list, and gate scripts and work status (REQ-WP-0017 to -0028, -0034 to -0036, -0043 to -0053, -0172; REQ-DV-0003 to -0005, -0022, -0023) | workplan (3), optional | F-00 owns 115 rows. |
-| P-04, P-02 | Check the size rule; e.g. P-04 service profiles and P-04 third-party/upload sandbox | roadmap-508-1034 (3) | P-02 owns 65 rows, P-04 32. |
+| F-00 | Split into repository skeleton, toolchain and licence list, and gate scripts and work status (REQ-WP-0017 to -0028, -0034 to -0036, -0043 to -0053, -0172; REQ-DV-0003 to -0005, -0022, -0023) | workplan (3), optional | F-00 owns 125 rows. |
+| P-04, P-02 | Check the size rule; e.g. P-04 service profiles and P-04 third-party/upload sandbox | roadmap-508-1034 (3) | P-02 owns 64 rows, P-04 29. |
 | R-04, C-01 | Shrink by moving line ranges (CPU and thermal to C-09, PHY to N-17, Wi-Fi PHY to M-14; boot-partition settings copy to P-03) | python-files (D) | No new id. |
-| P-13 | Owns 112 rows | (merge) | With P-15 accepted it loses the long runs; the release checklist rows stay. |
+| P-13 | Owns 113 rows | (merge) | With P-15 accepted it loses the long runs; the release checklist rows stay. |
 | S-11 | Owns 124 rows | (merge) | See S-14, S-15. |
 
 ## D. Moves and one owner per file
 
 1. **One owner per Python file.** The work plan names six files for two packages (`probe/engine.py`, `report/metrics.py`,
-   `netd/modes.py`, `netd/wifi.py`, `netd/wifi_share.py`, `web/server.py`), and `parts/python-files.md` cuts 61 files over
+   `netd/modes.py`, `netd/wifi.py`, `netd/wifi_share.py`, `web/server.py`), and four further files or folders through its
+   P-10 row (`bin/`, `systemd/`, `os/`): `systemd/` units (P-04, P-10), `bin/nmb-helper` (P-06, P-10),
+   `bin/nmb-factory-reset` (P-03, P-10) and `os/nmb-guard.nft` (N-02, P-10). M3 gives every `systemd/` unit to P-10 (P-04
+   takes the sandbox lines), `bin/nmb-helper` to P-06, `bin/nmb-factory-reset` to P-03 and `os/nmb-guard.nft` to N-02.
+   `parts/python-files.md` `parts/python-files.md` cuts 61 files over
    several packages by line range. Read literally, work plan line 217 ("every Python file ... in exactly one package") fails
    for each of them. The register reads it as **every line of every Python file in exactly one package**, and gives each
    file one package in M3 (the package with most of its lines); the other packages take their ranges as written in
@@ -142,6 +146,30 @@ sections numbered 7.10: cite lines, not the number); 7A N-06; 7B M-03; 7F F-04; 
 - `S-12/S-13` in Also-in cells became `S-12, S-13` (roadmap-508-1034, 2 rows); the Also-in cell "see REQ-WP-0134" of
   REQ-WP-0072 moved to its Notes.
 - No requirement text, owner or source cell was changed.
+
+## G. Round 1 of the checks (2026-11-11)
+
+The checkers' findings of round 1 changed these owners and rows; no id was renumbered, new ids took the next free number.
+
+- **Step-2 rows to X2-01.** REQ-RM-1080 (C hardening flags), -1095 (router hardening limits), -1201 (JSON commands on small
+  flash), -1319 (built-in look only on small flash) and REQ-PP-0041 (RAM ring buffer), -0067 (Tier 1 `tsnet`), -0077 (Tier 1
+  radix trie) are owned by X2-01; the step-1 package moved to *Also in*. Mixed rows were split into a Go or generic row that
+  stays and a C or router row owned by X2-01: REQ-RM-1451 (from -1074), -1452 (from -1077), -1453 (from -1254), -1454 (from
+  -1376), -1455 (from -1409). REQ-RM-1349 (procd/ujail profile) stays with P-04: OpenWrt x86-64 and `armsr` are step-1 QEMU
+  targets (`docs/NATIVE_WORK_PLAN.md@ad3758c:266`, `:285-287`).
+- **Other moves:** REQ-RM-1208 P-04 to P-02; -1016 N-17 to F-00 (every package Also in); -1027 I-01 to I-09; -1182 M-01 to
+  N-03; -1009 F-02 to F-00; REQ-WP-0032 P-13 to F-00; REQ-WP-0154 N-17 to F-04; REQ-TS-0028 P-01 to P-06; REQ-TS-0248 N-01
+  to M-12 (with REQ-CL-0299); REQ-RE-0098 P-02 to M-04; REQ-RE-0191 P-13 to P-11 (with REQ-CL-0104); REQ-RE-0288 P-04 to P-06
+  (the privilege rule has one owner, P-06: REQ-RE-0339, REQ-TS-0014, -0018, REQ-CL-0365); REQ-CL-0092 the exports API to
+  S-01 (with REQ-TS-0125, REQ-RE-0303); REQ-CL-0341 P-02 to P-11 (with REQ-TS-0168, REQ-CT-0018).
+  REQ-RM-1237 (Phase 2 changelog) stays with N-01, with the reason in its Notes.
+- **Splits:** REQ-RE-0287 into -0287 (web server user, P-04) and -0339 (privilege rule, P-06); REQ-CL-0235 into -0235
+  (address flushes, N-07) and -0452 (cable preferred as measuring link, N-01).
+- **Withdrawn:** REQ-PP-0080 (Ookla protocol emulation), superseded by REQ-WP-0179 and -0180; it keeps M-10 as package,
+  and the gate expects no test for it.
+- **New rows:** REQ-RM-0213 (setup words from one source, C-11), REQ-RE-0340 (SMTP dispatch, R-05), and the new part
+  `parts/contributing.md` (REQ-CT-0001 to -0026), which no part covered before.
+- `BY_PACKAGE.md` was regenerated from the parts.
 
 ## M1. Every roadmap section in one package
 

@@ -1,7 +1,8 @@
 # Requirements register, part: every file of the Python version
 
 Source: the Python repository at commit `ad3758c`, every tracked file except `docs/` and the `*.md` files at the top
-(`CHANGELOG.md`, `CONTRIBUTING.md`, `CONTRIBUTING.hu.md`, `README.md`, `README.hu.md`, covered by their own parts): 351 files,
+(`CHANGELOG.md` in `changelog.md`, `README.md` and `README.hu.md` in `readme.md`, `CONTRIBUTING.md` and
+`CONTRIBUTING.hu.md` in `contributing.md`; the last part was added in round 1, the first merge had none for them): 351 files,
 122,873 text lines plus 20 theme images. Package ids are those of `docs/NATIVE_WORK_PLAN.md@ad3758c:98-225`.
 
 Rule of this table: every file is in it; a file split over packages has one row per package with its line ranges, and

@@ -1,6 +1,7 @@
 # Requirements register: questions for the owner
 
-The questions the parts raised, de-duplicated (44 asked, 39 here). Each names the part(s) that asked it, the rows it
+The questions the parts raised, de-duplicated (44 asked, 39 numbered here; Q-06 and Q-07 were answered by other rows in round 1
+and moved to the end, so 37 are open). Each names the part(s) that asked it, the rows it
 affects, the package that needs the answer, and the proposal of the part where it made one. Until a question is answered
 the rows stay as written. Questions the owner already settled in `docs/NATIVE_WORK_PLAN.md@ad3758c` section 7 are not asked
 again; where a question falls under such a decision, it says so. Answers go to F-01, which writes them into the roadmap.
@@ -17,11 +18,9 @@ TS `testing.md`, RE `readme.md`, CL `changelog.md`, PY `python-files.md`.
 | Q-03 | **ARMv6 (Pi 1, Pi Zero):** roadmap line 73 and section 8 (`GOARM=6`) name them; the step-1 matrix has arm v7 only. Add `linux/arm` v6, or leave Pi Zero and Pi 1 out of step 1? | RM1 7, RM2 6 | REQ-RM-0013, REQ-RM-1440 | F-00, P-13 | none |
 | Q-04 | **Projections as limits?** Are the RAM and CPU figures of roadmap sections 7 and 9 (for example 10-18 MB RSS, idle CPU below 0.5 %) acceptance limits for P-13, or targets to measure and report? | RM2 5 | REQ-RM-1413 to -1438, -1442, -1443 | P-13 | measure and record (current rows) |
 | Q-05 | **Supported distributions:** must native packages still install on every distribution the Python version supported (Debian, Ubuntu, Alpine, Fedora/RHEL family, Rocky), or only on the own distribution and the bases chosen after the image analysis? | CL 1 | CHANGELOG lines 95, 96, 131 rows | P-11 | none |
-| Q-06 | **Ubuntu 22.04 (polkit 0.105):** the Python rule cannot name units, so the service user may manage every systemd service there. Accepted for the native build, or fixed (unit control in the privileged helper, or 22.04 dropped)? Candidate for F-03. | RE 2 | REQ-RE-0288 | P-06, P-11 | none |
-| Q-07 | **Alpine without the public-address guard:** the Python guard needs systemd and nftables, so on Alpine ports 80, 53 and 5201 stay open to public addresses. Must the native firewall cover Alpine/OpenRC too? | RE 3 | REQ-RE-0290 | N-02 | none |
 | Q-08 | **OpenWrt package format:** Phase 4.3 says `.ipk`/`opkg`; OpenWrt 25.12 (the step-1 images) uses `apk`. Assumed: the format follows the target release (APK for 25.12, `.ipk` for the 22.03 base of the TL-WR1043ND v1). Confirm. | RM2 4 | REQ-RM-1271 | P-11 | as assumed |
 | Q-09 | **Documentation languages:** does the English-and-Hungarian rule of the Python repository hold for the native repository (manual and command reference of P-12), or does it follow the 11 UI languages, or English only? | WP 5 | DEV_SETUP line 200 rows | P-12 | none |
-| Q-10 | **Test scripts in the repository:** the Python known limit (VM and bot check scripts kept outside the repository) became a requirement that the native scripts live in the native repository. Confirm. | TS 6 | TESTING line 399 row | F-06 | as written |
+| Q-10 | **Test scripts in the repository** (REQ-TS-0312 is marked pending until this is answered): the Python known limit (VM and bot check scripts kept outside the repository) became a requirement that the native scripts live in the native repository. Confirm. | TS 6 | TESTING line 399 row | F-06 | as written |
 
 ## Security and privacy
 
@@ -77,4 +76,11 @@ TS `testing.md`, RE `readme.md`, CL `changelog.md`, PY `python-files.md`.
 - The admin/admin default login of the Web UI (REQ-RE-0231) against "unique password per device" of P-03: recorded in the
   row's Notes by the readme part; the owner keeps the default on purpose, so it is not a question.
 - Ookla protocol emulation (REQ-PP-0080) and Ookla "eliminated" in roadmap section 7: superseded by decision 3.
-- The disclaimer wording (REQ-RM-1343): already open as point 7 of work plan section 7.
+- The disclaimer wording (REQ-RM-1344): already open as point 7 of work plan section 7.
+- Q-06 (Ubuntu 22.04, polkit 0.105, service user may manage any unit; REQ-RE-0288): answered in round 1 by the Quality Bar,
+  points 6 and 7 (known Python faults are not carried over; no security hole is left open) and by REQ-TS-0018 and
+  REQ-CL-0365: the native privilege rule is an allow-list of NMB's own units on every base. REQ-RE-0288 states that; owner P-06.
+- Q-07 (Alpine without the public-address guard; REQ-RE-0290): answered in round 1 by QB 7 (nothing listens on the WAN side
+  unless the owner turned it on, `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:587`) and by REQ-TS-0129 and REQ-CL-0205 (the
+  firewall in every mode): the native guard runs on every base, Alpine/OpenRC included. Whether Alpine is a supported base at
+  all stays with Q-05 and the image comparison (I-09).

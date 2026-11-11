@@ -39,8 +39,8 @@ Hungarian comparison: every heading, table row and bullet of `TESTING.md` has a 
 | REQ-TS-0025 | Fedora 45 (dnf branch): all services, the privilege rule and all optional packages install; RTR and Cloudflare measure; the Ookla client runs; reboot still to prove. | docs/TESTING.md@ad3758c:41; docs/TESTING.md@ad3758c:363 | P-11 | M-06, M-08, M-10 | Ookla was refused by its rate limit on a shared IP. |
 | REQ-TS-0026 | With SELinux enforcing there are no SELinux denials. | docs/TESTING.md@ad3758c:41 | P-04 | P-11 |  |
 | REQ-TS-0027 | AlmaLinux 10.2: install, reinstall and reboot pass; base detection does not misread ID_LIKE (rebuilds listing "fedora" must still get EPEL); nothing relies on sudo searching /usr/local/bin. | docs/TESTING.md@ad3758c:42 | P-11 | P-06 | Python faults found and fixed; test note: the image needs a SCSI disk in QEMU. |
-| REQ-TS-0028 | The update check counts the OS package manager's updates (dnf as well). | docs/TESTING.md@ad3758c:42 | P-01 | P-02 | Python reference unclear between heal and updater; assumed the heal 'updates' view. |
-| REQ-TS-0029 | Raspberry Pi OS, Arch and 32-bit systems are listed as not tested until they are. | docs/TESTING.md@ad3758c:43; docs/TESTING.md@ad3758c:371-376 | P-11 |  |  |
+| REQ-TS-0028 | The update check counts the OS package manager's updates (dnf as well). | docs/TESTING.md@ad3758c:42 | P-06 | P-01, P-02 | The count is made by `nmb-helper check-updates` (bin/nmb-helper@ad3758c:94), which `nmb/common/heal.py@ad3758c:1109` calls; CHANGELOG.md@ad3758c:96 puts it in the helper. Owner moved from P-01 in round 1. |
+| REQ-TS-0029 | Raspberry Pi OS, Arch and 32-bit systems are listed as not tested until they are. | docs/TESTING.md@ad3758c:43; docs/TESTING.md@ad3758c:371-372; docs/TESTING.md@ad3758c:376 | P-11 |  |  |
 | REQ-TS-0030 | A scheduled Ookla test at an hourly schedule stores a row with download, upload, ping, bufferbloat grade and the chosen server. | docs/TESTING.md@ad3758c:49 | M-10 | M-04, R-01 | (source names a specific site value; not copied) Source names the router model, a measured result and the server number. |
 | REQ-TS-0031 | On an Ookla refusal ("Limit reached") the box pauses Ookla (30 min, up to 4 h) and stores no other engine's result in its place. | docs/TESTING.md@ad3758c:49; docs/TESTING.md@ad3758c:341; docs/TESTING.md@ad3758c:397 | M-05 | M-10, M-04 |  |
 | REQ-TS-0032 | RTR-NetTest measures close to the nominal plan of a gigabit line (Python: about 91 % down, about 107 % of the up plan). | docs/TESTING.md@ad3758c:50 | M-08 | R-01 | (source names a specific site value; not copied) |
@@ -155,7 +155,7 @@ Hungarian comparison: every heading, table row and bullet of `TESTING.md` has a 
 | REQ-TS-0141 | A truncated backup upload is refused and changes nothing. | docs/TESTING.md@ad3758c:170 | P-03 |  |  |
 | REQ-TS-0142 | A restore must not lose the restored database to an old journal (WAL), must not be overwritten by the older boot-partition config copy, leaves the config readable by the service user, and an uploaded backup is not world-readable. | docs/TESTING.md@ad3758c:170 | P-03 | C-02, C-04 | Four Python faults found and fixed. |
 | REQ-TS-0143 | Power loss during a speed test or right after a snapshot starts: both databases pass an integrity check, config intact, all services up; the interrupted test is simply missing; the snapshot is atomic (temporary file, fsync, rename). | docs/TESTING.md@ad3758c:171 | C-02 | C-01, P-10 |  |
-| REQ-TS-0144 | A configured Ookla server that does not exist gives a clear error, not a silent failure. | docs/TESTING.md@ad3758c:172 | M-10 |  | (source names a specific site value; not copied) Source names a wrong built-in server id. |
+| REQ-TS-0144 | No Ookla server id is built in: the server choice comes only from Ookla's current list of servers near the box; a configured server that does not exist gives a clear error, not a silent failure. | docs/TESTING.md@ad3758c:172 | M-10 | C-10 | (source names a specific site value; not copied) Source names a wrong built-in server id. Same rule as REQ-CL-0108 and REQ-RE-0072 (restated in round 1). |
 | REQ-TS-0145 | A paused Ookla is never replaced by another engine's result; the pause survives a restart; paused runs add no rows. | docs/TESTING.md@ad3758c:172 | M-05 | M-10, C-02 |  |
 | REQ-TS-0146 | The status API does not fail when the last test failed. | docs/TESTING.md@ad3758c:172 | S-02…S-0n (API: status) | M-04 |  |
 | REQ-TS-0147 | Per-engine intervals: an engine with interval N minutes is skipped within N and runs after; 0 runs it every time; Ookla cannot be set below 60 min. | docs/TESTING.md@ad3758c:173 | M-04 | M-05 |  |
@@ -179,7 +179,7 @@ Hungarian comparison: every heading, table row and bullet of `TESTING.md` has a 
 | REQ-TS-0165 | When a router appears on the port in router mode, the guard stops serving DHCP (Python: after 50 s) and the wired port becomes the WAN; when the USB device is pulled the mode rebuilds with the wired WAN. | docs/TESTING.md@ad3758c:181 | N-05 | N-03, N-04, N-10 |  |
 | REQ-TS-0166 | Access point password: the shared factory password is refused by the access point and by the Web UI save, as are an empty password and one outside 8-63 characters; the config API reports only wifi_psk_set; the installer log has no password line; each box has its own valid password. | docs/TESTING.md@ad3758c:182 | N-07 | S-02…S-0n (API: Wi-Fi), P-11, P-03, C-04 |  |
 | REQ-TS-0167 | nmb-cli covers the Web UI: a test fails for a Web UI endpoint without a CLI action, and the endpoints the UI really calls are compared with the catalog. | docs/TESTING.md@ad3758c:183; docs/TESTING.md@ad3758c:200 | S-10 | U-01 |  |
-| REQ-TS-0168 | The installer restarts every service: each service's start time is later than the start of the install. | docs/TESTING.md@ad3758c:184; docs/TESTING.md@ad3758c:259 | P-11 | P-10 | Python fault: the bot ran code from two days earlier. |
+| REQ-TS-0168 | The installer restarts every service: each service's start time is later than the start of the install. | docs/TESTING.md@ad3758c:184; docs/TESTING.md@ad3758c:259 | P-11 | P-10, P-02 | Python fault: the bot ran code from two days earlier. Same rule as REQ-CL-0341 and REQ-CT-0018 (one owner, P-11). |
 | REQ-TS-0169 | No secrets in output: the install log, the config API, bot answers and the diagnostic bundle carry only presence flags; tests check secrets only for empty or factory value and never print them. | docs/TESTING.md@ad3758c:185 | C-04 | P-11, S-11, R-04, P-07 |  |
 | REQ-TS-0170 | Every change is tested at the level it can break; what ran, where, and what was seen is written down; a change without a recorded test is not finished. | docs/TESTING.md@ad3758c:189 | P-13 | F-00 |  |
 | REQ-TS-0171 | The gate runs the unit tests (must end OK), a syntax check of the Web UI script when it changed and of the installer script when it changed. | docs/TESTING.md@ad3758c:193-197 | F-00 | U-01, P-11 | Python commands; native equivalents are F-00's choice. |
@@ -259,7 +259,7 @@ Hungarian comparison: every heading, table row and bullet of `TESTING.md` has a 
 | REQ-TS-0245 | Must prove on a Raspberry Pi 5. | docs/TESTING.md@ad3758c:320 | P-13 | P-11 |  |
 | REQ-TS-0246 | Nothing runs on routers yet; router targets follow the porting plan. | docs/TESTING.md@ad3758c:321 | NEW: X2-01 Step-2 router tiers | P-11 |  |
 | REQ-TS-0247 | During an outage the bot backs off with growing pauses, not several requests a second. | docs/TESTING.md@ad3758c:327 | S-11 |  | DynDNS off/on part of this row is done (line 110). |
-| REQ-TS-0248 | When only DNS is blocked the DNS fallback starts while IP works, and the normal DNS comes back within 15 minutes after the block ends. | docs/TESTING.md@ad3758c:327 | N-01 | M-12 | Python reference for the fallback not named in the plan; assumed N-01. |
+| REQ-TS-0248 | When only DNS is blocked the DNS fallback starts while IP works, and the normal DNS comes back within 15 minutes after the block ends. | docs/TESTING.md@ad3758c:327 | M-12 | N-01, N-03 | Python reference `nmb/netd/dns.py` (M-12 in M3). One owner with REQ-CL-0299 (round 1; was N-01); optional split N-20. |
 | REQ-TS-0249 | Router mode on the Pi starts the access point without 'did not start' errors. | docs/TESTING.md@ad3758c:327 | N-07 | N-03 |  |
 | REQ-TS-0250 | The RTR client UUID stays the same across RTR tests. | docs/TESTING.md@ad3758c:327 | M-08 |  |  |
 | REQ-TS-0251 | A cable pull leaves no repeated 'dead default route' log lines. | docs/TESTING.md@ad3758c:327 | N-01 | C-03 |  |
@@ -323,7 +323,7 @@ Hungarian comparison: every heading, table row and bullet of `TESTING.md` has a 
 | REQ-TS-0309 | Known limit: an ISP may allow one PPPoE session per login, so another router and the box cannot be online on the same login at once, and a session not hung up (no PADT) blocks the next login for minutes; the box always hangs up cleanly. | docs/TESTING.md@ad3758c:396 | N-05 | P-12 | (source names a specific site value; not copied) Source names the ISP. |
 | REQ-TS-0310 | Known limit: Ookla blocks a public IP that tests too often and refused attempts prolong it; the box pauses Ookla (30 min, doubling up to 4 h) and does not change the IP to get around it; Ookla runs at most hourly. | docs/TESTING.md@ad3758c:397 | M-05 | M-10, P-12 |  |
 | REQ-TS-0311 | Known limit: up to 15 minutes of results can be lost on a power cut, by design (the live database is in RAM). | docs/TESTING.md@ad3758c:398 | C-02 | P-12 |  |
-| REQ-TS-0312 | The VM scripts and bot check scripts used for the record are part of the native repository (the Python limit is not carried over). | docs/TESTING.md@ad3758c:399 | F-06 | P-13 | Interpretation of a Python known limit; see Questions. |
+| REQ-TS-0312 | The VM scripts and bot check scripts used for the record are part of the native repository (the Python limit is not carried over). | docs/TESTING.md@ad3758c:399 | F-06 | P-13 | Interpretation of a Python known limit, pending the owner's answer (QUESTIONS.md Q-10): until it is answered the row is a proposal, and F-06's gate does not fail on it. |
 | REQ-TS-0313 | Known limit: the bot can send a backup only up to the messenger's 50 MB file limit for bots. | docs/TESTING.md@ad3758c:400 | S-11 | P-12 |  |
 | REQ-TS-0314 | Known limit: a box that had the old factory Wi-Fi password and no new one gets no access point until a password is set. | docs/TESTING.md@ad3758c:401 | N-07 | P-03, P-12 |  |
 
@@ -347,7 +347,7 @@ Blank lines are listed with the element before them. Every line 1-401 is in exac
 | 20-21 | table row (line 21 blank) | REQ-TS-0010 |
 | 22-23 | paragraph (line 23 blank) | REQ-TS-0011 |
 | 24-25 | heading (line 25 blank) | context: section heading |
-| 26-27 | paragraph (line 27 blank) | context: legend of result symbols; the recording rule is REQ line 276 |
+| 26-27 | paragraph (line 27 blank) | REQ-TS-0214 (the result values of the legend; the recording rule is line 276) |
 | 28-29 | heading (line 29 blank) | context: section heading |
 | 30-31 | table row | context: table header |
 | 32 | table row | REQ-TS-0012 |
@@ -568,7 +568,7 @@ Blank lines are listed with the element before them. Every line 1-401 is in exac
 | 315 | table row | REQ-TS-0240 |
 | 316 | table row | REQ-TS-0241 |
 | 317 | table row | REQ-TS-0242 |
-| 318 | table row | REQ-TS-0243 |
+| 318 | table row | REQ-TS-0243; REQ-TS-0109 |
 | 319 | table row | REQ-TS-0244 |
 | 320 | table row | REQ-TS-0245 |
 | 321-322 | table row (line 322 blank) | REQ-TS-0246 |
@@ -582,17 +582,17 @@ Blank lines are listed with the element before them. Every line 1-401 is in exac
 | 332 | table row | REQ-TS-0260 |
 | 333 | table row | REQ-TS-0261; REQ-TS-0262 |
 | 334 | table row | REQ-TS-0263 |
-| 335 | table row | REQ-TS-0264 |
+| 335 | table row | REQ-TS-0264; REQ-TS-0164 |
 | 336 | table row | REQ-TS-0265; REQ-TS-0160 |
 | 337 | table row | REQ-TS-0266 |
 | 338 | table row | REQ-TS-0267 |
 | 339 | table row | REQ-TS-0268 |
 | 340 | table row | REQ-TS-0269 |
 | 341 | table row | REQ-TS-0270; REQ-TS-0031 |
-| 342-343 | table row (line 343 blank) | REQ-TS-0271 |
+| 342-343 | table row (line 343 blank) | REQ-TS-0271; REQ-TS-0151 |
 | 344-345 | heading (line 345 blank) | context: section heading |
 | 346-347 | table row | context: table header |
-| 348 | table row | REQ-TS-0272 |
+| 348 | table row | REQ-TS-0272; REQ-TS-0152 |
 | 349 | table row | REQ-TS-0273 |
 | 350 | table row | REQ-TS-0274; REQ-TS-0153 |
 | 351 | table row | REQ-TS-0275 |
@@ -604,19 +604,19 @@ Blank lines are listed with the element before them. Every line 1-401 is in exac
 | 357 | table row | REQ-TS-0282 |
 | 358 | table row | REQ-TS-0283 |
 | 359 | table row | REQ-TS-0284 |
-| 360 | table row | REQ-TS-0285 |
-| 361 | table row | REQ-TS-0286 |
+| 360 | table row | REQ-TS-0285; REQ-TS-0136 |
+| 361 | table row | REQ-TS-0286; REQ-TS-0148 |
 | 362 | table row | REQ-TS-0287 |
-| 363-364 | table row (line 364 blank) | REQ-TS-0288; REQ-TS-0289; REQ-TS-0290; REQ-TS-0291; REQ-TS-0292 |
+| 363-364 | table row (line 364 blank) | REQ-TS-0288; REQ-TS-0289; REQ-TS-0290; REQ-TS-0291; REQ-TS-0292; REQ-TS-0013; REQ-TS-0025; REQ-TS-0118; REQ-TS-0119; REQ-TS-0137 |
 | 365-366 | heading (line 366 blank) | context: section heading |
 | 367-368 | paragraph (line 368 blank) | REQ-TS-0293 |
 | 369-370 | table row | context: table header |
-| 371 | table row | REQ-TS-0294 |
-| 372 | table row | REQ-TS-0295 |
+| 371 | table row | REQ-TS-0294; REQ-TS-0029 |
+| 372 | table row | REQ-TS-0295; REQ-TS-0029 |
 | 373 | table row | REQ-TS-0296 |
 | 374 | table row | REQ-TS-0297 |
 | 375 | table row | REQ-TS-0298 |
-| 376 | table row | REQ-TS-0299 |
+| 376 | table row | REQ-TS-0299; REQ-TS-0029 |
 | 377 | table row | REQ-TS-0300 |
 | 378-379 | table row (line 379 blank) | REQ-TS-0301 |
 | 380-381 | heading (line 381 blank) | context: section heading |
@@ -652,4 +652,4 @@ Blank lines are listed with the element before them. Every line 1-401 is in exac
 3. **Manual and bot Ookla runs against the hour** (line 386): counting them means a manual Ookla run inside the hour is refused or deferred. Intended?
 4. **IPv6 for the LAN on a DHCP or USB WAN** (line 330) and **dual-band with a second radio** (line 319): neither is built in Python. In step 1 of the native build, or recorded as a limit?
 5. **RTR over 5G** (line 179): RTR measured far above the other engines over the mobile hotspot, marked 'to check' and never settled. Fault to find in the native M-08 brief, or accepted as the engine's behaviour (multi-stream, other server)?
-6. **Test scripts in the repository** (line 399): this part turns the Python known limit (VM and bot check scripts kept outside the repository) into a requirement that the native scripts live in the native repository (F-06). Confirm.
+6. **Test scripts in the repository** (line 399; QUESTIONS.md Q-10, still open): this part turns the Python known limit (VM and bot check scripts kept outside the repository) into a requirement that the native scripts live in the native repository (F-06). Confirm.

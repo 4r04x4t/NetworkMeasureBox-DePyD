@@ -9,20 +9,25 @@
 #   1. a requirement id is defined twice, or a requirement row is malformed (not six cells, bad id);
 #   2. a requirement row has no package, or a package that BY_PACKAGE.md does not list;
 #   3. a coverage table has a gap or an overlap, does not start or end where its source does, or a
-#      defined id is in no coverage row, or a coverage row names an id that is not defined;
+#      defined id is in no coverage row, or a coverage row names an id that is not defined, or a line that a
+#      requirement cites from its part's own source lies in a coverage row that does not name the id;
 #   4. a Python file of the source commit (without docs/ and the top-level *.md) is missing from
 #      parts/python-files.md, a listed file does not exist, or a line of a file is listed twice or not at all;
 #   5. BY_PACKAGE.md disagrees with the parts (owner and Also-in lists, counts), or a work plan package
 #      has no section in it;
 #   6. PACKAGE_CHANGES.md does not map every roadmap section, every TESTING.md row and every Python
-#      file to exactly one valid package.
+#      file to exactly one valid package;
+#   7. a document of the source commit (a top-level *.md or a file under docs/) is neither the source of a
+#      coverage table nor named in OUT_OF_SCOPE below.
 # Exit 2: the register or the source cannot be read.
 set -u
 R=${1:-docs/requirements}
 SRC=${NMB_SRC:-$HOME/src/NetworkMeasureBox}
 COMMIT=ad3758c
+# Documents with no coverage table of their own, each with its reason in the register README ("Sources").
+OUT_OF_SCOPE="docs/TESTING.hu.md docs/DEV_SETUP_WINDOWS.hu.md docs/NMHH_SZELESSAVNET_COMPARISON.md docs/NMHH_SZELESSAVNET_OSSZEHASONLITAS.hu.md"
 P="$R/parts"
-PARTS="roadmap-1-507.md roadmap-508-1034.md porting-plan.md workplan-architecture-devsetup.md testing.md readme.md changelog.md"
+PARTS="roadmap-1-507.md roadmap-508-1034.md porting-plan.md workplan-architecture-devsetup.md testing.md readme.md changelog.md contributing.md"
 
 for f in $PARTS python-files.md; do
 	[ -f "$P/$f" ] || { echo "check: missing part $P/$f" >&2; exit 2; }
@@ -78,7 +83,7 @@ cat > "$T/rows.awk" <<'EOF'
 	line = $0; gsub(/\\\|/, "\001", line)
 	n = split(line, c, "|")
 	id = trim(c[2])
-	if (id !~ /^REQ-(RM|PP|WP|AR|DV|TS|RE|CL)-[0-9][0-9][0-9][0-9]$/) { print "BAD " FILENAME ":" FNR " bad id cell: " id; next }
+	if (id !~ /^REQ-(RM|PP|WP|AR|DV|TS|RE|CL|CT)-[0-9][0-9][0-9][0-9]$/) { print "BAD " FILENAME ":" FNR " bad id cell: " id; next }
 	if (n != 8) { print "BAD " FILENAME ":" FNR " " id " has " n - 2 " cells, not 6"; next }
 	if (id in seen) { print "BAD " id " defined twice: " seen[id] " and " FILENAME ":" FNR; next }
 	seen[id] = FILENAME ":" FNR
@@ -86,6 +91,13 @@ cat > "$T/rows.awk" <<'EOF'
 	if (pk == "" || pk == "-") { print "BAD " FILENAME ":" FNR " " id " has no package"; next }
 	split(keys(pk), o, " "); own = o[1]
 	print "REQ " id " " FILENAME " " FNR " " own
+	s = c[4]
+	while (match(s, /[A-Za-z0-9_.\/-]+@ad3758c:[0-9]+(-[0-9]+)?/)) {
+		ref = substr(s, RSTART, RLENGTH); s = substr(s, RSTART + RLENGTH)
+		f = ref; sub(/@.*$/, "", f); r = ref; sub(/^.*:/, "", r)
+		a = r; b = r; if (index(r, "-")) { a = substr(r, 1, index(r, "-") - 1); b = substr(r, index(r, "-") + 1) }
+		print "SRC " id " " FILENAME " " f " " a + 0 " " b + 0
+	}
 	print "PAIR " id " own " own
 	split("", done)
 	m = items(trim(c[6]), it)
@@ -98,6 +110,7 @@ EOF
 (cd "$P" && awk -f "$T/lib.awk" -f "$T/rows.awk" $PARTS) > "$T/rows" || exit 2
 if grep -q '^BAD ' "$T/rows"; then grep '^BAD ' "$T/rows" | sed 's/^BAD /FAIL: /'; fail=1; fi
 grep '^REQ ' "$T/rows" | cut -d' ' -f2- > "$T/req"
+grep '^SRC ' "$T/rows" > "$T/srcs"
 grep '^PAIR ' "$T/rows" | cut -d' ' -f2- | sort > "$T/pairs"
 nreq=$(wc -l < "$T/req" | tr -d ' ')
 
@@ -152,6 +165,8 @@ testing.md 1 docs/TESTING.md 1 N contig
 readme.md 1 README.md 1 N contig
 readme.md 2 README.hu.md 1 N sparse
 changelog.md 1 CHANGELOG.md 1 N contig
+contributing.md 1 CONTRIBUTING.md 1 N contig
+contributing.md 2 CONTRIBUTING.hu.md 1 N contig
 EOF
 : > "$T/manifest2"
 while read -r part tab src start end mode; do
@@ -162,6 +177,7 @@ while read -r part tab src start end mode; do
 	echo "$part $tab $src $start $end $mode" >> "$T/manifest2"
 done < "$T/manifest"
 (cd "$P" && awk '
+function emit(id) { print "ID " id; print "CID " rowkey " " id }
 FNR == 1 { cov = 0; t = 0 }
 /^## / { cov = ($0 ~ /^## Coverage/); next }
 cov && /^\| Lines \|/ { t++; next }
@@ -169,6 +185,7 @@ cov && /^\| [0-9]+(-[0-9]+)? \|/ {
 	split($0, c, "|"); r = c[2]; gsub(/ /, "", r)
 	a = r; b = r; if (index(r, "-")) { a = substr(r, 1, index(r, "-") - 1); b = substr(r, index(r, "-") + 1) }
 	print "ROW " FILENAME " " t " " a + 0 " " b + 0 " " FNR
+	rowkey = FILENAME " " t " " a + 0 " " b + 0
 	# ids: full ids, and the short forms "REQ-XX-0001 to -0004", "REQ-XX-0001, -0003", "... to REQ-XX-0009"
 	s = $0; pre = ""; last = 0; gap = ""
 	while (match(s, /((,|to|and)[ ]*)?(REQ-[A-Z][A-Z]-)?-?[0-9][0-9][0-9][0-9]/)) {
@@ -179,11 +196,11 @@ cov && /^\| [0-9]+(-[0-9]+)? \|/ {
 		if (tok ~ /REQ-[A-Z][A-Z]-/) {
 			p = tok; sub(/^.*REQ-/, "REQ-", p); p = substr(p, 1, 7)
 			print "LIT " p num " " FILENAME ":" FNR
-			if (conn == "to" && adj && p == pre) for (k = last + 1; k < num + 0; k++) printf "ID %s%04d\n", pre, k
-			print "ID " p num; pre = p; last = num + 0
+			if (conn == "to" && adj && p == pre) for (k = last + 1; k < num + 0; k++) emit(sprintf("%s%04d", pre, k))
+			emit(p num); pre = p; last = num + 0
 		} else if (conn != "" && adj) {
-			if (conn == "to") for (k = last + 1; k <= num + 0; k++) printf "ID %s%04d\n", pre, k
-			else printf "ID %s%04d\n", pre, num + 0
+			if (conn == "to") for (k = last + 1; k <= num + 0; k++) emit(sprintf("%s%04d", pre, k))
+			else emit(sprintf("%s%04d", pre, num + 0))
 			last = num + 0
 		} else pre = ""
 	}
@@ -217,6 +234,19 @@ grep '^ID ' "$T/cov" | cut -d' ' -f2 | sort -u > "$T/covered"
 comm -23 "$T/defined" "$T/covered" > "$T/o"; [ -s "$T/o" ] && { bad "ids in no coverage row: $(tr '\n' ' ' < "$T/o")"; }
 grep '^LIT ' "$T/cov" | sort -k2 | awk 'NR == FNR { d[$1] = 1; next } !($2 in d) { print "FAIL: coverage row " $3 " names undefined id " $2 }' \
 	"$T/defined" - > "$T/o"; [ -s "$T/o" ] && { cat "$T/o"; fail=1; }
+# 3b: a line a requirement cites from its own part's source lies in a coverage row that names the id
+awk '
+FILENAME == ARGV[1] { tsrc[$1 " " $2] = $3; tabs[$1] = tabs[$1] " " $2; next }
+$1 == "ROW" { k = $2 " " $3; for (x = $4; x <= $5; x++) { row[k, x] = $4 "-" $5; has[k, x] = 1 }; next }
+$1 == "CID" { k = $2 " " $3; for (x = $4; x <= $5; x++) named[k, x, $6] = 1; next }
+$1 == "SRC" {
+	id = $2; part = $3; f = $4; a = $5; b = $6; nt = split(tabs[part], tl, " ")
+	for (i = 1; i <= nt; i++) {
+		k = part " " tl[i]; if (tsrc[k] != f) continue
+		for (x = a; x <= b; x++) if (has[k, x] && !named[k, x, id]) {
+			print "FAIL: " id " cites " f ":" x ", but the coverage row " row[k, x] " of " part " does not name it"; break }
+	}
+}' "$T/manifest2" "$T/cov" "$T/srcs" > "$T/o"; [ -s "$T/o" ] && { cat "$T/o"; fail=1; }
 
 # ---- 4: Python files
 git -C "$SRC" ls-tree -r --name-only "$COMMIT" | grep -v '^docs/' | grep -v '^[^/]*\.md$' > "$T/files" || exit 2
@@ -287,6 +317,13 @@ FILENAME == ARGV[4] { want["M3\t" $2] = "Python file " $2; next }
 }
 END { for (key in want) if (!(key in got)) print "FAIL: PACKAGE_CHANGES.md does not map the " want[key] }
 ' "$T/keys" "$T/rmheads" "$T/tsrows" "$T/nlines" "$T/maps" > "$T/o"; [ -s "$T/o" ] && { sort "$T/o"; fail=1; }
+
+# ---- 7: every document of the commit has a coverage table or is named out of scope
+cut -d' ' -f3 "$T/manifest2" | sort -u > "$T/docsrc"
+for d in $OUT_OF_SCOPE; do echo "$d"; done >> "$T/docsrc"
+git -C "$SRC" ls-tree -r --name-only "$COMMIT" | grep -E '^docs/|^[^/]*\.md$' | while read -r d; do
+	grep -qxF -- "$d" "$T/docsrc" || echo "FAIL: document $d of the commit has no coverage table and is not named out of scope"
+done > "$T/o"; [ -s "$T/o" ] && { cat "$T/o"; fail=1; }
 
 nfiles=$(wc -l < "$T/files" | tr -d ' ')
 if [ "$fail" -eq 0 ]; then

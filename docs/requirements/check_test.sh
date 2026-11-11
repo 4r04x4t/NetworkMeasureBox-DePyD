@@ -48,6 +48,8 @@ plant "roadmap section mapped twice" PACKAGE_CHANGES.md '/^| 116 | 116-/{p;}'
 plant "TESTING.md row not mapped" PACKAGE_CHANGES.md '/^## M2\./,/^## M3\./{/^| 400 |/d;}'
 plant "Python file not mapped" PACKAGE_CHANGES.md '/^| `setup.sh` |/d'
 plant "Python file mapped to unknown package" PACKAGE_CHANGES.md 's/^| `setup.sh` | P-11 |/| `setup.sh` | Q-11 |/'
+plant "cited line in a coverage row without the id" parts/roadmap-1-507.md 's/^| 414 | paragraph | REQ-RM-0165 ([^|]*|/| 414 | paragraph | context: label |/'
+plant "CONTRIBUTING coverage gap" parts/contributing.md '/^| 8 | bullet |/d'
 
 if [ "$failures" -eq 0 ]; then echo "check_test: OK"; exit 0; fi
 echo "check_test: $failures FAILED"

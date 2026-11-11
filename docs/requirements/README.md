@@ -13,16 +13,28 @@ valid when the Python files change later.
 
 | Prefix | Source | Part | Ids |
 | :--- | :--- | :--- | ---: |
-| REQ-RM | `docs/DEPYTHONIZATION_ROADMAP.md` lines 1-507 (ids 0001-0212) and 508-1034 (ids 1001-1450) | `parts/roadmap-1-507.md`, `parts/roadmap-508-1034.md` | 662 |
+| REQ-RM | `docs/DEPYTHONIZATION_ROADMAP.md` lines 1-507 (ids 0001-0213) and 508-1034 (ids 1001-1455) | `parts/roadmap-1-507.md`, `parts/roadmap-508-1034.md` | 668 |
 | REQ-PP | `docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md` (porting plan) | `parts/porting-plan.md` | 193 |
 | REQ-WP | `docs/NATIVE_WORK_PLAN.md` | `parts/workplan-architecture-devsetup.md` | 195 |
 | REQ-AR | `docs/ARCHITECTURE.md` | `parts/workplan-architecture-devsetup.md` | 78 |
 | REQ-DV | `docs/DEV_SETUP_WINDOWS.md` | `parts/workplan-architecture-devsetup.md` | 26 |
 | REQ-TS | `docs/TESTING.md` (compared with `docs/TESTING.hu.md`) | `parts/testing.md` | 314 |
-| REQ-RE | `README.md` and the content only in `README.hu.md` | `parts/readme.md` | 338 |
-| REQ-CL | `CHANGELOG.md` | `parts/changelog.md` | 451 |
+| REQ-RE | `README.md` and the content only in `README.hu.md` | `parts/readme.md` | 340 |
+| REQ-CL | `CHANGELOG.md` | `parts/changelog.md` | 452 |
+| REQ-CT | `CONTRIBUTING.md` (compared with `CONTRIBUTING.hu.md`) | `parts/contributing.md` | 26 |
 | (none) | every other tracked file (code, tests, units, assets), file by file with line ranges | `parts/python-files.md` | - |
-| | | **Total** | **2257** |
+| | | **Total** | **2292** |
+
+Documents of the commit without a coverage table of their own (`check.sh` names them in `OUT_OF_SCOPE` and fails on any
+other document without one):
+
+- `docs/TESTING.hu.md`: compared line by line in `parts/testing.md`; the English file is the source.
+- `docs/DEV_SETUP_WINDOWS.hu.md`: the Hungarian translation of `docs/DEV_SETUP_WINDOWS.md`; not compared yet (the English
+  file is the source of the REQ-DV rows).
+- `docs/NMHH_SZELESSAVNET_COMPARISON.md` and its Hungarian version: out of scope. The F-02 row of the work plan does not
+  name them; they compare the Python version with one country's official measuring box (the native build has nothing tied
+  to one country built in, QB 9), and their statements about NMB quote `README.md` and `docs/TESTING.md`, which have parts.
+  When the native build replaces the Python version, P-12 checks those statements again.
 
 `parts/python-files.md` has no requirement ids: it gives each line of each Python file to one package, and the analyst
 of that package writes the requirements of its ranges in the brief (skill `nmb-native-brief`).
@@ -36,22 +48,36 @@ of that package writes the requirements of its ranges in the brief (skill `nmb-n
 | `PACKAGE_CHANGES.md` | Proposed new, split, merged and moved packages, de-duplicated; and the mappings of every roadmap section (M1), every `TESTING.md` row (M2) and every Python file (M3) to one package. |
 | `QUESTIONS.md` | The owner's questions from all parts, de-duplicated. |
 | `check.sh` | The register's check (POSIX `sh` and `awk`). |
-| `check_test.sh` | Test of the check: the real register must pass, 22 planted faults in copies must each fail. |
+| `check_test.sh` | Test of the check: the real register must pass, 24 planted faults in copies must each fail. |
+
+## Names and site data (Quality Bar 8)
+
+The parts copy no personal or site data: where a source names the owner's line, ISP, plan, test devices, places, accounts or
+a measured site value, the row states the requirement generically and adds "(source names a specific site value; not
+copied)". Public product targets that the plans themselves name as targets (for example the TL-WR1043ND v1, the first
+router target of `docs/NATIVE_WORK_PLAN.md` package I-10, and the Raspberry Pi 4) and public protocol or vendor
+identifiers (USB vendor IDs, socket paths, server names of public services) are copied, because a rule cannot be checked
+without them. This rule was made one for all parts in round 1.
 
 ## Ids are permanent
 
 - An id is given once and never reused, renumbered or given to another requirement, also when its row is withdrawn.
 - A row that is wrong is corrected in place (text, source, package); a row that is no longer wanted keeps its id and
-  says *withdrawn* with the reason in Notes. New requirements of a source get the next free number of its prefix
-  (REQ-RM-0213 for roadmap lines 1-507, REQ-RM-1451 for 508-1034, REQ-PP-0194, and so on).
+  says *withdrawn* with the reason in Notes: the Requirement cell starts with `*Withdrawn.*`, the Notes cell with
+  `withdrawn: <reason>` (for example `withdrawn: superseded by REQ-WP-0179, -0180`). New requirements of a source get the
+  next free number of its prefix (REQ-RM-0214 for roadmap lines 1-507, REQ-RM-1456 for 508-1034, REQ-PP-0194, REQ-RE-0341,
+  REQ-CL-0453, REQ-CT-0027, and so on).
 - Requirements that a package analyst finds in a Python file are written in the brief with the file's line range as their
-  source; if the register should hold them, they get ids of a new prefix agreed with F-02 (not one of the eight above).
+  source; if the register should hold them, they get ids of a new prefix agreed with F-02 (not one of the nine above).
 - Proposed package ids (section B of `PACKAGE_CHANGES.md`) follow the same rule: a rejected id is not reused.
 
 ## Owner and Also in
 
 - **Package** is the one package that must build the requirement and prove it with a test (work plan 2.4: a requirement
-  id of a package without a test at the end is a failed gate).
+  id of a package without a test at the end is a failed gate). A withdrawn row keeps its package for the trace; the brief
+  lists it as withdrawn and the gate expects no test for it (`BY_PACKAGE.md`, *Flags*, lists them).
+- Rows that concern only the C code base or only router targets (step 2, `docs/NATIVE_WORK_PLAN.md@ad3758c:19-22`) are
+  owned by `NEW: X2-01`, with the step-1 package under *Also in*; a row that mixes both is split.
 - **Also in** lists packages that must keep to the requirement, show or store what it produces, or test their side of it;
   `every package` or `all packages` means a rule for all of them (listed under `ALL` in `BY_PACKAGE.md`).
 - The open series are written `S-02…S-0n (API: <area>)` and `U-02…U-0n (page: <page>)` until their numbers are fixed
@@ -85,12 +111,14 @@ sh docs/requirements/check_test.sh     # exit 0: the check passes the real regis
 with `git show`, `git grep` and `git ls-tree`, so it does not depend on the working copy. It checks: ids defined once and
 well formed; six cells per requirement row; a package on every row, known to `BY_PACKAGE.md`; every coverage table without
 gap or overlap from the first to the last line of its source range (the Hungarian README table: in order, no overlap);
-every id in a coverage row and every id of a coverage row defined; every Python file of the commit (without `docs/` and the
+every id in a coverage row and every id of a coverage row defined; every line a requirement cites from its own part's
+source in a coverage row that names the id (added in round 1); every Python file of the commit (without `docs/` and the
 top-level `*.md`) in `parts/python-files.md` with each line exactly once; `BY_PACKAGE.md` equal to the parts; every work
 plan package present; and M1-M3 of `PACKAGE_CHANGES.md` mapping each roadmap heading, `TESTING.md` row and Python file
-exactly once to a known package.
+exactly once to a known package; and every document of the commit (top-level `*.md`, `docs/`) either the source of a
+coverage table or named in `OUT_OF_SCOPE`.
 
 `BY_PACKAGE.md` and sections M1-M3 of `PACKAGE_CHANGES.md` were generated by the F-02 merge step from the parts. The
-generator is not in this repository yet (it was a one-off script of the merge; a POSIX or Go version belongs with F-00's
-tools). Until then, after a change to a part, edit `BY_PACKAGE.md` and M1-M3 to match; `check.sh` names every place that
+generator is not in this repository yet (it was a one-off script of the merge, and again of round 1; a POSIX or Go version
+belongs with F-00's tools). Until then, after a change to a part, edit `BY_PACKAGE.md` and M1-M3 to match; `check.sh` names every place that
 disagrees.
