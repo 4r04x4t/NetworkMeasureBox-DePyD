@@ -645,8 +645,8 @@ All on the dev PC under WSL2, as the normal user, in `~/nmb-work/I-04/`:
 - `zstd -dc | tar -tvf -` of SDK, toolchain, ImageBuilder, llvm-bpf, kernel-debug: exit 0. Single-file
   extractions: exit 0, except one toolchain `tar` call with exit 2 (`ld.bfd` is a hard link to a file not named in
   that call; repeated with the link target, exit 0).
-- QEMU run 1 (KVM): QEMU exit 0, driver exit 0; the flock exit was not logged for run 1 (only run 3's
-  `times.txt` has a `flock+run rc` line). Run 2 (KVM): QEMU exit 1, driver exit 1
+- QEMU run 1 (KVM): QEMU exit 0, driver exit 0; the flock exit was not logged for run 1 (only the `times.txt` of runs 3 and 4
+  has a `flock+run rc` line). Run 2 (KVM): QEMU exit 1, driver exit 1
   (`/dev/kvm` permission denied). Run 3 (TCG, squashfs-combined-efi, 512 MB, under `flock -w 3600
   ~/nmb-work/qemu.lock` for the whole run, started after the lock was free): flock+run exit 0, QEMU exit 0,
   driver exit 0, all 10 probes exit 0.
