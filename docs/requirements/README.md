@@ -13,19 +13,19 @@ valid when the Python files change later.
 
 | Prefix | Source | Part | Ids |
 | :--- | :--- | :--- | ---: |
-| REQ-RM | `docs/DEPYTHONIZATION_ROADMAP.md` lines 1-507 (ids 0001-0219) and 508-1034 (ids 1001-1465) | `parts/roadmap-1-507.md`, `parts/roadmap-508-1034.md` | 684 |
-| REQ-PP | `docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md` (porting plan) | `parts/porting-plan.md` | 198 |
+| REQ-RM | `docs/DEPYTHONIZATION_ROADMAP.md` lines 1-507 (ids 0001-0220) and 508-1034 (ids 1001-1468) | `parts/roadmap-1-507.md`, `parts/roadmap-508-1034.md` | 688 |
+| REQ-PP | `docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md` (porting plan) | `parts/porting-plan.md` | 199 |
 | REQ-WP | `docs/NATIVE_WORK_PLAN.md` | `parts/workplan-architecture-devsetup.md` | 197 |
-| REQ-AR | `docs/ARCHITECTURE.md` | `parts/workplan-architecture-devsetup.md` | 78 |
+| REQ-AR | `docs/ARCHITECTURE.md` | `parts/workplan-architecture-devsetup.md` | 80 |
 | REQ-DV | `docs/DEV_SETUP_WINDOWS.md` | `parts/workplan-architecture-devsetup.md` | 26 |
 | REQ-TS | `docs/TESTING.md` (compared with `docs/TESTING.hu.md`) | `parts/testing.md` | 314 |
 | REQ-RE | `README.md` and the content only in `README.hu.md` | `parts/readme.md` | 343 |
-| REQ-CL | `CHANGELOG.md` | `parts/changelog.md` | 453 |
+| REQ-CL | `CHANGELOG.md` | `parts/changelog.md` | 454 |
 | REQ-CT | `CONTRIBUTING.md` (compared with `CONTRIBUTING.hu.md`) | `parts/contributing.md` | 26 |
 | REQ-NH | `docs/NMHH_SZELESSAVNET_COMPARISON.md` (comparison with one country's official measuring box; QB 9: requirements of the country data files and the neutral default) | `parts/other-docs.md` | 13 |
 | (none) | the Hungarian translations `docs/NMHH_SZELESSAVNET_OSSZEHASONLITAS.hu.md`, `docs/DEV_SETUP_WINDOWS.hu.md` and `docs/TESTING.hu.md`, each compared line by line with its English source (content only in Hungarian: a section of that part) | `parts/other-docs.md` | - |
 | (none) | every other tracked file (code, tests, units, assets), file by file with line ranges | `parts/python-files.md` | - |
-| | | **Total** | **2332** |
+| | | **Total** | **2340** |
 
 Every document of the commit (top-level `*.md` and `docs/`) is the source of a coverage table; `OUT_OF_SCOPE` in
 `check.sh` is empty since round 3, when `parts/other-docs.md` covered the last four. A Hungarian translation is never
@@ -52,7 +52,7 @@ of that package writes the requirements of its ranges in the brief (skill `nmb-n
 | `parts/*.md` | The register itself. Each part has a *Requirements* table (Id, Requirement, Source, Package, Also in, Notes), a *Coverage* table (every source line in order: the ids it holds, or `context: <why no requirement>`), its proposed package changes and its questions. |
 | `BY_PACKAGE.md` | For every package: the ids it owns and the ids it is also in. Generated from the parts; `check.sh` fails when they disagree. |
 | `PACKAGE_CHANGES.md` | Proposed new, split, merged and moved packages, de-duplicated; and the mappings of every roadmap section (M1), every `TESTING.md` row (M2) and every Python file (M3) to one package. |
-| `QUESTIONS.md` | The questions of all parts, de-duplicated and triaged (round 3): answered by existing decisions, developer's choices with their rule, and the few left for the owner. |
+| `QUESTIONS.md` | The questions of all parts, de-duplicated and triaged (round 3): answered by existing decisions, developer's choices with their rule, and the owner's answers of 2026-11-11 to the six left for him (none open). |
 | `check.sh` | The register's check (POSIX `sh` and `awk`). |
 | `check_test.sh` | Test of the check: the real register must pass, 30 planted faults in copies must each fail. |
 
@@ -71,8 +71,8 @@ without them. This rule was made one for all parts in round 1.
 - A row that is wrong is corrected in place (text, source, package); a row that is no longer wanted keeps its id and
   says *withdrawn* with the reason in Notes: the Requirement cell starts with `*Withdrawn.*`, the Notes cell with
   `withdrawn: <reason>` (for example `withdrawn: superseded by REQ-WP-0179, -0180`). New requirements of a source get the
-  next free number of its prefix (REQ-RM-0220 for roadmap lines 1-507, REQ-RM-1466 for 508-1034, REQ-PP-0199, REQ-WP-0198,
-  REQ-RE-0344, REQ-CL-0454, REQ-CT-0027, REQ-NH-0014, and so on).
+  next free number of its prefix (REQ-RM-0221 for roadmap lines 1-507, REQ-RM-1469 for 508-1034, REQ-PP-0200, REQ-WP-0198,
+  REQ-AR-0081, REQ-RE-0344, REQ-CL-0455, REQ-CT-0027, REQ-NH-0014, and so on; as of the owner's answers of 2026-11-11).
 - Requirements that a package analyst finds in a Python file are written in the brief with the file's line range as their
   source; if the register should hold them, they get ids of a new prefix agreed with F-02 (not one of the ten above).
 - Proposed package ids (section B of `PACKAGE_CHANGES.md`) follow the same rule: a rejected id is not reused.

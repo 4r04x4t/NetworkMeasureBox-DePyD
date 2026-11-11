@@ -263,6 +263,30 @@ The checkers' findings of round 4 changed these rows; no id was renumbered, new 
 - **Mappings:** M1 *Rows by owner* of 4.25 and 6B.8 recomputed (packages unchanged); M2 and M3 unchanged. `BY_PACKAGE.md`
   was regenerated (2332 requirements; X2-01 owns 153).
 
+## L. Owner's answers of 2026-11-11
+
+The owner answered the six questions left for him (`QUESTIONS.md`, *Answered by the owner*); none is open. No id was
+renumbered, new ids took the next free number, no package was added, and no row was withdrawn (the *Withdrawn* flag of
+`BY_PACKAGE.md` still lists only REQ-PP-0080). (This section is L because K already holds round 4.)
+
+- **Q-01, component by component through a bridge:** REQ-RM-1002 kept (Notes); REQ-RM-1260 kept, not withdrawn, restated
+  as the probe's bridge (the Python database over SQLite WAL or an API), F-04 added under *Also in*, owner M-01. New:
+  REQ-RM-1466 (the bridge and its contract; F-04), REQ-RM-1467 (each mixed state tested, the box working in each; P-13),
+  REQ-RM-1468 (no Python fault crosses the bridge, QB 6; C-02). Roadmap line 512 is unchanged for F-01.
+- **Q-05, A:** REQ-CL-0090 restated (the own image plus packages for Debian, Ubuntu, Alpine, the Fedora/RHEL family and
+  Rocky Linux, each tested in QEMU); REQ-CL-0091 and the context of CHANGELOG line 131 point to the answer.
+- **Q-12, B:** REQ-CL-0416 restated; new REQ-CL-0454 (the hardened web terminal; `S-02…S-0n (API: system)`, also the tools
+  page, P-05, P-06, P-04).
+- **Q-15, C:** REQ-AR-0054, -0069 restated, REQ-RM-0104 points to the answer; new REQ-AR-0079 (VPN profiles over Telegram;
+  S-11, also N-13, N-14) and REQ-AR-0080 (Wi-Fi passwords in the chat; S-11, also N-07, N-08).
+- **Q-16, C:** REQ-RM-0135 restated (kept in the SLA dossier and the ISP-support bundle; R-03 added under *Also in*); new
+  REQ-RM-0220 (vendor prefix and a per-bundle pseudonym in bundles for outside LLMs; C-04, also R-04).
+- **Q-17, B:** REQ-PP-0135 restated (each entry sent off the device as it is written, the hash-chained local log as a second
+  record; S-13 added under *Also in*); new REQ-PP-0199 (maintenance mode does not start without a log target off the
+  device; P-05, also S-13, N-18, C-03).
+- **Mappings:** M1 *Rows by owner* of 4.24, 6, the Quality Bar, Phase 1 and 6B.8 recomputed; section 6 is now a majority of
+  P-13 (package unchanged). M2 and M3 unchanged. `BY_PACKAGE.md` was regenerated (2340 requirements).
+
 ## M1. Every roadmap section in one package
 
 Every `##` and `###` heading of `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c` outside code blocks (69), with the lines up to the
@@ -306,7 +330,7 @@ lines of two sections counts in both; round 2: recomputed from the parts, and `c
 | 349 | 349-360 | 4.21 RFC 5389 STUN Client & Carrier-Grade NAT (CGNAT) Engine | M-12 | majority | M-12 4 |
 | 361 | 361-368 | 4.22 CPU Interrupts (IRQ/SoftIRQ), RPS/XPS & NIC Offload Telemetry | C-09 | majority | C-09 3 |
 | 369 | 369-376 | 4.23 Storage I/O & Flash Filesystem Health Monitor | C-08 | majority | C-08 3 |
-| 377 | 377-389 | 4.24 Sanitized Configuration & PII/Secret Masking Engine | C-04 | majority; plan names C-04 and R-04 for 4.24 | C-04 6 |
+| 377 | 377-389 | 4.24 Sanitized Configuration & PII/Secret Masking Engine | C-04 | majority; plan names C-04 and R-04 for 4.24 | C-04 7 |
 | 390 | 390-395 | 4.25 Central Collector Client & GitHub Updater | S-13 | majority; plan names M-04, S-12 and S-13 for 4.25 | S-13 5, S-12 3, X2-01 2, M-04 1, M-05 1, P-02 1 |
 | 396 | 396-409 | 4.26 Features Added in November 2026 (the Python Reference the Native Build Must Match) | N-10 | majority; the section collects several features (C-06, C-08, M-07, N-08 also cite it) | N-10 9, M-07 5, N-08 5, C-08 2, C-06 1, M-04 1, M-09 1, N-05 1, P-13 1, X2-01 1 |
 | 410 | 410-435 | 4.27 USB Tethering & Mobile Uplink (Phones, 5G/4G Hotspots, Cellular Modems) | N-10 | majority | N-10 12, X2-01 3, N-05 2, N-08 1, P-11 1 |
@@ -314,14 +338,14 @@ lines of two sections counts in both; round 2: recomputed from the parts, and `c
 | 446 | 446-457 | 4.29 The Measurement Setup on Every Result (Owner, 2026-11-10) | C-11 | majority | C-11 10, C-02 1, R-01 1, R-02 1, R-03 1, R-04 1, R-05 1, S-10 1, S-11 1, S-12 1, U-02 1 |
 | 458 | 458-493 | 5. Architectural Proposal: The Unified Single-Binary Monolith (`nmbd`) | P-10 | plan (section 5) | C-02 1, P-10 1, S-01 1 |
 | 494 | 494-507 | Multi-Call CLI Compatibility (Busybox-style): | P-10 | majority | P-10 2 |
-| 508 | 508-535 | 6. Four-Phase Hybrid Migration Roadmap | P-13 | tie (P-13 2, P-11 2): generic first, proven on the PC and the Pi 4 | P-11 2, P-13 2, P-01 1 |
+| 508 | 508-535 | 6. Four-Phase Hybrid Migration Roadmap | P-13 | majority (P-13 3, P-11 2): generic first, proven on the PC and the Pi 4 | P-13 3, P-11 2, F-04 1, P-01 1 |
 | 536 | 536-541 | Where the Native Files Live (Owner, 2026-11-10) | F-00 | majority | F-00 6 |
 | 542 | 542-557 | Generic First: Platform- and Architecture-Independent Code | F-00 | majority | F-00 6, P-13 3, F-04 2 |
 | 558 | 558-571 | Order of Work (Owner, 2026-11-10) | I-09 | part: step-1 image analysis first (tie F-03 3, I-09 3; I-10 2) | F-03 3, I-09 3, I-10 2, F-00 1, F-06 1, P-08 1, P-13 1, P-14 1, T-01 1 |
-| 572 | 572-605 | Quality Bar: At Least as Good as the Python Version, and Better | P-13 | plan: P-13 names QB 1, 4, 5, 7 (majority F-00 14, P-13 10) | F-00 14, P-13 10, C-10 8, P-03 6, F-03 4, P-02 4, X2-01 4, C-01 3, C-06 3, F-06 3, S-01 3, R-03 2, R-04 2, S-11 2, C-03 1, C-04 1, C-05 1, F-05 1, M-12 1, N-02 1, N-05 1, N-07 1, N-11 1, N-12 1, P-04 1, P-06 1, P-11 1, S-10 1, S-13 1, U-01 1 |
+| 572 | 572-605 | Quality Bar: At Least as Good as the Python Version, and Better | P-13 | plan: P-13 names QB 1, 4, 5, 7 (majority F-00 14, P-13 10) | F-00 14, P-13 10, C-10 8, P-03 6, F-03 4, P-02 4, X2-01 4, C-01 3, C-06 3, F-06 3, S-01 3, R-03 2, R-04 2, S-11 2, C-02 1, C-03 1, C-04 1, C-05 1, F-04 1, F-05 1, M-12 1, N-02 1, N-05 1, N-07 1, N-11 1, N-12 1, P-04 1, P-06 1, P-11 1, S-10 1, S-13 1, U-01 1 |
 | 606 | 606-620 | Register of Python Faults the Native Build Must Not Repeat (owner, 2026-11-10) | F-03 | plan: F-03 is the roadmap's register (majority N-02 7) | N-02 7, M-04 6, S-11 5, F-03 4, R-04 4, N-12 3, N-14 3, C-11 2, M-02 2, P-06 2, R-02 2, C-01 1, C-04 1, C-07 1, F-06 1, M-01 1, M-10 1, M-12 1, P-02 1, P-03 1, R-01 1, S-02 1, U-02 1 |
 | 621 | 621-758 | Phase 0: Freeze Behaviour Before Rewriting | F-05 | plan: F-05 is the Phase 0 reference (majority F-00 18) | F-00 18, M-03 11, S-10 11, P-13 7, C-01 6, M-05 5, N-03 3, S-01 3, F-05 2, M-04 2, N-01 2, N-05 2, P-02 2, P-03 2, P-11 2, X2-01 2, C-02 1, C-08 1, F-04 1, F-06 1, M-06 1, M-09 1, M-10 1, N-02 1, N-14 1, N-17 1, P-04 1, P-06 1, P-10 1 |
-| 759 | 759-763 | Phase 1: High-ROI Micro-Engine Replacements | M-01 | tie: first step of the phase (probe) | C-09 1, M-01 1, M-04 1 |
+| 759 | 759-763 | Phase 1: High-ROI Micro-Engine Replacements | M-01 | tie: first step of the phase (probe) | C-09 1, F-04 1, M-01 1, M-04 1 |
 | 764 | 764-768 | Phase 2: Dynamic Routing, DNS Ad-Blocker & Wi-Fi IPC | N-01 | tie: first step of the phase (routing daemon) | N-01 1, N-07 1, N-12 1 |
 | 769 | 769-773 | Phase 3: WireGuard VPN, In-Process OONI & Unified Monolith (`nmbd`) | N-13 | tie: first step of the phase (WireGuard) | M-13 1, N-13 1, P-10 1 |
 | 774 | 774-780 | Phase 4: Self-Healing Watchdog, Driver Autodiscovery & OpenWrt Packaging | P-01 | tie: first step of the phase (watchdog) | N-17 1, P-01 1, P-11 1 |
@@ -334,7 +358,7 @@ lines of two sections counts in both; round 2: recomputed from the parts, and `c
 | 873 | 873-883 | 6B.5 Sandboxing as a built-in option (owner, 2026-11-10) | P-04 | majority | P-04 11, F-06 1, N-02 1, N-03 1, P-02 1 |
 | 884 | 884-899 | 6B.6 Captive portals on a Wi-Fi uplink (owner, 2026-11-10) | N-09 | majority | N-09 18, X2-01 1 |
 | 900 | 900-916 | 6B.7 Full user manual and command-line reference (owner, 2026-11-10) | P-12 | majority | P-12 18 |
-| 917 | 917-930 | 6B.8 One behaviour, two languages: the Go and the C code bases learn from each other (owner, 2026-11-10) | F-07 | majority | F-07 11, X2-01 2, F-00 1, F-05 1, T-01 1 |
+| 917 | 917-930 | 6B.8 One behaviour, two languages: the Go and the C code bases learn from each other (owner, 2026-11-10) | F-07 | majority | F-07 11, X2-01 2, C-02 1, F-00 1, F-05 1, T-01 1 |
 | 931 | 931-942 | 6B.4 Downloaded images and firmware to work with | I-09 | part (tie) | F-00 1, I-09 1, I-10 1 |
 | 943 | 943-975 | 7. Component Language & Dependency Elimination Matrix | P-10 | part (step-1 rows spread, M-12 2, C-09 2; the 5 X2-01 rows are the C halves split from step-1 rows in round 2) | X2-01 5, C-09 2, M-12 2, C-02 1, C-04 1, C-08 1, M-01 1, M-02 1, M-04 1, M-08 1, M-09 1, M-13 1, M-14 1, N-01 1, N-07 1, N-12 1, N-13 1, N-15 1, N-17 1, P-01 1, P-10 1, R-03 1, R-05 1, S-01 1, S-11 1 |
 | 976 | 976-999 | 8. Cross-Compilation Matrix (Go) | F-00 | majority | F-00 2 |

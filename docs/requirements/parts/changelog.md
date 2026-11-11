@@ -3,7 +3,7 @@
 Source: `CHANGELOG.md` of the Python repository at commit `ad3758c` (423 lines; this part covers lines 1-423).
 Read in pages: 1-75, 76-150, 151-220, 221-290, 291-360, 361-423 (all lines).
 Package ids from `docs/NATIVE_WORK_PLAN.md@ad3758c:98-226` (section 3 and section 4).
-Id range of this part: REQ-CL-0001 to REQ-CL-0453 (0452 added in round 1, 0453 in round 2). Every Source cell is written out in full as `CHANGELOG.md@ad3758c:<line>`.
+Id range of this part: REQ-CL-0001 to REQ-CL-0454 (0452 added in round 1, 0453 in round 2, 0454 from the owner's answer to Q-12 of 2026-11-11). Every Source cell is written out in full as `CHANGELOG.md@ad3758c:<line>`.
 API and page packages are written as `S-02…S-0n (API: <area>)` and `U-02…U-0n (page: <page>)`, using the areas of work plan line 189, until F-02 fixes their numbers (same convention as the TESTING.md part).
 
 Rules used: an Added or Changed entry that describes behaviour of the box is a requirement; a Fixed or Security entry is a requirement stating the correct behaviour, marked `fault` in Notes so F-03 can cross-reference it (the native build must not repeat the fault). Entries that only add or change a plan, a development note or a document with no box behaviour are listed as context in the Coverage table, with the part of the register that holds their requirements. One changelog bullet that states several checkable things is split into several rows with the same source line. "Python proof" in Notes records how the Python version proved it, as a hint for the native test.
@@ -101,8 +101,8 @@ Rules used: an Added or Changed entry that describes behaviour of the box is a r
 | REQ-CL-0087 | Each engine has its own minimum interval for scheduled tests (`ookla_interval_min` at least 60; `rtr_interval_min`, `cloudflare_interval_min`), set under the schedule. | CHANGELOG.md@ad3758c:92 | M-04 | U-02…U-0n (page: speed), C-01 |  |
 | REQ-CL-0088 | A "Refresh from Ookla" button next to the Ookla server choice on the home page and in the server list. | CHANGELOG.md@ad3758c:93 | M-10 | U-02…U-0n (page: home) |  |
 | REQ-CL-0089 | Update in a few clicks (Web UI, `nmb-cli update --apply --yes`, the heal command): download the newest version, run its tests, back up settings and measurements, install, and put the previous version back if the install fails; the Web UI shows each step. | CHANGELOG.md@ad3758c:94 | P-02 | U-02…U-0n (page: system), S-10, P-01 | Native: signed packages instead of a Git download (owner decision) |
-| REQ-CL-0090 | The install is proven on each supported distribution: clean install, reinstall and reboot (Python: Ubuntu 26.04 LTS, Alpine 3.22, Rocky Linux 10). | CHANGELOG.md@ad3758c:95 | P-11 |  | owner question Q-05 |
-| REQ-CL-0091 | Fedora and RHEL family support: the package-manager branch (dnf, EPEL on RHEL and rebuilds), the NMB ports opened in firewalld; the helper's upgrade and update check work with dnf and apk. | CHANGELOG.md@ad3758c:96 | P-11 | P-06 | owner question Q-05 |
+| REQ-CL-0090 | The install is proven on each supported distribution: clean install, reinstall and reboot, each tested in QEMU. Supported: the own image plus packages for every distribution the Python version supports (Debian, Ubuntu, Alpine, the Fedora/RHEL family, Rocky Linux) (Python: Ubuntu 26.04 LTS, Alpine 3.22, Rocky Linux 10). | CHANGELOG.md@ad3758c:95 | P-11 |  | Q-05 answered by the owner (2026-11-11): A. |
+| REQ-CL-0091 | Fedora and RHEL family support: the package-manager branch (dnf, EPEL on RHEL and rebuilds), the NMB ports opened in firewalld; the helper's upgrade and update check work with dnf and apk. | CHANGELOG.md@ad3758c:96 | P-11 | P-06 | Q-05 answered by the owner (2026-11-11): A; the Fedora/RHEL family is among the supported distributions of REQ-CL-0090. |
 | REQ-CL-0092 | Optional results without password (`public_results = true`, off by default): devices on the local network open `/results` and download the report and CSV files without logging in; settings still need the password. | CHANGELOG.md@ad3758c:97 | S-01 | S-02…S-0n (API: exports), U-02…U-0n (page: results and logout), C-01 | Owner moved from S-02…S-0n (API: exports) in round 1: one owner (S-01, which decides the routes that need a login) with REQ-TS-0125 and REQ-RE-0303. |
 | REQ-CL-0093 | A warning in the Web UI, the API and the log when the schedule runs Ookla more often than hourly, showing how long Ookla stays paused. | CHANGELOG.md@ad3758c:98 | M-05 | U-02…U-0n (page: speed), S-02…S-0n (API: speed), C-03 |  |
 | REQ-CL-0094 | A real DMZ in router mode: its own subnet and DHCP, internet access, and no access to the LAN or the box beyond DHCP and DNS. | CHANGELOG.md@ad3758c:102 | N-02 | N-03, N-05 |  |
@@ -429,7 +429,8 @@ Rules used: an Added or Changed entry that describes behaviour of the box is a r
 | REQ-CL-0413 | A traffic gate postpones tests when the box sees other traffic. | CHANGELOG.md@ad3758c:372 | M-03 | M-04 |  |
 | REQ-CL-0414 | Experimental, off-by-default stop on network traffic: tests only a provably idle network and stops running tests when other traffic appears, reading client-side ports or the router's UPnP counters. | CHANGELOG.md@ad3758c:373 | M-03 | M-04 | Q-12, this part settled: carried over, off by default, as in Python (4.4A every function; Quality Bar 3). |
 | REQ-CL-0415 | Web dashboard with selectable themes (now 11 languages; AMOLED-only base with add-on themes per owner decision). | CHANGELOG.md@ad3758c:374 | U-01 | P-09, C-06 |  |
-| REQ-CL-0416 | The dashboard has a device explorer, packet sniffer, traceroute, task manager and web terminal. | CHANGELOG.md@ad3758c:374 | U-02…U-0n (page: tools) | N-17, M-11, C-09 | Web terminal: owner question Q-12. |
+| REQ-CL-0416 | The dashboard has a device explorer, packet sniffer, traceroute, task manager and web terminal (the terminal hardened as REQ-CL-0454). | CHANGELOG.md@ad3758c:374 | U-02…U-0n (page: tools) | N-17, M-11, C-09 | Web terminal: Q-12 answered by the owner (2026-11-11): B. |
+| REQ-CL-0454 | The web terminal is kept, hardened: off by default; reachable only from the LAN or Tailscale and only while the maintenance mode is on; the password is asked again each time; every command goes into the audit log (P-05); it switches itself off after a set time; it runs as the service user, with root only through the privileged helper. | CHANGELOG.md@ad3758c:374 | S-02…S-0n (API: system) | U-02…U-0n (page: tools), P-05, P-06, P-04 | New: the owner's answer to Q-12 (2026-11-11). Python reference `/api/terminal/exec` (S-08 and page U-20 in `parts/python-files.md`). |
 | REQ-CL-0417 | `nmb-cli` terminal interface with the Web UI's menus, mouse and hotkeys, JSON commands for scripts and LLMs, log listing and a logo (plain CLI per owner decision). | CHANGELOG.md@ad3758c:375 | S-10 |  |  |
 | REQ-CL-0418 | Multilingual Telegram bot with menus and alerts. | CHANGELOG.md@ad3758c:376 | S-11 | C-06 |  |
 | REQ-CL-0419 | HTML dossier, CSV export and LLM diagnostic bundle. | CHANGELOG.md@ad3758c:377 | R-03 | R-02, R-04 |  |
@@ -602,7 +603,7 @@ Every line 1-423 in order; no gaps. Blank lines are listed as such.
 | 128 | bullet | REQ-CL-0115 |
 | 129 | bullet | REQ-CL-0116 |
 | 130 | bullet | REQ-CL-0117 |
-| 131 | bullet | context: README record of OSes tested in a simulated environment; owner question Q-05 (REQ-CL-0090) |
+| 131 | bullet | context: README record of OSes tested in a simulated environment; Q-05 answered by the owner (A, REQ-CL-0090) |
 | 132 | bullet | REQ-CL-0118 |
 | 133 | bullet | REQ-CL-0119 |
 | 134 | blank | context: blank line |
@@ -845,7 +846,7 @@ Every line 1-423 in order; no gaps. Blank lines are listed as such.
 | 371 | bullet | REQ-CL-0412 |
 | 372 | bullet | REQ-CL-0413 |
 | 373 | bullet | REQ-CL-0414 |
-| 374 | bullet | REQ-CL-0415, REQ-CL-0416 |
+| 374 | bullet | REQ-CL-0415, REQ-CL-0416, REQ-CL-0454 |
 | 375 | bullet | REQ-CL-0417 |
 | 376 | bullet | REQ-CL-0418 |
 | 377 | bullet | REQ-CL-0419 |
@@ -903,7 +904,7 @@ Every line 1-423 in order; no gaps. Blank lines are listed as such.
 
 ## Questions for the owner
 
-*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 1 → Q-05 (for the owner), 2 → Q-19 (answered), 3 → Q-12 (terminal for the owner; the traffic stop settled), 4 → Q-27 (developer's choice). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
+*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 1 → Q-05 (for the owner), 2 → Q-19 (answered), 3 → Q-12 (terminal for the owner; the traffic stop settled), 4 → Q-27 (developer's choice). Answered by the owner on 2026-11-11: Q-05 (A: REQ-CL-0090 restated) and Q-12 (B: the terminal kept, hardened, REQ-CL-0454). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
 
 1. **Supported distributions (lines 95, 96, 131).** The Python version was installed and tested on Debian, Ubuntu, Alpine, Fedora/RHEL family and Rocky Linux. Must the native packages still install on all of these (REQ rows of lines 95 and 96, package P-11), or only on the own distribution and the bases chosen after the image analysis? Until answered, the rows stay with P-11 marked "question for the owner".
 2. **Factory login warning (line 211).** The Python installer warns on every run while the Web UI factory login is still set. The owner keeps the default login on purpose. Should the native installer keep this warning (it is only a warning), drop it, or show it once? The row is kept as written until answered.

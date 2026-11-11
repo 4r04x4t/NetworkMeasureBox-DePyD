@@ -2,7 +2,7 @@
 
 Source: `docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md` of the Python repository at commit `ad3758c` (700 lines; this part covers lines 1-700, the whole file; the working copy was checked identical to the commit with `git show ad3758c:...`).
 Read in pages: 1-150, 151-300, 301-450, 451-600, 600-700 (all lines). Package ids from `docs/NATIVE_WORK_PLAN.md@ad3758c:98-219` (section 3), read with sections 1-2 (lines 1-97) for the step-1 scope and sections 4-7 (lines 220-343) for the image packages I-01..I-10 and the owner's decisions.
-Id range of this part: REQ-PP-0001 to REQ-PP-0198 (0194-0198 added in round 4, the router or C halves split from step-1 rows). "Source" cells give the file path in full.
+Id range of this part: REQ-PP-0001 to REQ-PP-0199 (0194-0198 added in round 4, the router or C halves split from step-1 rows; 0199 from the owner's answer to Q-17 of 2026-11-11). "Source" cells give the file path in full.
 
 Reading notes for the register owner:
 - The whole plan is router work (step 2 and later), except where it states rules for every device (sections 7D, 7E, 7F and parts of 7, 7A, 7B). Router-only rows go to `NEW: X2-01 Step-2 router tiers`, the same holding package that the roadmap part (`roadmap-1-507.md`) proposes; see "Proposed package changes".
@@ -149,7 +149,8 @@ Reading notes for the register owner:
 | REQ-PP-0132 | Maintenance mode gives a root shell over SSH with keys only (no passwords), on the LAN or through the box's VPN/Tailscale; never open on the WAN. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:594 | P-05 | N-02 | |
 | REQ-PP-0133 | Developer LLM agents use the same channel and the same rights as a human developer, with the full logs, the configuration and the database (read-only by default); there is no separate, weaker path that behaves differently. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:595 | P-05 | S-10 | |
 | REQ-PP-0134 | `nmb-cli` has JSON output for every Web UI function. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:595 | S-10 | S-02 | |
-| REQ-PP-0135 | Every session is recorded: who connected (key name, person or agent), when, and every command and file change, in an audit log the session itself cannot erase. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:596 | P-05 | C-03 | A root session can erase any local file: Q-17 (for the owner: a tamper-evident local log with that limit accepted, a required log target off the device, or a restricted shell). Round 4: the round-3 restatement is undone until Q-17 is answered. |
+| REQ-PP-0135 | Every session is recorded: who connected (key name, person or agent), when, and every command and file change, in an audit log the session itself cannot erase: each entry is sent to the log target off the device (REQ-PP-0199) as it is written, and the hash-chained local log stays as a second record. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:596 | P-05 | C-03, S-13 | Q-17 answered by the owner (2026-11-11): B. Round 4 had undone the round-3 restatement. |
+| REQ-PP-0199 | Maintenance mode does not start without a log target off the device: the collector, syslog or the hub of the remote paths. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:596 | P-05 | S-13, N-18, C-03 | New: the owner's answer to Q-17 (2026-11-11). |
 | REQ-PP-0136 | The owner sees the audit log in the Web UI and can end a session or turn maintenance mode off at any time. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:596 | P-05 | U-02 | |
 | REQ-PP-0137 | Maintenance mode turns itself off after a set time (for example 24 h) unless renewed. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:597-598 | P-05 | | |
 | REQ-PP-0138 | Remote access without Tailscale on the device: a box is reached, managed and programmed from anywhere through the paths below, in their order of preference. | docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:601-602 | N-18 | | Round 4: split; that the C builds carry no Tailscale is REQ-PP-0194 (X2-01). Work plan N-18 (`docs/NATIVE_WORK_PLAN.md@ad3758c:170`) builds these paths in step 1. |
@@ -430,7 +431,7 @@ Each range includes the blank line(s) that end it. Every line 1-700 is in exactl
 | 592-593 | heading | context: "Access" title |
 | 594 | bullet | REQ-PP-0131, REQ-PP-0132 |
 | 595 | bullet | REQ-PP-0133, REQ-PP-0134 |
-| 596 | bullet | REQ-PP-0135, REQ-PP-0136 |
+| 596 | bullet | REQ-PP-0135, REQ-PP-0136, REQ-PP-0199 |
 | 597-598 | bullet | REQ-PP-0137 |
 | 599-600 | heading | context: "Remote access without Tailscale" title |
 | 601-602 | paragraph | REQ-PP-0138, REQ-PP-0194 |
@@ -505,11 +506,11 @@ Each range includes the blank line(s) that end it. Every line 1-700 is in exactl
    **Round 4:** the router-only rows REQ-PP-0149, -0190 and -0193 moved to X2-01 (step-1 owner under *Also in*); REQ-PP-0007,
    -0030, -0138, -0153 and -0156 were split into a step-1 row and a router or C row owned by X2-01 (REQ-PP-0197, -0198, -0194,
    -0195, -0196).
-5. No other split or merge proposed from this source. P-05 owns 7 rows from 7D and N-18 owns 8; both stay within one sitting by the size rule as far as this source shows.
+5. No other split or merge proposed from this source. P-05 owns 8 rows from 7D (REQ-PP-0199 added on 2026-11-11) and N-18 owns 8; both stay within one sitting by the size rule as far as this source shows.
 
 ## Questions for the owner
 
-*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 1 → Q-24, 2 → Q-25, 4 → Q-31, 5 → Q-26, 6 → Q-17 (developer's choices); 3 → Q-35, 7 → Q-39 (answered). Round 4: Q-17 moved to the owner, Q-25 keeps only the stored shaper (lifting it is asked when X2-01 starts), and the fork-target conflict of REQ-PP-0029 and -0184 is Q-40 (answered). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
+*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 1 → Q-24, 2 → Q-25, 4 → Q-31, 5 → Q-26, 6 → Q-17 (developer's choices); 3 → Q-35, 7 → Q-39 (answered). Round 4: Q-17 moved to the owner, Q-25 keeps only the stored shaper (lifting it is asked when X2-01 starts), and the fork-target conflict of REQ-PP-0029 and -0184 is Q-40 (answered). Answered by the owner on 2026-11-11: Q-17 (REQ-PP-0135 restated, REQ-PP-0199 added). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
 
 1. **Flow Cache bypass (REQ-PP-0051), fault or intended?** The plan's example turns off Broadcom acceleration with `system("fc config --flush")`, a shell call, which REQ-PP-0029 and Quality Bar 7 rule out, and it does not say that acceleration is turned back on after the test. Proposed: call the interface directly (ioctl or `/proc`), never through a shell, and always restore the previous state after the test, also after a crash.
 2. **CAKE shaping on the measured line (REQ-PP-0053, -0186), fault or intended?** If `nmbd` shapes the WAN with CAKE, the speed tests measure the shaper, not the ISP's line. Is shaping meant to stay off (or be lifted) during measurements, or to stay on with the shaper recorded in the measurement setup (roadmap 4.29) of every result?

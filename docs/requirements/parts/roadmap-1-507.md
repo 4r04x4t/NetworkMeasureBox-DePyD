@@ -2,7 +2,7 @@
 
 Source: `docs/DEPYTHONIZATION_ROADMAP.md` of the Python repository at commit `ad3758c` (1,034 lines; this part covers lines 1-507).
 Read in pages: 1-150, 151-300, 301-450, 451-507 (all lines). Package ids from `docs/NATIVE_WORK_PLAN.md@ad3758c:98-219` (section 3), read with sections 1-2 (lines 1-97) for the step-1 scope.
-Id range of this part: REQ-RM-0001 to REQ-RM-0219 (0213 added in round 1, 0214-0219 in round 2). "RM" below in Source means `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c`, written out in full in every cell.
+Id range of this part: REQ-RM-0001 to REQ-RM-0220 (0213 added in round 1, 0214-0219 in round 2, 0220 from the owner's answer to Q-16 of 2026-11-11). "RM" below in Source means `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c`, written out in full in every cell.
 Proposed package `NEW: X2-01` is explained in section 3 of this file.
 
 ## Requirements
@@ -117,7 +117,7 @@ Proposed package `NEW: X2-01` is explained in section 3 of this file.
 | REQ-RM-0101 | Interface drops/errors from netlink and `/proc/net/dev` delta counters. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:288 | R-05 | N-01 | |
 | REQ-RM-0102 | No flash wear: diagnostic events kept in memory, written to the database only when an anomaly is detected or on user request. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:289 | R-05 | C-02 | |
 | REQ-RM-0103 | Telegram bot: asynchronous worker long-polling `getUpdates` over HTTPS. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:294-295 | S-11 | | |
-| REQ-RM-0104 | Bot inline-keyboard menus for: status and instant ping matrix; on-demand speed test (Ookla, Cloudflare, RMBT, iPerf3); SLA dossier (.html) and LLM diagnostic snapshot (.md) export; Tailscale, WireGuard and OpenVPN status and one-click QR delivery. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:296-300 | S-11 | M-04, R-03, R-04, N-13, N-14, N-15 | QR delivery puts a VPN private key into Telegram: owner question Q-15. |
+| REQ-RM-0104 | Bot inline-keyboard menus for: status and instant ping matrix; on-demand speed test (Ookla, Cloudflare, RMBT, iPerf3); SLA dossier (.html) and LLM diagnostic snapshot (.md) export; Tailscale, WireGuard and OpenVPN status and one-click QR delivery. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:296-300 | S-11 | M-04, R-03, R-04, N-13, N-14, N-15 | QR delivery puts a VPN private key into Telegram: Q-15 answered by the owner (2026-11-11): off by default, switched on per item, with the limits of REQ-AR-0079. |
 | REQ-RM-0105 | Bot language switcher over every UI language (11 now) with zero mixed-language leaks. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:301 | S-11 | C-06 | Source lists 5 languages; Q-37 answered by Quality Bar 9 (all languages always available) and line 406: the 5-language list is out of date. Restated in round 3. |
 | REQ-RM-0106 | Bot memory target: under 1.5 MB RAM in Go. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:302 | S-11 | P-13 | Target to measure. Round 2: the C11 figure moved to REQ-RM-0218. |
 | REQ-RM-0218 | Bot memory target in the C11 code base: under 200 KB RAM. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:302 | NEW: X2-01 Step-2 router tiers | S-11, P-13, T-01 | Target to measure. Split from REQ-RM-0106 in round 2. |
@@ -149,7 +149,8 @@ Proposed package `NEW: X2-01` is explained in section 3 of this file.
 | REQ-RM-0132 | Telegram bot tokens and chat IDs become `[REDACTED_CHAT_ID]`. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:383 | C-04 | S-11 | A token under a chat-id marker looks odd; take exact markers from the Python `common/redact.py` (F-05). |
 | REQ-RM-0133 | ISP account IDs and circuit IDs become `[REDACTED_CIRCUIT_ID]`. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:384 | C-04 | | |
 | REQ-RM-0134 | Dynamic DNS domain names become `[REDACTED_DDNS]`. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:385 | C-04 | N-16 | |
-| REQ-RM-0135 | Private IP subnets and MAC addresses are kept for topology diagnostics. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:386 | C-04 | R-04 | MAC addresses leave the box with the bundle: Q-16 (for the owner). Round 4: the round-3 restatement (pseudonyms by default) is undone; it reversed line 386 on a rule (QB 8) that covers the code base, not the user's own export. |
+| REQ-RM-0135 | Private IP subnets and MAC addresses are kept for topology diagnostics in the SLA dossier and in the bundle for ISP support; in bundles meant for outside LLMs the MAC addresses are replaced (REQ-RM-0220). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:386 | C-04 | R-03, R-04 | Q-16 answered by the owner (2026-11-11): C. Round 4 had undone the round-3 restatement (pseudonyms in every bundle). |
+| REQ-RM-0220 | In bundles meant for outside LLMs each MAC address is replaced by its vendor prefix and a pseudonym that stays the same within one bundle. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:386 | C-04 | R-04 | New: the owner's answer to Q-16 (2026-11-11). |
 | REQ-RM-0136 | Collector client keeps the protocol: `POST /api/ingest` (JSON: `protocol`, `box_uid`, new speed tests, hourly ping summaries; events and diagnostics report only with consent) and `POST /api/poll` (command results in, queued commands out), so one collector serves Python and native boxes. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:391 | S-12 | S-13, F-04 | |
 | REQ-RM-0137 | Collector client uses a bearer token and outgoing HTTPS only. | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:391 | S-12 | | |
 | REQ-RM-0138 | Remote commands stay a fixed list (`speedtest`, `diagnostics`, `upload`). | docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:391 | S-12 | S-13 | |
@@ -439,7 +440,7 @@ Each range includes the blank line(s) that end it. Every line 1-507 is in exactl
 | 383 | bullet | REQ-RM-0132 |
 | 384 | bullet | REQ-RM-0133 |
 | 385 | bullet | REQ-RM-0134 |
-| 386 | bullet | REQ-RM-0135 |
+| 386 | bullet | REQ-RM-0135, REQ-RM-0220 |
 | 387-389 | separator | context: horizontal rule |
 | 390 | heading | context: 4.25 title |
 | 391 | bullet | REQ-RM-0136, REQ-RM-0137, REQ-RM-0138, REQ-RM-0139 |
@@ -510,7 +511,7 @@ Each range includes the blank line(s) that end it. Every line 1-507 is in exactl
 
 ## Questions for the owner
 
-*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 1 → Q-18, 2 → Q-37 (answered); 3 → Q-16 (moved to the owner in round 4; REQ-RM-0135 back to its source wording), 5 → Q-23, 6 → Q-38, 7 → Q-03 (developer's choices); 4 → Q-15 (for the owner). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
+*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 1 → Q-18, 2 → Q-37 (answered); 3 → Q-16 (moved to the owner in round 4; REQ-RM-0135 back to its source wording), 5 → Q-23, 6 → Q-38, 7 → Q-03 (developer's choices); 4 → Q-15 (for the owner). Answered by the owner on 2026-11-11: Q-15 (REQ-RM-0104 points to REQ-AR-0079) and Q-16 (REQ-RM-0135 restated, REQ-RM-0220 added). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
 
 1. **Login method (4.4, line 151):** the roadmap names HTTP Basic Auth; the work plan's S-01 has login, sessions and CSRF. The work plan says the roadmap wins where they differ. Should the native build use the session login (Basic Auth line out of date), or Basic Auth as written?
 2. **Languages of the bot and the dossier (lines 301, 308):** they list 5 languages (HU, EN, DE, FR, UK), but line 406 says the report locales have 11 and the Web UI has 11. Are the 5-language lists out of date (so the bot and dossier use all 11), or intended?

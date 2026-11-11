@@ -14,7 +14,9 @@ Each entry names the rows it concerns and the packages that need it. Rows settle
 parts (round 3 list: `PACKAGE_CHANGES.md` section I); rows of section 3 stay as written and point here. Round 4 (the
 checkers' findings, `PACKAGE_CHANGES.md` section K) moved Q-01, Q-16 and Q-17 to the owner, Q-09 and Q-14 to the
 developer's choices, corrected Q-08, Q-12, Q-25 and Q-36, and added Q-40; the rows of Q-01, Q-16 and Q-17 went back to
-their source wording. Answers go to F-01, which writes them into the roadmap.
+their source wording. On 2026-11-11 the owner answered the six questions of section 3 (Q-01, Q-05, Q-12, Q-15, Q-16, Q-17): they are in a
+fourth section, *Answered by the owner*, with the rows they settled (`PACKAGE_CHANGES.md` section L), and no question is
+open. Answers go to F-01, which writes them into the roadmap.
 
 Part names: RM1 `roadmap-1-507.md`, RM2 `roadmap-508-1034.md`, PP `porting-plan.md`, WP `workplan-architecture-devsetup.md`,
 TS `testing.md`, RE `readme.md`, CL `changelog.md`, PY `python-files.md`. `contributing.md` and `other-docs.md` asked no
@@ -27,7 +29,7 @@ REQ-TS-0018, REQ-CL-0365: the native privilege rule is an allow-list of NMB's ow
 
 **Q-07 Alpine without the public-address guard?** (REQ-RE-0290; N-02) Answered in round 1: QB 7 (nothing listens on the WAN
 side unless the owner turned it on, `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:587`), REQ-TS-0129, REQ-CL-0205: the guard runs
-on every base, Alpine/OpenRC included. Whether Alpine is a supported base stays with Q-05 and I-09.
+on every base, Alpine/OpenRC included. Alpine is a supported distribution (Q-05, answered by the owner on 2026-11-11); the base of the own image is I-09's.
 
 **Q-11 Third-party engines in-process or sandboxed?** (RM2 2; REQ-RM-1267, -1350, -1417, -1418, -1459; P-04, M-13, M-09)
 Answer: sandboxed, in a separate process. Roadmap 6B.5 (owner, 2026-11-10, newer than Phase 3.2 and section 7) lists
@@ -213,93 +215,52 @@ command of that name exists, never over one, and removed only if NMB made them; 
 NMB never breaks other software).
 
 
-## For the owner
+## Answered by the owner
+
+The six questions left for the owner in round 4 were answered by him on 2026-11-11. The answers are given as the owner gave
+them; the rows each answer settled were rewritten or added (`PACKAGE_CHANGES.md` section L).
 
 **Q-01 How does the owner's Python box move over to the native build?** (RM2 1; REQ-RM-1002, REQ-RM-1260; P-13, M-01, F-05)
-Roadmap line 512 says that on today's Python boxes "native components replace Python ones one by one, so a box keeps working
-during the migration", and the newer texts keep that model: QB 5 ("A native component replaces its Python counterpart only
-with this evidence ... Without it, the Python component stays") and *Where the Native Files Live* ("the Python version keeps
-working unchanged until a native component has replaced its counterpart"). Work plan 7 point 5 lets everything be tested on
-the Pi 4, with a backup and the Python version put back afterwards; it does not say whether the replacement on your box is
-whole or by component. A component-by-component swap needs a bridge between native and Python parts (Phase 1.1: the native
-probe writing into the Python database over SQLite WAL, REQ-RM-1260), while the native schema is its own (`spec/`, 6B.8 point 1).
-- A. Whole-binary swap only: the native `nmbd` replaces the whole Python version on your box once every component has its
-  QB 5 evidence; until then the Python version runs, and native builds are only tested on the box under 7 point 5.
-- B. Component by component, as line 512 and QB 5 say: each native component replaces its Python counterpart when its
-  evidence is written down, through a bridge (the Python database or an API) that the native and Python parts share
-  during the migration.
-- C. B for the measuring engines only (probe, speed engines), which write their results through the bridge; the rest (web,
-  network, modes) is swapped whole.
-Recommendation: A. The native program is built whole in its own repository (*Order of Work* step 1: "every component, not a
-subset"), each component's evidence is gathered on the test bed and on the Pi 4 anyway, and a bridge would tie native code to
-the Python schema and its known faults (QB 6) for the migration of one box. B is closest to line 512, at the cost of the
-bridge and of testing each mixed state. Under A, F-01 changes line 512 and Phase 1.1. Round 4: moved here; the round-3
-answer ("no components side by side") said the reverse of line 512.
+Answer (owner, 2026-11-11): component by component, as roadmap line 512 and Quality Bar 5 say: each native component
+replaces its Python counterpart when its evidence is written down, through a bridge that native and Python parts share
+during the migration (the Python database over SQLite WAL as in Phase 1.1, or an API). REQ-RM-1260 (native probe writing
+into the Python database) is not withdrawn. The bridge contract is F-04's; each mixed state must be tested; the bridge must
+not carry Python faults into native code (Quality Bar 6). F-01 changes nothing in roadmap line 512. (Option B; the
+recommendation had been A.)
+Rows: REQ-RM-1002 (Notes), REQ-RM-1260 (kept as the probe's bridge, owner M-01, F-04 and C-02 under *Also in*); new
+REQ-RM-1466 (the bridge and its contract, F-04), REQ-RM-1467 (each mixed state tested, P-13), REQ-RM-1468 (no Python fault
+through the bridge, C-02).
 
 **Q-05 Which distributions must the native packages support?** (CL 1; REQ-CL-0090, -0091; P-11)
-The Python version installs on Debian, Ubuntu, Alpine, the Fedora/RHEL family and Rocky Linux. The native build has its
-own image (6A, base chosen after the image analysis, work plan 7 point 4).
-- A. The own image, plus packages for every distribution the Python version supports (Debian, Ubuntu, Alpine,
-  Fedora/RHEL, Rocky), each tested in QEMU.
-- B. The own image plus Debian and Ubuntu packages only; the others are listed as a known limit.
-- C. The own image only.
-Recommendation: A. `nmbd` is one static binary without cgo, so each extra distribution costs only its service files
-(systemd or OpenRC), the firewall coexistence (firewalld) and a QEMU install test, all free. Dropping supported
-distributions is a regression that, under QB 3, needs your acceptance item by item.
+Answer (owner, 2026-11-11): A: the own image plus packages for every distribution the Python version supports (Debian,
+Ubuntu, Alpine, the Fedora/RHEL family, Rocky Linux), each tested in QEMU.
+Rows: REQ-CL-0090 restated; REQ-CL-0091 and the context of CHANGELOG line 131 point to the answer.
 
 **Q-12 Should the native Web UI keep the browser terminal?** (PY 3, CL 3; REQ-CL-0416; S-08, U-20)
-The Python terminal (`/api/terminal/exec`) runs commands as the service user `nmb`, with root only through the few
-sudo-allowed commands (`nmb-helper`, `iw`, `rfkill`, `resolvectl`, `systemctl reboot`; `setup.sh@ad3758c:281`, README.md:452,
-CHANGELOG.md:128); for a fixed list of admin commands it adds `sudo -n`, which fails for the others. It is off unless
-`terminal_enabled` is set. (The other half of the old question, the experimental stop on network traffic, REQ-CL-0414, is
-settled: carried over, off by default, as roadmap 4.4A keeps every function of the Python UI.)
-- A. Leave it out; the manual points to SSH and to the maintenance mode of porting plan 7D for shell work.
-- B. Keep it, hardened: off by default, only from the LAN or Tailscale, only while the maintenance mode is on, the password
-  asked again each time, every command in the audit log (P-05), switching itself off after a set time; it runs as the
-  service user as in Python, with root only through the privileged helper.
-- C. Keep only a fixed list of read-only diagnostic commands, with no free shell.
-Recommendation: B. Roadmap 4.4A keeps every function of the Python UI, and under B the browser gives no more than the Python
-terminal did and less than SSH in maintenance mode, with the same log and the same time limit. Round 4: the description of
-the Python terminal corrected (it does not run as root).
+Answer (owner, 2026-11-11): B: kept, hardened: off by default, only from the LAN or Tailscale, only while the maintenance
+mode is on, the password asked again each time, every command in the audit log (P-05), switching itself off after a set
+time; it runs as the service user, root only through the privileged helper.
+Rows: REQ-CL-0416 restated; new REQ-CL-0454 (`S-02…S-0n (API: system)`, the S-08 range in `parts/python-files.md`; the
+tools page, P-05, P-06 and P-04 under *Also in*).
 
-**Q-15 May the Telegram bot carry secrets: a VPN profile's private key, a Wi-Fi password?** (RM1 4, WP 4; REQ-RM-0104, REQ-AR-0054,
--0069; S-11, N-13, N-14, N-08)
-A WireGuard QR code and `.conf` file hold the client's private key, and `/wifi connect <ssid> [pw]` puts the Wi-Fi password in
-a chat. Telegram keeps both on its servers (the same reason the backup is now sent encrypted).
-- A. Keep both, with limits: the confirmation tap of 2026-11-11, a warning, the bot deletes its QR message after a few
-  minutes and the user's password message at once, and the VPN peer can be withdrawn with one tap.
-- B. Never through Telegram: the bot points to the Web UI page that shows the QR or asks for the password.
-- C. Off by default; the user switches "secrets over Telegram" on per item, and A's limits apply.
-Recommendation: A. A VPN profile is most needed when you are away from your own network and the Web UI cannot be reached,
-which is why roadmap 4.16 asks for "one-click QR delivery". Deleting the messages leaves the secret in Telegram only for
-minutes, and a peer that leaked can be withdrawn at once.
+**Q-15 May the Telegram bot carry secrets: a VPN profile's private key, a Wi-Fi password?** (RM1 4, WP 4; REQ-RM-0104,
+REQ-AR-0054, -0069; S-11, N-13, N-14, N-08)
+Answer (owner, 2026-11-11): C: OFF by default; the user switches "secrets over Telegram" on per item; then: the
+confirmation tap, a warning, the bot deletes its QR message after a few minutes and the user's password message at once,
+and the VPN peer can be withdrawn with one tap. (The recommendation had been A.)
+Rows: REQ-AR-0054, -0069 restated, REQ-RM-0104 (Notes); new REQ-AR-0079 (VPN profiles) and REQ-AR-0080 (Wi-Fi passwords),
+both S-11.
 
 **Q-16 MAC addresses in shared diagnostic bundles?** (RM1 3; REQ-RM-0135; C-04, R-04)
-Roadmap line 386 keeps "Private IP subnets and MAC addresses ... for network topology diagnostics" in the dossiers and
-snapshots shared with outside LLMs or ISP support (lines 381-386). A MAC address identifies a device and its maker across
-networks. QB 8 covers what is written into the code base, not the user's own export, and QB 7 lists secrets, not MAC
-addresses, so no rule decides this.
-- A. Keep MAC addresses, as line 386 says.
-- B. By default replace each MAC address with its vendor prefix and a pseudonym that stays the same within one bundle (the
-  topology still reads); the user can ask for full addresses for one export.
-- C. A for the dossier and ISP support, B only for bundles meant for outside LLMs.
-Recommendation: C. ISP support may need the real address of the box's interface or the router to find the line, while an
-outside LLM needs only the topology, which B's pseudonyms keep. Round 4: moved here; the round-3 choice (B for every bundle)
-reversed line 386 on a rule that does not cover it.
+Answer (owner, 2026-11-11): C: kept in the SLA dossier and the ISP-support bundle; replaced by the vendor prefix and a
+pseudonym stable within one bundle in bundles meant for outside LLMs.
+Rows: REQ-RM-0135 restated (R-03 added under *Also in*); new REQ-RM-0220 (C-04).
 
 **Q-17 An audit log "the session itself cannot erase"?** (PP 6; REQ-PP-0135; P-05)
-Porting plan 7D requires that every maintenance session is recorded "in an audit log the session itself cannot erase" (line
-596), and a port that does not meet 7D is not finished (line 590). The maintenance mode gives a root shell (line 594,
-REQ-PP-0132), and a root session can erase any local file. QB 3: a known limit does not ship until the list is empty or you
-accept each item.
-- A. An append-only, hash-chained local log (an erased or changed entry is detected and reported at the next check), plus a
-  copy off the device as each entry is written when a target (collector or syslog) is set; you accept that a root session
-  can delete the local log when no target is set.
-- B. Maintenance mode does not start without a log target off the device (collector, syslog or the hub of the remote paths);
-  each entry is sent as it is written, so the session cannot erase what has left. A's local hash chain stays as a second
-  record.
-- C. The maintenance shell is not full root: a restricted user whose privileged actions go through the audited helper (P-06),
-  so the session cannot reach the log. This changes line 594's "root shell".
-Recommendation: B. It meets line 596 as written with what 7D already has (the collector, syslog, the hub) and keeps the root
-shell of line 594; its cost is one log target set before the first session. Round 4: moved here; the round-3 choice (A)
-accepted a limit that QB 3 leaves to you.
+Answer (owner, 2026-11-11): B: the maintenance mode does not start without a log target off the device (collector, syslog
+or the hub of the remote paths); each entry is sent as it is written; the hash-chained local log stays as a second record.
+Rows: REQ-PP-0135 restated (S-13 added under *Also in*); new REQ-PP-0199 (P-05).
+
+## For the owner
+
+None open. The six questions of round 4 (Q-01, Q-05, Q-12, Q-15, Q-16, Q-17) were answered on 2026-11-11 (section above).

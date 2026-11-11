@@ -754,7 +754,7 @@ as "a mobile hotspot".
 
 ## Questions for the owner
 
-*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 1, 2 → Q-21, 4 → Q-22, 5 → Q-38 (developer's choices); 3 → Q-12 (for the owner). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
+*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 1, 2 → Q-21, 4 → Q-22, 5 → Q-38 (developer's choices); 3 → Q-12 (for the owner). Answered by the owner on 2026-11-11: Q-12 (B: the terminal kept, hardened, REQ-CL-0454; the U-20 and S-08 ranges stay). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
 
 1. **Vendor-look add-on themes.** `nmb/web/static/themes/` holds images named after router vendors and a vendor gaming logo
    (`asus_title.png`, `tuf_logo.png`, `tplink_*.jpg`), used by the AsusWRT, AsusCamouflage and TP-Gold themes. May these ship as

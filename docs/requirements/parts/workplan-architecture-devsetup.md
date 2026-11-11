@@ -8,7 +8,7 @@ Sources (Python repository, commit `ad3758c`, read only):
 
 Line numbers were checked with `awk` against the files at `ad3758c`. Package ids are those of `docs/NATIVE_WORK_PLAN.md@ad3758c:98-219` (section 3). `NEW: X2-01 Step-2 router tiers` is the package proposed in the roadmap part (`roadmap-1-507.md`), reused here so the register has one id for it.
 
-Id ranges of this part: REQ-WP-0001 to REQ-WP-0197 (0196 and 0197 added in round 2), REQ-AR-0001 to REQ-AR-0078, REQ-DV-0001 to REQ-DV-0026.
+Id ranges of this part: REQ-WP-0001 to REQ-WP-0197 (0196 and 0197 added in round 2), REQ-AR-0001 to REQ-AR-0080 (0079 and 0080 from the owner's answer to Q-15 of 2026-11-11), REQ-DV-0001 to REQ-DV-0026.
 
 Many work-plan rows are rules for how the native work is done (roles, gate, status file). They are listed as requirements because the gate of section 2.4 checks them; their owner is F-00 (which builds the gate scripts and `WORK_STATUS.md`) unless a more specific package exists. The ARCHITECTURE rows describe the Python version; as requirements they state what the native build must keep, and where the source is out of date or faulty the Notes say so (such cases go to F-03, never into code).
 
@@ -266,7 +266,8 @@ Many work-plan rows are rules for how the native work is done (roles, gate, stat
 | REQ-AR-0051 | Bot diagnostics commands: `/status`, `/ping`, `/test [ookla\|cloudflare\|fastcom\|rtr\|iperf]`, `/report` (HTML dossier), `/ai` (Markdown bundle), `/mode`. | docs/ARCHITECTURE.md@ad3758c:115 | S-11 | R-03, R-04, M-04 | |
 | REQ-AR-0052 | `/vpn` shows WireGuard and OpenVPN status and client counts. | docs/ARCHITECTURE.md@ad3758c:116-117 | S-11 | N-13, N-14 | |
 | REQ-AR-0053 | `/vpn clients` lists connected peers with address, latest handshake and RX/TX traffic. | docs/ARCHITECTURE.md@ad3758c:118 | S-11 | N-13, N-14 | |
-| REQ-AR-0054 | `/vpn add <name> [wg\|ovpn]` creates a client peer and sends its QR code image and `.conf` file. | docs/ARCHITECTURE.md@ad3758c:119 | S-11 | N-13, N-14 | QR and profile hold the private key: owner question Q-15. |
+| REQ-AR-0054 | `/vpn add <name> [wg\|ovpn]` creates a client peer and sends its QR code image and `.conf` file when "secrets over Telegram" is on for it (REQ-AR-0079). | docs/ARCHITECTURE.md@ad3758c:119 | S-11 | N-13, N-14 | QR and profile hold the private key: Q-15 answered by the owner (2026-11-11): C. |
+| REQ-AR-0079 | Secrets over Telegram, VPN profiles: a profile's QR code and `.conf` (they hold the client's private key) go through Telegram only when the user has switched "secrets over Telegram" on for it (per item; off by default). Then: the confirmation tap, a warning, the bot deletes its QR message after a few minutes, and the VPN peer can be withdrawn with one tap. | docs/ARCHITECTURE.md@ad3758c:119 | S-11 | N-13, N-14 | New: the owner's answer to Q-15 (2026-11-11). |
 | REQ-AR-0055 | `/vpn qr <name>` makes and sends the QR code image. | docs/ARCHITECTURE.md@ad3758c:120 | S-11 | N-13 | |
 | REQ-AR-0056 | `/vpn conf <name>` sends the configuration profile. | docs/ARCHITECTURE.md@ad3758c:121 | S-11 | N-13, N-14 | |
 | REQ-AR-0057 | `/vpn start [wg\|ovpn]` and `/vpn stop [wg\|ovpn]` start and stop the VPN service. | docs/ARCHITECTURE.md@ad3758c:122 | S-11 | N-13, N-14 | |
@@ -281,7 +282,8 @@ Many work-plan rows are rules for how the native work is done (roles, gate, stat
 | REQ-AR-0066 | `/heal updates` checks for a verified stable release. | docs/ARCHITECTURE.md@ad3758c:133 | S-11 | P-02 | |
 | REQ-AR-0067 | `/heal apply` installs an update atomically with a checkpoint before and automatic rollback. | docs/ARCHITECTURE.md@ad3758c:134 | S-11 | P-02 | Native: only signed updates (REQ-WP-0184). |
 | REQ-AR-0068 | `/tasks` (or `/top`) shows tasks and load; `/kill <pid> [signal]` sends a signal. | docs/ARCHITECTURE.md@ad3758c:135 | S-11 | C-09 | Q-14 (developer's choice, round 4): the scope stays Python's effective one, NMB's own processes (README.md@ad3758c:422, :452; the Python bot as user `nmb` could signal no other); where such a process runs under another user than the bot, the privileged helper sends the signal after checking it against its allow-list of NMB's own units (never `sudo` or a shell). Every signal needs the confirmation tap of the owner's decision of 2026-11-11, KILL also the typed word; PID 1 and the bot stay protected (REQ-RE-0280). A wider scope would be an owner question. |
-| REQ-AR-0069 | `/wifi` shows telemetry, `/wifi scan` nearby access points, `/wifi connect <ssid> [pw]` joins a network, `/wifi saved` lists saved networks. | docs/ARCHITECTURE.md@ad3758c:136 | S-11 | M-14, N-07, N-08 | Heading says "Guest Wi-Fi" but no guest command is listed. Password in chat: owner question Q-15. |
+| REQ-AR-0069 | `/wifi` shows telemetry, `/wifi scan` nearby access points, `/wifi connect <ssid> [pw]` joins a network (a password in the chat only as REQ-AR-0080 allows), `/wifi saved` lists saved networks. | docs/ARCHITECTURE.md@ad3758c:136 | S-11 | M-14, N-07, N-08 | Heading says "Guest Wi-Fi" but no guest command is listed. Password in chat: Q-15 answered by the owner (2026-11-11): C. |
+| REQ-AR-0080 | Secrets over Telegram, Wi-Fi passwords: `/wifi connect` takes a password in the chat only when the user has switched "secrets over Telegram" on for it (per item; off by default). Then: the confirmation tap, a warning, and the bot deletes the user's password message at once. | docs/ARCHITECTURE.md@ad3758c:136 | S-11 | N-07, N-08 | New: the owner's answer to Q-15 (2026-11-11). |
 | REQ-AR-0070 | `/backup list`, `/backup create [label]` and `/backup send <filename>` (the archive sent in Telegram). | docs/ARCHITECTURE.md@ad3758c:137 | S-11 | P-03 | Out of date: Python sends the archive encrypted with the owner's passphrase, plain only with `plain` (`nmb/bot/commands.py@ad3758c:1627-1630`). The native build keeps the encrypted default. |
 | REQ-AR-0071 | `/drivers` shows hardware and drivers; `/reboot now` reboots the box. | docs/ARCHITECTURE.md@ad3758c:138 | S-11 | N-17, P-10 | |
 | REQ-AR-0072 | Alerts are stateful and deduplicated in the database (alert table). | docs/ARCHITECTURE.md@ad3758c:140-141 | S-11 | C-02 | |
@@ -572,7 +574,7 @@ Each range includes the blank line(s) that end it. Every line of each file is in
 | 116 | bullet | REQ-AR-0052 |
 | 117 | bullet | REQ-AR-0052 |
 | 118 | bullet | REQ-AR-0053 |
-| 119 | bullet | REQ-AR-0054 |
+| 119 | bullet | REQ-AR-0054, REQ-AR-0079 |
 | 120 | bullet | REQ-AR-0055 |
 | 121 | bullet | REQ-AR-0056 |
 | 122 | bullet | REQ-AR-0057 |
@@ -589,7 +591,7 @@ Each range includes the blank line(s) that end it. Every line of each file is in
 | 133 | bullet | REQ-AR-0066 |
 | 134 | bullet | REQ-AR-0067 |
 | 135 | bullet | REQ-AR-0068 |
-| 136 | bullet | REQ-AR-0069 |
+| 136 | bullet | REQ-AR-0069, REQ-AR-0080 |
 | 137 | bullet | REQ-AR-0070 |
 | 138-139 | bullet | REQ-AR-0071 |
 | 140 | heading | REQ-AR-0072 |
@@ -698,7 +700,7 @@ Each range includes the blank line(s) that end it. Every line of each file is in
 
 ## Questions for the owner
 
-*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 3 → Q-14, 5 → Q-09 (answered; both moved to the developer's choices in round 4); 1 → Q-02, 2 → Q-13 (developer's choices); 4 → Q-15 (for the owner). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
+*Triaged in round 3 (2026-11-11), answers and choices in `QUESTIONS.md`:* 3 → Q-14, 5 → Q-09 (answered; both moved to the developer's choices in round 4); 1 → Q-02, 2 → Q-13 (developer's choices); 4 → Q-15 (for the owner). Answered by the owner on 2026-11-11: Q-15 (REQ-AR-0054, -0069 restated, REQ-AR-0079 and -0080 added). The rows were updated where an answer or a choice settled them; the text below is the question as the part asked it.
 
 1. **F-07 in the order (work plan lines 103 and 222):** section 3.0 says the foundation F-00 to F-07 comes in order before anything else, but section 4 step 1 lists only F-00 to F-06. Should F-07 (`spec/` and vectors) also be done before Core starts, as rule 11 of 2.2 ("behaviour is changed in `spec/` first") implies, or may it grow alongside Core?
 2. **Capabilities of the web server (ARCHITECTURE line 45):** the Python web server holds `CAP_NET_ADMIN` and `CAP_NET_RAW` besides `CAP_NET_BIND_SERVICE`. Is that intended for the native build, or should the native web server have no network-admin rights and pass such tasks to the network daemon or the privileged helper (QB 7)?
