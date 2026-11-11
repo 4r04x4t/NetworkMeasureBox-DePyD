@@ -49,7 +49,8 @@ is in this repository.
   ISO (`debian-archive-keyring_2025.1_all.deb`, covered by the md5 list above). The `Release` file was also checked
   by hand: `gpgv --keyring debian-archive-keyring.pgp Release.gpg Release` gave three good signatures (12/bookworm
   and 13/trixie automatic signing keys, 13/trixie stable release key `4158 7F7D B8C7 74BC CF13 1416 762F 67A0 B2C3 9DE4`),
-  exit 0. `main/binary-amd64/Packages.xz` SHA-256 `7778d3e3…2498` equals the value in that `Release`.
+  exit 0. `main/binary-amd64/Packages.xz` SHA-256
+  `7778d3e3f303b7ddb8ce0fe7c8d57473a076c6bf2e8f241f75421d2396352498` equals the value in that `Release`.
 - **Release identity.** `.disk/info`: `Debian GNU/Linux 13.7.0 "Trixie" - Official amd64 NETINST with firmware
   20260912-09:35` and `... arm64 NETINST with firmware 20260912-09:36`. `dists/trixie/Release`: `Suite: stable`,
   `Version: 13.7`, `Description: Debian 13.7 Released 12 September 2026`. Built roots: `/etc/debian_version` = `13.7`.
@@ -114,7 +115,8 @@ mounted; selected files were extracted with `7z x -o<fresh dir>` (exit 0).
   - **[ISO]** `dpkg-deb -f` on `pool/main/l/linux-signed-<arch>/linux-image-6.12.107+deb13-<arch>_6.12.107-1_<arch>.deb`:
     `Version: 6.12.107-1`, `Source: linux-signed-<arch> (6.12.107+1)`, `Depends: kmod, initramfs-tools (>= 0.120+deb8u2)
     | linux-initramfs-tool`, `Recommends: apparmor`. Installed-Size 108,326 KiB (amd64) and 173,611 KiB (arm64).
-    SHA-256 of the .deb: amd64 `7794643c…9e99` (107,898,972 bytes), arm64 `20c92f3f…9fc9` (92,902,468 bytes).
+    SHA-256 of the .deb: amd64 `7794643cf4560de2a7e3b069e8ca8511ad2a568d652ea285f0fe051f79bc9e99` (107,898,972 bytes),
+    arm64 `20c92f3f97dd466e0400a6fcb792bde85af842fbb5e8b471370065e3de9d9fc9` (92,902,468 bytes).
   - **[built]** guest `uname -a`: `Linux nmb-i06 6.12.107+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.107-1 (2026-08-29) x86_64`.
     Boot log: `x86_64-linux-gnu-gcc-14 (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44`.
 - **Where the config came from:** `/boot/config-6.12.107+deb13-<arch>` inside the kernel package, taken out with
@@ -140,7 +142,7 @@ mounted; selected files were extracted with `7z x -o<fresh dir>` (exit 0).
 | PPP, PPPoE | `PPP`, `PPPOE`, `PPP_ASYNC`, `PPP_SYNC_TTY`, `L2TP` | all m | all m | `ppp_generic`, `pppoe`, `pppox` both | `pppoe` 0 |
 | cfg80211, mac80211 | `CFG80211`, `MAC80211` | m, m | m, m | both | 0, 0 (cfg80211 loads its built-in regulatory X.509 certificates) |
 | mac80211_hwsim | `MAC80211_HWSIM` | m | m | both | 0; `iw dev` then showed 2 interfaces |
-| Wi-Fi drivers (examples) | `ATH9K`, `ATH9K_HTC`, `ATH10K_PCI`, `IWLWIFI`, `MT7601U`, `MT76x2U`, `MT7921U`, `RTL8XXXU`, `RT2800USB`, `BRCMFMAC` (+`BRCMFMAC_SDIO` y) | all m | all m | 221 (amd64) / 240 (arm64) `.ko` under `drivers/net/wireless/` | — |
+| Wi-Fi drivers (examples) | `ATH9K`, `ATH9K_HTC`, `ATH10K_PCI`, `IWLWIFI`, `MT7601U`, `MT76x2U`, `MT7921U`, `RTL8XXXU`, `RT2800USB`, `BRCMFMAC` (+`BRCMFMAC_SDIO` y) | all m | all m | 149 (amd64) / 162 (arm64) `.ko.xz` under `drivers/net/wireless/` (`dpkg-deb -c <deb> \| grep -c '/drivers/net/wireless/.*\.ko\.xz$'`; the 221 / 240 list lines include 72 / 78 folders) | — |
 | USB host | `USB`, `USB_XHCI_HCD`, `USB_EHCI_HCD`, `USB_XHCI_PCI`; `USB_DWC2` | m (DWC2 not set) | m (DWC2 m) | — | — |
 | USB network | `USB_USBNET`, `USB_RTL8152`, `USB_NET_AX88179_178A`, `USB_NET_AX8817X`, `USB_NET_SMSC95XX`, `USB_LAN78XX`, `USB_NET_AQC111` | all m | all m | `usbnet`, `r8152`, `ax88179_178a`, `smsc95xx`, `lan78xx` both | — |
 | USB tethering (4.27) | `USB_NET_RNDIS_HOST`, `USB_NET_CDCETHER`, `USB_NET_CDC_NCM`, `USB_IPHETH`, `USB_NET_QMI_WWAN`, `USB_NET_CDC_MBIM`, `USB_NET_HUAWEI_CDC_NCM`, `USB_NET_CDC_EEM` | all m | all m | `rndis_host`, `cdc_ether`, `cdc_ncm`, `ipheth`, `qmi_wwan`, `cdc_mbim`, `huawei_cdc_ncm` both | `rndis_host cdc_ether cdc_ncm ipheth qmi_wwan cdc_mbim` all 0 |
@@ -168,8 +170,10 @@ mounted; selected files were extracted with `7z x -o<fresh dir>` (exit 0).
 - **Modules, [built] B:** `/usr/lib/modules/6.12.107+deb13-amd64` holds the same 4,229 files, 99,582,881 bytes
   (`tar -tvf` sum). The guest had 66 lines in `lsmod` after boot (65 modules), among them `virtio_net`,
   `virtio_blk`, `iTCO_wdt`, `drm`, `bochs`, `ext4`; no netfilter module was loaded at boot.
-- **Installer modules [ISO]:** `*-modules-6.12.107+deb13-<arch>-di` udebs (`nic-modules`, `nic-usb-modules`,
-  `nic-wireless-modules`, `ppp-modules`, ...): 230 udebs in the amd64 index, 246 in arm64.
+- **Installer modules [ISO]:** the debian-installer index (`dists/trixie/main/debian-installer/binary-<arch>/Packages.gz`)
+  holds 230 udebs in all for amd64 and 246 for arm64 (`grep -c '^Package: '`); of these, 29 (amd64) and 35 (arm64)
+  are kernel module udebs `*-modules-6.12.107+deb13-<arch>-di` (`nic-modules`, `nic-usb-modules`,
+  `nic-wireless-modules`, `ppp-modules`, ...; `grep -c '^Package: .*-modules-6.12.107+deb13-<arch>-di$'`).
 - **Firmware [ISO]:** the ISO carries a `firmware/` folder with 36 `.deb` packages per architecture and
   `firmware/Contents-firmware` (4,735 lines amd64, 4,291 arm64) mapping each firmware file to its package.
   - Both: `firmware-atheros`, `-brcm80211`, `-iwlwifi`, `-mediatek`, `-realtek`, `-misc-nonfree`, `-ath9k-htc`,
@@ -393,7 +397,15 @@ hardware):
 - **Netinst on a Raspberry Pi 4** (UEFI firmware needed or not, which kernel and DTB path the installer sets up):
   not determined; no Pi was used, and the ISO cannot be booted as a Pi under QEMU.
 - **arm64 boot figures:** not determined; build C was taken apart, not booted (time; TCG for arm64 is slow).
-- **Boot time and memory on real hardware or KVM:** not determined; only TCG, no access to `/dev/kvm`.
+- **Boot time and memory on real hardware or KVM:** not determined; only TCG, because `/dev/kvm` was not writable
+  for the user when B was booted. Access to `/dev/kvm` changes during the day through a user ACL entry set
+  and removed outside this work (`test -w /dev/kvm` succeeded at 11:24 UTC and failed again after the node changed at 11:27:57 UTC); no KVM boot was
+  run for this record.
+- **Byte-for-byte reproducibility of a build (criterion 4):** not determined for this record. One independent
+  rebuild of B (the I-06 verifier, `mmdebstrap`, same options) gave the same 171 packages and versions and the same
+  tar size (370,859,520 bytes), but a file-size sum of 360,013,471 bytes (here 360,016,018) and an initrd of
+  36,356,874 bytes (here 36,356,871): generated files such as the initrd differ by a few bytes between builds. Not
+  re-run here.
 - **Effect of Recommends on Python:** not resolved transitively; only the direct Recommends are listed (section 6).
 - **Licences of the firmware packages:** not read (only their component, `non-free-firmware`).
 - **Ookla and RTR binaries for glibc (criterion 6):** not part of the image; not checked in this package (left to
