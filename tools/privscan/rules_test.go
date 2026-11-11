@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"os"
 	"strings"
 	"testing"
 )
@@ -63,9 +65,43 @@ func TestIPv4(t *testing.T) {
 		{"documentation", "192.0.2.1 198.51.100.7 203.0.113.255", ""},
 		{"private and special", "10.1.2.3 172.16.0.1 192.168.1.1 127.0.0.1 169.254.1.1 0.0.0.0 255.255.255.255 224.0.0.1", ""},
 		{"longer dotted number", j("1.2", ".3.4.5 ", "v11.22", ".33.44.55"), ""},
-		{"not an address", "999.1.1.1 1.2.3 01.2.3.4", ""},
+		{"not an address", "999.1.1.1 1.2.3 0256.1.2.3 1..2.3", ""},
 		{"end of sentence", j("at ", "11.22", ".33.44."), catIPv4},
+		// Known limit (brief 4.5): glued to ".<digit>" it cannot be told from a version number.
+		{"glued to .digit", j("at ", "11.22", ".33.44", ".5"), ""},
 	})
+}
+
+// F00-R20, verifier of 2da9473: leading zeros are decimal padding, so a zero-padded public
+// address hits and a zero-padded private or documentation one does not.
+func TestZeroPaddedIPv4(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"padded public", j("peer 011.", "022.033.044"), catIPv4},
+		{"one padded part", j("01.", "2.3.4"), catIPv4},
+		{"padded private and documentation", "192.168.001.001 010.000.000.001 192.000.002.001", ""},
+		{"padded part above 255", "0300.1.2.3 1.2.3.0256", ""},
+	})
+}
+
+// F00-R20, verifier of 2da9473: an address between letter labels (nip.io/sslip.io-style host
+// names) is no version number and hits; a dotted number after a name without a label behind it
+// (libx.so.1.2.3.4) still does not.
+func TestIPv4InHostName(t *testing.T) {
+	runCases(t, []ruleCase{
+		{"nip.io", j("http://app.", "11.22", ".33.44", ".nip.io/"), catIPv4},
+		{"sslip.io", j("www.", "11.22", ".33.44", ".sslip.io"), catIPv4},
+		{"documentation address", "app.192.0.2.1.nip.io", ""},
+		{"shared library version", j("libx.so.", "11.22", ".33.44"), ""},
+		{"two dots before", j("x..", "11.22", ".33.44", ".y"), ""},
+		{"two dots after", j("x.", "11.22", ".33.44", "..y"), ""},
+		{"longer number between labels", j("x.", "11.22", ".33.44", ".5.y"), ""},
+	})
+	// The hit is the address alone, so an exact allow entry can name it.
+	addr := j("11.22", ".33.44")
+	hits := scanText(t, NewScanner(nil, nil), "app."+addr+".nip.io")
+	if len(hits) != 1 || string(hits[0].value) != addr || hits[0].Col != 5 {
+		t.Errorf("nip.io hit: %+v", hits)
+	}
 }
 
 // F00-R20: a systemd unit instance name (template, @, instance, dot, unit type; systemd.unit(5))
@@ -73,10 +109,13 @@ func TestIPv4(t *testing.T) {
 // still hits.
 func TestSystemdUnitInstanceIsNoEmail(t *testing.T) {
 	var cases []ruleCase
-	for _, unitType := range []string{"service", "socket", "device", "mount", "automount", "swap", "target", "path", "timer", "slice", "scope"} {
+	for _, unitType := range []string{"service", "socket", "device", "mount", "automount", "swap", "path", "timer", "slice", "scope"} {
 		cases = append(cases, ruleCase{"unit type " + unitType, "unit@instance0." + unitType, ""})
 	}
 	runCases(t, append(cases,
+		// Verifier of 2da9473: .target is a delegated top-level domain, so no exemption.
+		ruleCase{"address at a .target domain", j("jane", "@", "corporate", ".target"), catEmail},
+		ruleCase{"unit type target", j("unit", "@", "instance0", ".target"), catEmail},
 		ruleCase{"kernel command line", "console=ttyS0,115200n8 systemd.mask=serial-getty@ttyS0.service", ""},
 		ruleCase{"in prose", "`serial-getty@ttyS0` took over; wg-quick@wg0.service and getty@tty1.service.", ""},
 		ruleCase{"top-level name services", j("jane", "@", "mail.provider", ".services"), catEmail},
@@ -85,6 +124,43 @@ func TestSystemdUnitInstanceIsNoEmail(t *testing.T) {
 		ruleCase{"type as a prefix only", j("jane", "@", "ttyS0", ".servicex"), catEmail},
 		ruleCase{"unit next to an address", j("getty@tty1.service ", "jane", "@", "mailhost", ".net"), catEmail},
 	))
+}
+
+// publicSuffixList is the Debian/Ubuntu copy of the public suffix list (package publicsuffix).
+const publicSuffixList = "/usr/share/publicsuffix/public_suffix_list.dat"
+
+// F00-R20, verifier of 2da9473: no exempt unit type may be a top-level domain, or a person's
+// address at "<name>.<type>" would pass. "target" is a delegated TLD and must stay out even where
+// the list is not installed.
+func TestExemptUnitTypesAreNoTopLevelDomain(t *testing.T) {
+	if exemptUnitTypes["target"] {
+		t.Error(`"target" is exempt, but .target is a delegated top-level domain`)
+	}
+	f, err := os.Open(publicSuffixList)
+	if err != nil {
+		t.Skipf("public suffix list not checked: %v (install the publicsuffix package)", err)
+	}
+	defer func() { _ = f.Close() }()
+	tlds := map[string]bool{}
+	lines := bufio.NewScanner(f)
+	for lines.Scan() {
+		rule := strings.TrimSpace(lines.Text())
+		if rule == "" || strings.HasPrefix(rule, "//") {
+			continue
+		}
+		tlds[strings.ToLower(rule[strings.LastIndexByte(rule, '.')+1:])] = true
+	}
+	if err := lines.Err(); err != nil {
+		t.Fatalf("reading %s: %v", publicSuffixList, err)
+	}
+	if len(tlds) < 1000 {
+		t.Fatalf("%s: only %d top-level names, not the public suffix list", publicSuffixList, len(tlds))
+	}
+	for unitType := range exemptUnitTypes {
+		if tlds[unitType] {
+			t.Errorf("exempt unit type %q is a top-level domain in the public suffix list", unitType)
+		}
+	}
 }
 
 // F00-R20: a dotted quad inside a longer dotted number (kernel and backports versions such as

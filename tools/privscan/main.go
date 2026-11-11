@@ -89,7 +89,7 @@ func run(args []string, e env) int {
 		_, _ = fmt.Fprintf(e.stderr, "privscan: %v\n", err)
 		return exitError
 	}
-	hits, files, err := scanMode(sc, o, e, accepted)
+	hits, read, err := scanMode(sc, o, e, accepted)
 	if err != nil {
 		_, _ = fmt.Fprintf(e.stderr, "privscan: %v\n", err)
 		return exitError
@@ -97,7 +97,7 @@ func run(args []string, e env) int {
 	for _, h := range hits {
 		_, _ = fmt.Fprintln(e.stdout, h.String())
 	}
-	_, _ = fmt.Fprintf(e.stdout, "privscan %s: %d inputs, %d hits\n", o.mode, files, len(hits))
+	_, _ = fmt.Fprintf(e.stdout, "privscan %s: %s, %d hits\n", o.mode, read, len(hits))
 	if len(hits) > 0 {
 		return exitHits
 	}
@@ -131,26 +131,31 @@ func newScannerFor(o options, e env) (*Scanner, map[string]bool, error) {
 	return NewScanner(allow, list.values), list.identities, nil
 }
 
-func scanMode(sc *Scanner, o options, e env, accepted map[string]bool) ([]Hit, int, error) {
+// scanMode runs the scan of o.mode and returns its hits and what it read, for the summary line:
+// the number of files, or for history the numbers of refs, commits and blobs.
+func scanMode(sc *Scanner, o options, e env, accepted map[string]bool) ([]Hit, string, error) {
 	switch o.mode {
 	case "tree":
 		files := o.args
 		if o.nul {
 			var err error
 			if files, err = readNULList(e.stdin); err != nil {
-				return nil, 0, err
+				return nil, "", err
 			}
 		}
 		hits, err := scanFiles(sc, files)
-		return hits, len(files), err
+		return hits, inputs(len(files)), err
 	case "dist":
-		return scanDirs(sc, o.args)
+		hits, n, err := scanDirs(sc, o.args)
+		return hits, inputs(n), err
 	case "history":
-		hits, err := sc.ScanHistory(e.gitFrom(o.repo), accepted)
-		return hits, 1, err
+		hits, st, err := sc.ScanHistory(e.gitFrom(o.repo), accepted)
+		return hits, st.String(), err
 	}
-	return nil, 0, fmt.Errorf("unknown mode %q", o.mode)
+	return nil, "", fmt.Errorf("unknown mode %q", o.mode)
 }
+
+func inputs(n int) string { return fmt.Sprintf("%d inputs", n) }
 
 func readNULList(r io.Reader) ([]string, error) {
 	data, err := io.ReadAll(bufio.NewReader(r))

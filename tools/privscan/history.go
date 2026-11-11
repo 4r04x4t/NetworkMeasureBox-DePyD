@@ -28,28 +28,43 @@ func execGit(dir string) gitRunner {
 	}
 }
 
+// historyStats counts what a history scan read, for its summary line.
+type historyStats struct{ refs, commits, blobs int }
+
+func (st historyStats) String() string {
+	return fmt.Sprintf("%d refs, %d commits, %d blobs", st.refs, st.commits, st.blobs)
+}
+
 // ScanHistory scans every blob reachable from any ref, every commit message, and checks the
 // author and committer addresses of every commit.
-func (s *Scanner) ScanHistory(git gitRunner, accepted map[string]bool) ([]Hit, error) {
-	hits, err := s.scanBlobs(git)
+func (s *Scanner) ScanHistory(git gitRunner, accepted map[string]bool) ([]Hit, historyStats, error) {
+	var st historyStats
+	refs, err := git(nil, "for-each-ref", "--format=%(refname)")
 	if err != nil {
-		return nil, err
+		return nil, st, err
 	}
-	msgHits, err := s.scanMessages(git)
+	st.refs = len(strings.Fields(string(refs)))
+	hits, blobs, err := s.scanBlobs(git)
 	if err != nil {
-		return nil, err
+		return nil, st, err
+	}
+	msgHits, commits, err := s.scanMessages(git)
+	if err != nil {
+		return nil, st, err
 	}
 	idHits, err := checkIdentities(git, accepted)
 	if err != nil {
-		return nil, err
+		return nil, st, err
 	}
-	return append(append(hits, msgHits...), idHits...), nil
+	st.blobs, st.commits = blobs, commits
+	return append(append(hits, msgHits...), idHits...), st, nil
 }
 
-func (s *Scanner) scanBlobs(git gitRunner) ([]Hit, error) {
+// scanBlobs scans every blob reachable from any ref and returns the hits and the blob count.
+func (s *Scanner) scanBlobs(git gitRunner) ([]Hit, int, error) {
 	list, err := git(nil, "rev-list", "--objects", "--all")
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	names := map[string]string{}
 	var input bytes.Buffer
@@ -63,59 +78,64 @@ func (s *Scanner) scanBlobs(git gitRunner) ([]Hit, error) {
 	}
 	out, err := git(input.Bytes(), "cat-file", "--batch")
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	return s.scanBatch(out, names)
 }
 
 // scanBatch walks the output of git cat-file --batch: "<sha> <type> <size>\n<content>\n".
-func (s *Scanner) scanBatch(out []byte, names map[string]string) ([]Hit, error) {
+func (s *Scanner) scanBatch(out []byte, names map[string]string) ([]Hit, int, error) {
 	r := bufio.NewReader(bytes.NewReader(out))
 	var hits []Hit
+	blobs := 0
 	for {
 		header, err := r.ReadString('\n')
 		if err == io.EOF && header == "" {
-			return hits, nil
+			return hits, blobs, nil
 		}
 		fields := strings.Fields(header)
 		if err != nil || len(fields) != 3 {
-			return nil, fmt.Errorf("git cat-file: unexpected header %q", header)
+			return nil, 0, fmt.Errorf("git cat-file: unexpected header %q", header)
 		}
 		size, err := strconv.Atoi(fields[2])
 		if err != nil || size < 0 || size > maxFileSize {
-			return nil, fmt.Errorf("git cat-file: bad size in %q", header)
+			return nil, 0, fmt.Errorf("git cat-file: bad size in %q", header)
 		}
 		content := make([]byte, size+1)
 		if _, err := io.ReadFull(r, content); err != nil {
-			return nil, fmt.Errorf("git cat-file: short object %s: %w", fields[0], err)
+			return nil, 0, fmt.Errorf("git cat-file: short object %s: %w", fields[0], err)
 		}
 		if fields[1] != "blob" {
 			continue
 		}
 		h, err := s.Scan(names[fields[0]], bytes.NewReader(content[:size]))
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		hits = append(hits, h...)
+		blobs++
 	}
 }
 
-func (s *Scanner) scanMessages(git gitRunner) ([]Hit, error) {
+// scanMessages scans every commit message of all refs and returns the hits and the commit count.
+func (s *Scanner) scanMessages(git gitRunner) ([]Hit, int, error) {
 	out, err := git(nil, "log", "--all", "--format=%H%x00%B%x00")
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	parts := strings.Split(string(out), "\x00")
 	var hits []Hit
+	commits := 0
 	for i := 0; i+1 < len(parts); i += 2 {
 		sha := strings.TrimSpace(parts[i])
 		h, err := s.Scan("commit message "+sha[:min(12, len(sha))], strings.NewReader(parts[i+1]))
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		hits = append(hits, h...)
+		commits++
 	}
-	return hits, nil
+	return hits, commits, nil
 }
 
 // checkIdentities fails every author or committer address that is neither a GitHub noreply

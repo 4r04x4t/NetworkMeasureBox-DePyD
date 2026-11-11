@@ -81,20 +81,23 @@ func emailAllowed(domain []byte) bool {
 	return false
 }
 
+// exemptUnitTypes are the systemd unit types of systemd.unit(5) whose instance names are no
+// e-mail addresses. "target" is left out on purpose: .target is a delegated top-level domain (it
+// is in the public suffix list), so an address at "<name>.target" is a real one. A type that
+// becomes a delegated top-level domain must leave this set; a real unit name of an excluded type
+// that a document quotes is cleared by an exact entry in allow.txt.
+var exemptUnitTypes = map[string]bool{
+	"service": true, "socket": true, "device": true, "mount": true, "automount": true, "swap": true,
+	"path": true, "timer": true, "slice": true, "scope": true,
+}
+
 // isUnitInstance reports whether domain is the "<instance>.<type>" part of a systemd unit
-// instance name such as getty@tty1.service. The unit types are the eleven of systemd.unit(5),
-// written in lower case as systemd requires; the instance is one label. A mail domain with more
-// labels in front of the type, or another top-level name such as .services, still hits.
+// instance name such as getty@tty1.service: the instance is one label and the type, in lower
+// case as systemd requires, is in exemptUnitTypes. A mail domain with more labels in front of the
+// type, or another top-level name such as .services, still hits.
 func isUnitInstance(domain []byte) bool {
 	instance, unitType, ok := bytes.Cut(domain, []byte("."))
-	if !ok || len(instance) == 0 {
-		return false
-	}
-	switch string(unitType) {
-	case "service", "socket", "device", "mount", "automount", "swap", "target", "path", "timer", "slice", "scope":
-		return true
-	}
-	return false
+	return ok && len(instance) > 0 && exemptUnitTypes[string(unitType)]
 }
 
 func hasSuffix(s, suffix string) bool {

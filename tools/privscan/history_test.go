@@ -70,6 +70,25 @@ func TestHistoryCleanRepoPasses(t *testing.T) {
 	}
 }
 
+// Verifier of 2da9473: the summary line of history mode counts the refs, commits and blobs it
+// scanned (it said "1 inputs").
+func TestHistorySummaryCounts(t *testing.T) {
+	dir, git := gitRepo(t, noreplyIdentity())
+	writeFile(t, dir, "a.txt", "one\n")
+	writeFile(t, dir, "b.txt", "two\n")
+	git("add", "a.txt", "b.txt")
+	git("commit", "-q", "-m", "first")
+	writeFile(t, dir, "a.txt", "one, changed\n")
+	git("commit", "-q", "-am", "second")
+	git("branch", "side")
+	git("tag", "v0")
+	e, out, errOut := testEnv(nil)
+	if code := run([]string{"-repo", dir, "history"}, e); code != exitClean ||
+		!strings.Contains(out.String(), "privscan history: 3 refs, 2 commits, 3 blobs, 0 hits\n") {
+		t.Errorf("exit %d\n%s%s", code, out, errOut)
+	}
+}
+
 func TestHistoryMessageScanned(t *testing.T) {
 	dir, git := gitRepo(t, noreplyIdentity())
 	git("commit", "-q", "--allow-empty", "-m", "deployed to "+j("11.22", ".33.44"))

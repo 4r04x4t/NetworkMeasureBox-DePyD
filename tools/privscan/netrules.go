@@ -47,17 +47,82 @@ func ipv4Finder() func([]byte) []span {
 func findIPv4(line []byte, allowed []netip.Prefix) []span {
 	var out []span
 	for _, r := range runs(line, func(c byte) bool { return c >= '0' && c <= '9' || c == '.' }) {
-		tok := bytes.TrimRight(line[r.start:r.end], ".")
-		if bytes.Count(tok, []byte(".")) != 3 || len(tok) == 0 || tok[0] == '.' {
+		s, ok := quadIn(line, r)
+		if !ok {
 			continue
 		}
-		addr, err := netip.ParseAddr(string(tok))
-		if err != nil || !addr.Is4() || inAny(addr, allowed) {
+		addr, ok := parseQuad(line[s.start:s.end])
+		if !ok || inAny(addr, allowed) {
 			continue
 		}
-		out = append(out, span{r.start, r.start + len(tok)})
+		out = append(out, s)
 	}
 	return out
+}
+
+// quadIn returns the dotted-quad candidate of the digit-and-dot run r: the run without its
+// trailing dots. A run that starts with a dot is part of a longer dotted name (libx.so.1.2.3.4)
+// and no candidate, unless it stands between two letter labels with one dot on each side, as in
+// the nip.io-style name app.<a.b.c.d>.nip.io: an address embedded there is no version number.
+// A quad followed by ".<digit>" is part of a longer dotted number and no candidate; such an
+// address at the end of a sentence without a space is a known limit (brief 4.5).
+func quadIn(line []byte, r span) (span, bool) {
+	tok := bytes.TrimRight(line[r.start:r.end], ".")
+	s := span{r.start, r.start + len(tok)}
+	if len(tok) > 0 && tok[0] == '.' {
+		if !betweenLabels(line, r) {
+			return s, false
+		}
+		s.start++
+	}
+	return s, bytes.Count(line[s.start:s.end], []byte(".")) == 3
+}
+
+// betweenLabels reports whether run r is ".<digits and dots>." with a letter before and after.
+func betweenLabels(line []byte, r span) bool {
+	if r.end-r.start < 3 || r.start == 0 || r.end >= len(line) {
+		return false
+	}
+	return line[r.start+1] != '.' && line[r.end-1] == '.' && line[r.end-2] != '.' &&
+		isLetter(line[r.start-1]) && isLetter(line[r.end])
+}
+
+func isLetter(c byte) bool { return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' }
+
+// parseQuad parses tok, four dot-separated runs of decimal digits, as an IPv4 address. Leading
+// zeros are padding, read in decimal (011 is 11, never octal 9): 192.168.001.001 is a private
+// address and a zero-padded public address hits. A part above 255 or an empty part is none.
+func parseQuad(tok []byte) (netip.Addr, bool) {
+	parts := bytes.Split(tok, []byte("."))
+	if len(parts) != 4 {
+		return netip.Addr{}, false
+	}
+	var b [4]byte
+	for i, p := range parts {
+		v, ok := quadPart(p)
+		if !ok {
+			return netip.Addr{}, false
+		}
+		b[i] = v
+	}
+	return netip.AddrFrom4(b), true
+}
+
+// quadPart reads one part of a dotted quad: one or more decimal digits with a value of 0..255.
+func quadPart(p []byte) (byte, bool) {
+	if len(p) == 0 {
+		return 0, false
+	}
+	v := 0
+	for _, c := range bytes.TrimLeft(p, "0") {
+		if c < '0' || c > '9' {
+			return 0, false
+		}
+		if v = v*10 + int(c-'0'); v > 255 {
+			return 0, false
+		}
+	}
+	return byte(v), true
 }
 
 // ipv6Finder finds tokens of hex digits, colons and dots with "::" or seven colons that parse as

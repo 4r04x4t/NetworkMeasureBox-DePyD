@@ -113,3 +113,14 @@ universally administered, key- and token-like strings, developer home folders, a
 list. Tests and examples use reserved values only: 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32,
 example.com, and MAC addresses starting with `02:00:00`. A value that must stay (for example a public resolver)
 goes into `tools/privscan/allow.txt` with its reason, reviewed by the package's verifier.
+
+What the scanner does not report, and its known limits:
+
+- A systemd unit instance name such as `getty@tty1.service` is no address, for the unit types `service`, `socket`,
+  `device`, `mount`, `automount`, `swap`, `path`, `timer`, `slice` and `scope`. `target` is not among them,
+  because `.target` is a real top-level domain: a unit name like `<name>@<label>.target` in a document needs an
+  exact allow entry. The residual: a person's address at a domain of one label plus one of the ten types is not
+  found (none of them is a delegated top-level domain today; a test checks this against the public suffix list).
+- A public IPv4 address glued to a following `.<digit>` (a sentence ending without a space before a number) looks
+  like a version number and is not found. Inside a host name between letter labels (`app.<address>.nip.io`) it is
+  found, and leading zeros are read as decimal padding, so a zero-padded public address is found too.
