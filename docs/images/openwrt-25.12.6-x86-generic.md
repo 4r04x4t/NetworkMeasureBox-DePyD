@@ -1,8 +1,8 @@
 # Image record: OpenWrt 25.12.6 x86/generic (32-bit x86; squashfs and ext4, combined and combined-efi)
 
 Package I-04 (work plan section 5.4): the 32-bit x86 tree, as a cross-check of I-01 (OpenWrt 25.12.6 x86-64).
-The method is work plan 5.1, and every field of 5.2 is below, under the same headings as the I-01 record so that
-I-09 can compare them. Sections 15 to 17 are added for this package: the build trees (5.3 point 4), the
+The method is work plan 5.1, and every field of 5.2 is below, under the same section numbers as the I-01 record so
+that I-09 can compare them (the text of heading 9a and the count in heading 10 differ where the content differs). Sections 15 to 17 are added for this package: the build trees (5.3 point 4), the
 differences from I-01, and the work log. Each value names the command that produced it. A value that could not
 be read says "not determined" and why. Nothing here comes from memory. Only lists, versions and checksums are
 recorded. No file taken out of the image is in this repository.
@@ -167,7 +167,8 @@ squashfs and ext4 images of each layout differ only in partition 2.
   - The SDK's and the ImageBuilder's `build_dir/target-i386_pentium4_musl/linux-x86_generic/linux-6.12.112/.config`
     (single files taken out of the archives with `zstd -dc | tar -xf - <path>`, exit 0).
   - All three have SHA-256 `7c324c8551642a4a8eee90f9e30b21ffdac4fde4bb1c781416ab3f38fa890a0f`, 8,375 lines,
-    starting `# Linux/x86 6.12.112 Kernel Configuration` and
+    with the header line `# Linux/x86 6.12.112 Kernel Configuration` (line 3, after `#` and `# Automatically
+    generated file; DO NOT EDIT.`; `head -5`) and
     `CONFIG_CC_VERSION_TEXT="i486-openwrt-linux-musl-gcc (OpenWrt GCC 14.3.0 r33311-981c978eff) 14.3.0"`.
   - The `configs.ko` in `kernel-debug.tar.zst` (23,492 bytes) has no `IKCFG_ST` marker (`grep -c -a` = 0), so it
     was not usable as a source.
@@ -418,7 +419,7 @@ qemu-system-i386 -machine pc -accel <kvm|tcg,tb-size=128> -cpu <host|max> -smp 1
 
 | Run | Image, settings | Result |
 | :--- | :--- | :--- |
-| 1 | squashfs-combined (MBR, legacy BIOS), **KVM** (`-cpu host`), `-smp 1 -m 256` | Booted cleanly (`Booting paravirtualized kernel on KVM`, `Hypervisor detected: KVM`). All 34 probes gave exit 0. `poweroff` was clean: `reboot: Power down`, QEMU exit 0, driver exit 0, flock exit 0; 110 s in all (06:51:47–06:53:37 UTC) |
+| 1 | squashfs-combined (MBR, legacy BIOS), **KVM** (`-cpu host`), `-smp 1 -m 256` | Booted cleanly (`Booting paravirtualized kernel on KVM`, `Hypervisor detected: KVM`). All 34 probes gave exit 0. `poweroff` was clean: `reboot: Power down`, QEMU exit 0, driver exit 0; the flock exit was not logged for this run (`boot1/times.txt` holds only start, driver rc, QEMU rc and end); 110 s in all (06:51:47–06:53:37 UTC) |
 | 2 | squashfs-combined-efi through its BIOS boot partition, KVM, `-m 512` | **Did not start**: `Could not access KVM kernel module: Permission denied` (QEMU exit 1, driver exit 1). The user's ACL entry on `/dev/kvm` was there before run 1 (`getfacl` listed a named-user entry with `rw-` for the working user) and gone after it (`getfacl` shows no user entry; the node's change time is 06:53:36 UTC). Nothing in this package changed it; there is no sudo |
 | 3 | squashfs-combined-efi through its BIOS boot partition, **TCG** (`-cpu max`, `-accel tcg,tb-size=128`), `-smp 1 -m 512`; fresh copy of the decompressed image (SHA-256 `061efadc…85e9f` checked before the copy) | Booted cleanly through SeaBIOS and GRUB 2.12 from the GPT image (`Booting paravirtualized kernel on bare hardware`; `ubus call system board`: `"system": "QEMU TCG CPU version 2.5+"`, `"rootfs_type": "squashfs"`). All 10 probes (`scripts/probes2.txt`) gave exit 0. `poweroff` was clean: `reboot: Power down`, QEMU exit 0, driver exit 0, flock+run exit 0; 360 s in all (07:41:01–07:47:01 UTC). The first probe polled `logread` before `logd` was up, so the console shows 22 `Failed to find log object: Not found` lines from that loop; the probe still ended with exit 0 |
 
@@ -584,7 +585,8 @@ All on the dev PC under WSL2, as the normal user, in `~/nmb-work/I-04/`:
 - `zstd -dc | tar -tvf -` of SDK, toolchain, ImageBuilder, llvm-bpf, kernel-debug: exit 0. Single-file
   extractions: exit 0, except one toolchain `tar` call with exit 2 (`ld.bfd` is a hard link to a file not named in
   that call; repeated with the link target, exit 0).
-- QEMU run 1 (KVM): flock+run exit 0, QEMU exit 0, driver exit 0. Run 2 (KVM): QEMU exit 1, driver exit 1
+- QEMU run 1 (KVM): QEMU exit 0, driver exit 0; the flock exit was not logged for run 1 (only run 3's
+  `times.txt` has a `flock+run rc` line). Run 2 (KVM): QEMU exit 1, driver exit 1
   (`/dev/kvm` permission denied). Run 3 (TCG, squashfs-combined-efi, 512 MB, under `flock -w 3600
   ~/nmb-work/qemu.lock` for the whole run, started after the lock was free): flock+run exit 0, QEMU exit 0,
   driver exit 0, all 10 probes exit 0.
