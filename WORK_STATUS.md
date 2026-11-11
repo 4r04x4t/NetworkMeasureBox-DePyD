@@ -31,7 +31,7 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public). First push 2026
 | I-06 | Debian 13.7.0 amd64 and arm64 | accepted | merge 57a6e1b | — |
 | I-07 | Alpine 3.24.4 | accepted | merge (this commit's parent) | verifier pass, minors noted |
 | I-08 | Fedora IoT 44 | accepted (no guest reached multi-user: boot figures not determined) | merged | verifier pass, 6 minors |
-| I-09 | Comparison for 6A | brief (all eight records accepted) | — | — |
+| I-09 | Comparison for 6A | accepted; owner chose Debian 13 + systemd + RAUC/SWUpdate to be tested (provisional until the section 6 measurements) | merged | checker pass, 8 minors |
 
 ## Core, measuring, network, reports, surfaces, product
 
@@ -59,3 +59,4 @@ Waiting: C-01, C-02, C-06 (they implement F-04a/b/f; briefed after F-04 is accep
 - 2026-11-11: F-07 failed its third review (new major: an entry could be raised to fixed with no test and no vector as evidence). Held under the three-failures rule; one consolidated round with the round-3 findings (saved in the scratchpad as f07-findings-r3.json) after F-04 is accepted.
 - 2026-11-11: I-08 accepted and merged; all eight image records done; I-09 (comparison for 6A, owner decides the base) can start.
 - 2026-11-11: licence decided by the owner: MIT, copyright "NetworkMeasureBox contributors"; OONI only as the separate ooniprobe program. LIC-01 lists merged; LICENSE added.
+- 2026-11-11: owner decided the base (provisional): Debian 13 for the Pi 4 and x86-64, systemd, A/B update with RAUC and SWUpdate both tested before one is fixed. To write into roadmap 6A (Python repo) with the I-09 summary.
