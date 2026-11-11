@@ -10,10 +10,10 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public, empty until the 
 
 | Id | Package | State | Commit | Gate | Open |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| F-00 | Skeleton | code (brief 6c3eb45 on pkg/F-00) | — | — | — |
-| F-01 | Owner's open decisions | code (answered 2026-11-11; plan patch waits until F-02/F-03 finish reading) | — | — | — |
-| F-02 | Requirements register | brief (register being extracted) | — | — | — |
-| F-03 | Known Python faults | brief | — | — | — |
+| F-00 | Skeleton | verify (gate rc 0 by the orchestrator; privscan follow-up in review) | — | rc 0 (6m14s) | — |
+| F-01 | Owner's open decisions | code (all answered; plans being updated in a worktree of the Python repo, branch native/F-01) | — | — | — |
+| F-02 | Requirements register | verify (2324 requirements, final check passed; owner answers being written in) | — | — | — |
+| F-03 | Known Python faults | ready to merge after F-00 (294 entries, final check passed, no open question) | — | — | — |
 | F-04 | Contracts | brief (six part briefs a-f + coordinator) | — | — | — |
 | F-05 | Phase 0 reference | brief | — | — | — |
 | F-06 | Test bed | brief | — | — | — |
@@ -47,3 +47,4 @@ All waiting for the foundation (C-01..C-11, M-01..M-14, N-01..N-18, R-01..R-05, 
 - 2026-11-11: every commit rewritten to the no-reply e-mail (backup bundle kept outside the repository); old commit ids in earlier notes no longer exist.
 - 2026-11-11: owner answered the six F-03 questions (uplink trust per network, Ookla manual runs obey the pause only, VPN mismatch shown and asked, no default data cap, minute summaries only, bot confirms every change).
 - 2026-11-11: F-02 round 3, F-03 round 4, I-07/I-08 and image minor fixes running; F-04, F-05, F-06 briefs started early (briefs only; code waits for F-00..F-03).
+- 2026-11-11: owner answered F-03 Q6/Q7 and F-02 Q-01, Q-05, Q-12, Q-15, Q-16, Q-17 (migration component by component; all Python distributions; terminal kept hardened; bot secrets off by default; MACs pseudonymised for outside LLMs; maintenance needs an off-device log). F-01 started.
