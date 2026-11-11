@@ -278,9 +278,11 @@ renumbered, new ids took the next free number, no package was added, and no row 
 - **Q-12, B:** REQ-CL-0416 restated; new REQ-CL-0454 (the hardened web terminal; `S-02…S-0n (API: system)`, also the tools
   page, P-05, P-06, P-04).
 - **Q-15, C:** REQ-AR-0054, -0069 restated, REQ-RM-0104 points to the answer; new REQ-AR-0079 (VPN profiles over Telegram;
-  S-11, also N-13, N-14) and REQ-AR-0080 (Wi-Fi passwords in the chat; S-11, also N-07, N-08).
-- **Q-16, C:** REQ-RM-0135 restated (kept in the SLA dossier and the ISP-support bundle; R-03 added under *Also in*); new
-  REQ-RM-0220 (vendor prefix and a per-bundle pseudonym in bundles for outside LLMs; C-04, also R-04).
+  S-11, also N-13, N-14) and REQ-AR-0080 (Wi-Fi passwords in the chat; S-11, also N-07, N-08); every other row on the bot
+  sending a QR code or `.conf` or taking a Wi-Fi password qualified with a pointer to them (REQ-RM-0104, REQ-AR-0055, -0056,
+  REQ-RE-0121, -0147, -0259, -0260, -0261, -0270, REQ-TS-0134, -0231, -0282).
+- **Q-16, C:** REQ-RM-0135 restated (private IP subnets kept in every bundle; MAC addresses kept in the SLA dossier and the
+  ISP-support bundle; R-03 added under *Also in*); new REQ-RM-0220 (vendor prefix and a per-bundle pseudonym in bundles for outside LLMs; C-04, also R-04).
 - **Q-17, B:** REQ-PP-0135 restated (each entry sent off the device as it is written, the hash-chained local log as a second
   record; S-13 added under *Also in*); new REQ-PP-0199 (maintenance mode does not start without a log target off the
   device; P-05, also S-13, N-18, C-03).

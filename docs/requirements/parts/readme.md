@@ -138,7 +138,7 @@ Reading notes for the register owner:
 | REQ-RE-0118 | WireGuard VPN server (UDP 51820). | README.md@ad3758c:167 | N-13 | N-02 | |
 | REQ-RE-0119 | OpenVPN server (UDP 1194, elliptic curve `prime256v1`). | README.md@ad3758c:167 | N-14 | N-02 | |
 | REQ-RE-0120 | Dual-stack tunnels: IPv4 `10.8.0.0/24` and `10.9.0.0/24`, IPv6 ULA `fd42:42:42::/64` and `fd42:42:43::/64`. | README.md@ad3758c:168 | N-13 | N-14 | Which range belongs to which server is not said; taken from the code in the briefs. |
-| REQ-RE-0121 | Client pairing: entering a client name generates the configuration profile and a camera-scannable QR code, in the Web UI and in Telegram. | README.md@ad3758c:169 | N-13 | N-14, S-11, U-02…U-0n (page: VPN) | |
+| REQ-RE-0121 | Client pairing: entering a client name generates the configuration profile and a camera-scannable QR code, in the Web UI and in Telegram (in Telegram only when secrets over Telegram is switched on for this item (Q-15, REQ-AR-0079/0080)). | README.md@ad3758c:169 | N-13 | N-14, S-11, U-02…U-0n (page: VPN) | QR code and profile in Telegram: Q-15 answered by the owner (2026-11-11): C; limits in REQ-AR-0079. |
 | REQ-RE-0122 | Peer management: connected peer list with endpoint IPs, latest handshake, RX/TX transfer and revocation. | README.md@ad3758c:170 | N-13 | N-14, U-02…U-0n (page: VPN) | |
 | REQ-RE-0123 | Tailscale: encrypted access to the Web UI from anywhere without public port forwarding, dynamic DNS or opening the firewall, also through carrier-grade NAT and router cascades. | README.md@ad3758c:172-173 | N-15 | N-18 | Remote access without Tailscale is N-18. |
 | REQ-RE-0124 | The Web UI shows the MagicDNS name and the Tailscale IPv4/IPv6 status, with one-click connect and disconnect. | README.md@ad3758c:174 | N-15 | U-02…U-0n (page: Remote) | |
@@ -164,7 +164,7 @@ Reading notes for the register owner:
 | REQ-RE-0144 | Free filesystem capacity is tracked. | README.md@ad3758c:210; README.hu.md@ad3758c:420 | C-08 | | Hungarian names `statvfs()`. |
 | REQ-RE-0145 | Kernel log traps catch hardware I/O errors and ext4/squashfs corruption. | README.md@ad3758c:211 | C-08 | C-03 | |
 | REQ-RE-0146 | A built-in redactor masks bot tokens, chat IDs, Wi-Fi keys, ISP account numbers and circuit IDs before dossiers or diagnostic snapshots are made (and before anything goes to an outside LLM or the ISP). | README.md@ad3758c:213; README.hu.md@ad3758c:422 | C-04 | R-03, R-04, S-12 | |
-| REQ-RE-0147 | Telegram bot for management without a browser, with inline keyboards for status, ping matrix, on-demand speed tests, SLA dossier and VPN QR codes. | README.md@ad3758c:216-217; README.md@ad3758c:384; README.hu.md@ad3758c:429 | S-11 | | SLA dossier button from the Hungarian file. |
+| REQ-RE-0147 | Telegram bot for management without a browser, with inline keyboards for status, ping matrix, on-demand speed tests, SLA dossier and VPN QR codes (the QR codes only when secrets over Telegram is switched on for this item (Q-15, REQ-AR-0079/0080)). | README.md@ad3758c:216-217; README.md@ad3758c:384; README.hu.md@ad3758c:429 | S-11 | | SLA dossier button from the Hungarian file. VPN QR codes: Q-15 answered by the owner (2026-11-11): C; limits in REQ-AR-0079. |
 | REQ-RE-0148 | The bot sends the complete `.html` dossier into the chat. | README.md@ad3758c:219 | S-11 | R-03 | |
 | REQ-RE-0149 | The bot alerts on outages, and when packet loss, latency or jitter stays above its threshold for 5 minutes. | README.md@ad3758c:220 | S-11 | M-02, C-01 | The diagram (line 67) and README.hu.md:109 say "loss > 5 %"; the S-11 brief takes the thresholds from the code. |
 | REQ-RE-0150 | The dossier has a neutral title: "Broadband Quality & ISP SLA Performance Dossier" (and its Hungarian equivalent). | README.md@ad3758c:224 | R-03 | C-06 | |
@@ -279,9 +279,9 @@ Reading notes for the register owner:
 | REQ-RE-0256 | Setting a mode or override that leads to the mode already running rebuilds nothing (no PPPoE redial). | README.md@ad3758c:398 | N-03 | S-11, N-05 | |
 | REQ-RE-0257 | `/vpn`: active WireGuard and OpenVPN tunnels and connected client counts. | README.md@ad3758c:399 | S-11 | N-13, N-14 | |
 | REQ-RE-0258 | `/vpn clients`: connected peers with handshake times, endpoints and RX/TX traffic. | README.md@ad3758c:400 | S-11 | N-13, N-14 | |
-| REQ-RE-0259 | `/vpn qr <name>` sends a camera-scannable QR code PNG. | README.md@ad3758c:401 | S-11 | N-13 | |
-| REQ-RE-0260 | `/vpn conf <name>` sends the `.conf` profile for WireGuard or OpenVPN. | README.md@ad3758c:402 | S-11 | N-13, N-14 | |
-| REQ-RE-0261 | `/vpn add <name> [wg\|ovpn]` creates a client profile and returns the QR code. | README.md@ad3758c:403 | S-11 | N-13, N-14 | |
+| REQ-RE-0259 | `/vpn qr <name>` sends a camera-scannable QR code PNG, only when secrets over Telegram is switched on for this item (Q-15, REQ-AR-0079/0080). | README.md@ad3758c:401 | S-11 | N-13 | The QR code holds the client's private key: Q-15 answered by the owner (2026-11-11): C; limits in REQ-AR-0079. |
+| REQ-RE-0260 | `/vpn conf <name>` sends the `.conf` profile for WireGuard or OpenVPN, only when secrets over Telegram is switched on for this item (Q-15, REQ-AR-0079/0080). | README.md@ad3758c:402 | S-11 | N-13, N-14 | The profile holds the client's private key: Q-15 answered by the owner (2026-11-11): C; limits in REQ-AR-0079. |
+| REQ-RE-0261 | `/vpn add <name> [wg\|ovpn]` creates a client profile and returns the QR code (the QR code only when secrets over Telegram is switched on for this item (Q-15, REQ-AR-0079/0080)). | README.md@ad3758c:403 | S-11 | N-13, N-14 | The QR code holds the client's private key: Q-15 answered by the owner (2026-11-11): C; limits in REQ-AR-0079. |
 | REQ-RE-0262 | `/vpn del <name>` deletes a client profile. | README.md@ad3758c:404 | S-11 | N-13, N-14 | |
 | REQ-RE-0263 | `/vpn start\|stop [wg\|ovpn]` starts or stops the WireGuard or OpenVPN server. | README.md@ad3758c:405 | S-11 | N-13, N-14 | |
 | REQ-RE-0264 | `/adblock`: total queries today, blocked queries, blocklist domain count. | README.md@ad3758c:406 | S-11 | N-12 | |
@@ -290,7 +290,7 @@ Reading notes for the register owner:
 | REQ-RE-0267 | `/dyndns on\|off\|update` turns the updater on or off (it follows within 30 s) or updates the name now with the configured provider. | README.md@ad3758c:409 | S-11 | N-16 | |
 | REQ-RE-0268 | `/dyndns interval <min>\|domain <name>\|token <token>` changes the interval, the name or the token. | README.md@ad3758c:410 | S-11 | N-16, C-04 | |
 | REQ-RE-0269 | `/wifi [scan\|saved]`: Wi-Fi status, nearby networks, saved profiles. | README.md@ad3758c:411 | S-11 | N-07 | |
-| REQ-RE-0270 | `/wifi connect <ssid> [password]` joins a network as a client; in router mode, where the radio is the access point, the bot says so instead. | README.md@ad3758c:412 | S-11 | N-07, N-08 | |
+| REQ-RE-0270 | `/wifi connect <ssid> [password]` joins a network as a client (a password in the chat only when secrets over Telegram is switched on for this item (Q-15, REQ-AR-0079/0080)); in router mode, where the radio is the access point, the bot says so instead. | README.md@ad3758c:412 | S-11 | N-07, N-08 | Password in the chat: Q-15 answered by the owner (2026-11-11): C; limits in REQ-AR-0080. |
 | REQ-RE-0271 | `/tailscale` shows the box's Tailscale status. | README.md@ad3758c:413 | S-11 | N-15 | |
 | REQ-RE-0272 | `/heal`: health audit of services, database, permissions, missing programs. | README.md@ad3758c:414 | S-11 | P-01 | |
 | REQ-RE-0273 | `/heal fix [tier]` repairs what the audit found (service restarts first; higher tiers go further). | README.md@ad3758c:415 | S-11 | P-01 | |

@@ -241,7 +241,8 @@ Answer (owner, 2026-11-11): B: kept, hardened: off by default, only from the LAN
 mode is on, the password asked again each time, every command in the audit log (P-05), switching itself off after a set
 time; it runs as the service user, root only through the privileged helper.
 Rows: REQ-CL-0416 restated; new REQ-CL-0454 (`S-02…S-0n (API: system)`, the S-08 range in `parts/python-files.md`; the
-tools page, P-05, P-06 and P-04 under *Also in*).
+tools page, P-05, P-06 and P-04 under *Also in*). `parts/python-files.md` question 3 said the Python terminal runs commands
+as root; a correction there says it runs as the service user `nmb`.
 
 **Q-15 May the Telegram bot carry secrets: a VPN profile's private key, a Wi-Fi password?** (RM1 4, WP 4; REQ-RM-0104,
 REQ-AR-0054, -0069; S-11, N-13, N-14, N-08)
@@ -249,12 +250,15 @@ Answer (owner, 2026-11-11): C: OFF by default; the user switches "secrets over T
 confirmation tap, a warning, the bot deletes its QR message after a few minutes and the user's password message at once,
 and the VPN peer can be withdrawn with one tap. (The recommendation had been A.)
 Rows: REQ-AR-0054, -0069 restated, REQ-RM-0104 (Notes); new REQ-AR-0079 (VPN profiles) and REQ-AR-0080 (Wi-Fi passwords),
-both S-11.
+both S-11. Every other row on the bot sending a QR code, a `.conf` or taking a Wi-Fi password qualified ("only when secrets
+over Telegram is switched on for this item") with a Notes pointer: REQ-RM-0104, REQ-AR-0055, -0056, REQ-RE-0121, -0147,
+-0259, -0260, -0261, -0270, REQ-TS-0134, -0231, -0282.
 
 **Q-16 MAC addresses in shared diagnostic bundles?** (RM1 3; REQ-RM-0135; C-04, R-04)
 Answer (owner, 2026-11-11): C: kept in the SLA dossier and the ISP-support bundle; replaced by the vendor prefix and a
 pseudonym stable within one bundle in bundles meant for outside LLMs.
-Rows: REQ-RM-0135 restated (R-03 added under *Also in*); new REQ-RM-0220 (C-04).
+Rows: REQ-RM-0135 restated (private IP subnets kept in every bundle; MAC addresses as above; R-03 added under *Also in*);
+new REQ-RM-0220 (C-04).
 
 **Q-17 An audit log "the session itself cannot erase"?** (PP 6; REQ-PP-0135; P-05)
 Answer (owner, 2026-11-11): B: the maintenance mode does not start without a log target off the device (collector, syslog

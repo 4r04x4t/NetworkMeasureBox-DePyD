@@ -762,7 +762,7 @@ as "a mobile hotspot".
 2. **`nmb/web/static/themes/hago.jpg`** (MountainHaGo theme): is this a personal photo or a place of yours? If it is, it stays out
    of the native repository (Quality Bar 8).
 3. **Browser terminal.** `/api/terminal/exec` (`nmb/web/server.py@ad3758c:3322-3407`, page U-20) runs shell commands as root from
-   the browser; it is off unless `terminal_enabled` is set (`config/nmb.conf.example@ad3758c:143-144`). Should the native build have
+   the browser (correction: it runs as the service user nmb, see QUESTIONS.md Q-12); it is off unless `terminal_enabled` is set (`config/nmb.conf.example@ad3758c:143-144`). Should the native build have
    it at all? Package S-08/U-20 need the answer before their brief.
 4. **Origin of `components/open-rmbt/`.** The repository has no licence file for the C client. Is it upstream RTR code (and which
    project and version), or was it written for NMB? The licence of the native repository follows from its components.
