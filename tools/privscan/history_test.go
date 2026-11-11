@@ -7,7 +7,8 @@ import (
 	"testing"
 )
 
-// gitRepo makes a temporary repository whose commits use the given identity.
+// gitRepo makes a temporary repository whose commits use the given address and the name
+// "tester" (the account name of noreplyIdentity).
 func gitRepo(t *testing.T, identity string) (string, func(args ...string)) {
 	t.Helper()
 	if _, err := exec.LookPath("git"); err != nil {
@@ -18,7 +19,7 @@ func gitRepo(t *testing.T, identity string) (string, func(args ...string)) {
 	t.Setenv("GIT_CONFIG_NOSYSTEM", "1")
 	t.Setenv("GIT_CONFIG_GLOBAL", os.DevNull)
 	for _, k := range []string{"GIT_AUTHOR_NAME", "GIT_COMMITTER_NAME"} {
-		t.Setenv(k, "Test")
+		t.Setenv(k, "tester")
 	}
 	for _, k := range []string{"GIT_AUTHOR_EMAIL", "GIT_COMMITTER_EMAIL"} {
 		t.Setenv(k, identity)
@@ -55,10 +56,17 @@ func TestHistoryCleanRepoPasses(t *testing.T) {
 	dir, git := gitRepo(t, noreplyIdentity())
 	writeFile(t, dir, "a.txt", "user@example.com 192.0.2.1\n")
 	git("add", "a.txt")
-	git("commit", "-q", "-m", "clean\n\nCo-Authored-By: Bot <"+j("noreply", "@", "vendor", ".com")+">")
+	coAuthor := j("noreply", "@", "vendor", ".com")
+	git("commit", "-q", "-m", "clean\n\nCo-Authored-By: Bot <"+coAuthor+">")
+	allow := writeFile(t, t.TempDir(), "allow.txt", "email "+coAuthor+" a vendor's no-reply address, reviewed\n")
 	e, out, errOut := testEnv(nil)
-	if code := run([]string{"-repo", dir, "history"}, e); code != exitClean {
+	if code := run([]string{"-allow", allow, "-repo", dir, "history"}, e); code != exitClean {
 		t.Errorf("exit %d\n%s%s", code, out, errOut)
+	}
+	// Verifier round 1: a no-reply local part is no exemption by itself; only the allow list is.
+	e, out, _ = testEnv(nil)
+	if code := run([]string{"-repo", dir, "history"}, e); code != exitHits || !strings.Contains(out.String(), "commit message") {
+		t.Errorf("without the allow entry: exit %d\n%s", code, out)
 	}
 }
 
@@ -80,9 +88,44 @@ func TestHistoryIdentityNotNoreplyFails(t *testing.T) {
 		strings.Contains(out.String(), identity) {
 		t.Errorf("exit %d, output %q", code, out)
 	}
-	list := writeFile(t, t.TempDir(), "private.txt", identityPrefix+identity+"\n")
+	list := writeFile(t, t.TempDir(), "private.txt", identityPrefix+identity+"\n"+identityPrefix+"tester\n")
 	e, out, _ = testEnv(map[string]string{privateEnv: list})
 	if code := run([]string{"-repo", dir, "history"}, e); code != exitClean {
 		t.Errorf("accepted identity: exit %d, output %q", code, out)
+	}
+}
+
+// Verifier round 1: author and committer names are checked too. A name passes only when it is the
+// account name its own noreply address already shows, or when the private list accepts it.
+func TestHistoryIdentityName(t *testing.T) {
+	dir, git := gitRepo(t, noreplyIdentity())
+	git("commit", "-q", "--allow-empty", "-m", "account name, matching its noreply address")
+	e, out, _ := testEnv(nil)
+	if code := run([]string{"-repo", dir, "history"}, e); code != exitClean {
+		t.Fatalf("matching name: exit %d, output %q", code, out)
+	}
+	t.Setenv("GIT_AUTHOR_NAME", "Jane Roe")
+	git("commit", "-q", "--allow-empty", "-m", "a personal name")
+	e, out, _ = testEnv(nil)
+	code := run([]string{"-repo", dir, "history"}, e)
+	if code != exitHits || strings.Count(out.String(), ": name: ") != 1 || strings.Contains(out.String(), "Jane Roe") {
+		t.Errorf("personal name: exit %d, output %q", code, out)
+	}
+	list := writeFile(t, t.TempDir(), "private.txt", identityPrefix+"Jane Roe\n")
+	e, out, _ = testEnv(map[string]string{privateEnv: list})
+	if code := run([]string{"-repo", dir, "history"}, e); code != exitClean {
+		t.Errorf("accepted name: exit %d, output %q", code, out)
+	}
+}
+
+func TestNoreplyLogin(t *testing.T) {
+	for addr, want := range map[string]string{
+		"12345+tester" + noreplyDomain: "tester",
+		"tester" + noreplyDomain:       "tester",
+		"tester@example.com":           "",
+	} {
+		if got := noreplyLogin(addr); got != want {
+			t.Errorf("noreplyLogin(%q) = %q, want %q", addr, got, want)
+		}
 	}
 }

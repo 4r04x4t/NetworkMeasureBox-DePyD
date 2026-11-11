@@ -162,10 +162,32 @@ func literalsOf(spec ast.Spec, declDoc *ast.CommentGroup) []function {
 	}
 	var out []function
 	for i, v := range vs.Values {
-		if lit, ok := v.(*ast.FuncLit); ok && i < len(vs.Names) {
-			out = append(out, function{name: vs.Names[i].Name, doc: doc, body: lit.Body})
+		name := "(package-level value)"
+		if i < len(vs.Names) {
+			name = vs.Names[i].Name
 		}
+		out = append(out, outerLiterals(v, name, doc)...)
 	}
+	return out
+}
+
+// outerLiterals returns every function literal inside a package-level value that is not itself
+// inside another literal (map values, struct fields, slice elements, call arguments): each is
+// checked like a function, and literals nested in it count as nesting levels of that function.
+func outerLiterals(value ast.Expr, name string, doc *ast.CommentGroup) []function {
+	var out []function
+	ast.Inspect(value, func(n ast.Node) bool {
+		lit, ok := n.(*ast.FuncLit)
+		if !ok {
+			return true
+		}
+		label := name
+		if lit != value {
+			label += " (literal inside)"
+		}
+		out = append(out, function{name: label, doc: doc, body: lit.Body})
+		return false
+	})
 	return out
 }
 

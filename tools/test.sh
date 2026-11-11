@@ -16,12 +16,30 @@ nmb_go_offline "$NMB_ROOT/tools/test.sh" "$@"
 
 readonly OTHER_TZ=Pacific/Chatham
 
-# unchanged COMMAND...: runs the command and fails when the repository changed meanwhile. The
-# command runs in a subshell with errexit on, never as a condition (bash would ignore errexit in
-# every function it calls).
+# repo_state: the status of the tracked files, and name, size and modification time of every
+# untracked file, ignored ones included (build/, dist/), except this gate run's own folder.
+repo_state() {
+	local list="$NMB_OUT/.untracked.$$" rel=${NMB_OUT#"$NMB_ROOT"/} f
+	local -a all keep=()
+	git status --porcelain=v1 -uall || return 1
+	git ls-files -z --others >"$list" || return 1
+	mapfile -d '' all <"$list"
+	rm -f -- "$list"
+	for f in "${all[@]}"; do
+		case "$f" in
+		"$rel"/*) ;;
+		*) keep+=("$f") ;;
+		esac
+	done
+	[ "${#keep[@]}" -eq 0 ] || stat --printf '%n\t%s\t%.9Y\n' -- "${keep[@]}"
+}
+
+# unchanged COMMAND...: runs the command and fails when the repository changed meanwhile, ignored
+# paths included. The command runs in a subshell with errexit on, never as a condition (bash
+# would ignore errexit in every function it calls).
 unchanged() {
 	local before after rc
-	before=$(git status --porcelain=v1 -uall)
+	before=$(repo_state) || return 1
 	set +e
 	(
 		set -euo pipefail
@@ -29,7 +47,7 @@ unchanged() {
 	)
 	rc=$?
 	set -e
-	after=$(git status --porcelain=v1 -uall)
+	after=$(repo_state) || return 1
 	if [ "$before" != "$after" ]; then
 		printf 'the tests changed the repository:\n%s\n' "$(diff <(printf '%s\n' "$before") <(printf '%s\n' "$after") || true)"
 		return 1

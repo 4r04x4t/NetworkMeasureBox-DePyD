@@ -76,6 +76,25 @@ func TestFuncLitAddsLevel(t *testing.T) {
 	}
 }
 
+// Verifier round 1: a literal inside a package-level composite value (a map of handlers) was not
+// checked at all, neither its nesting nor its length.
+func TestLiteralInsidePackageLevelValue(t *testing.T) {
+	deep := "package p\n\nvar M = map[string]func(int) int{\"a\": func(x int) int {\n" +
+		strings.Repeat("if x > 0 {\n", 4) + "x--\n" + strings.Repeat("}\n", 4) + "return x\n}}\n"
+	res := check(t, deep)
+	if len(res.Violations) != 1 || res.Violations[0].Line != 7 || !strings.HasPrefix(res.Violations[0].Rule, "nesting M") {
+		t.Errorf("nesting: %v", res.Violations)
+	}
+	long := "package p\n\nvar T = []struct{ f func() }{{f: func() {\n" + strings.Repeat("_ = 1\n", 51) + "}}}\n"
+	if res := check(t, long); rules(res.Violations) != "function length T (literal inside)" {
+		t.Errorf("length: %v", res.Violations)
+	}
+	inCall := "package p\n\nvar _ = run(func() {\n" + strings.Repeat("for {\n", 4) + strings.Repeat("}\n", 4) + "})\n\nfunc run(func()) int { return 0 }\n"
+	if res := check(t, inCall); len(res.Violations) != 1 {
+		t.Errorf("literal as call argument: %v", res.Violations)
+	}
+}
+
 func TestBareBlockAndRangeAndTypeSwitchAddLevel(t *testing.T) {
 	cases := []string{
 		"{\n{\n{\n{\n}\n}\n}\n}",

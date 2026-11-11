@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"math"
 	"regexp"
+	"strings"
 )
 
 // Categories of findings; the allow list names them.
@@ -15,6 +16,7 @@ const (
 	catKey     = "key"
 	catPath    = "path"
 	catPrivate = "private"
+	catName    = "name" // author or committer name of a commit (history mode)
 )
 
 // Limits of the secret-assignment rule.
@@ -46,23 +48,25 @@ func newRules() []rule {
 
 func emailFinder() func([]byte) []span {
 	re := regexp.MustCompile(`[A-Za-z0-9._%+-]+@((?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,63})`)
-	return func(line []byte) []span { return findEmails(re, line) }
+	// A Go module query names a semantic version (https://go.dev/ref/mod#versions), whole.
+	version := regexp.MustCompile(`^v[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$`)
+	return func(line []byte) []span { return findEmails(re, version, line) }
 }
 
-func findEmails(re *regexp.Regexp, line []byte) []span {
+func findEmails(re, version *regexp.Regexp, line []byte) []span {
 	var out []span
 	for _, m := range re.FindAllSubmatchIndex(line, -1) {
-		at := bytes.IndexByte(line[m[0]:m[1]], '@') + m[0]
-		if !emailAllowed(line[m[0]:at], line[m[2]:m[3]]) {
+		domain := line[m[2]:m[3]]
+		if !version.Match(domain) && !emailAllowed(domain) {
 			out = append(out, span{m[0], m[1]})
 		}
 	}
 	return out
 }
 
-// emailAllowed: reserved domains and top-level names (RFC 2606, RFC 6761), Go module queries
-// such as tool@v1.2.3-rc.beta, and no-reply addresses, which belong to no person.
-func emailAllowed(local, domain []byte) bool {
+// emailAllowed: reserved domains and top-level names (RFC 2606, RFC 6761). Any other address,
+// no-reply ones included, is a hit unless the reviewed allow list names it exactly.
+func emailAllowed(domain []byte) bool {
 	d := string(bytes.ToLower(domain))
 	for _, reserved := range []string{"example.com", "example.net", "example.org"} {
 		if d == reserved || hasSuffix(d, "."+reserved) {
@@ -74,11 +78,7 @@ func emailAllowed(local, domain []byte) bool {
 			return true
 		}
 	}
-	if len(d) > 1 && d[0] == 'v' && d[1] >= '0' && d[1] <= '9' {
-		return true
-	}
-	l := string(bytes.ToLower(local))
-	return l == "noreply" || l == "no-reply"
+	return false
 }
 
 func hasSuffix(s, suffix string) bool {
@@ -154,20 +154,22 @@ func macIsPersonal(mac []byte) bool {
 // keyFinder finds private keys, public keys, API tokens and secret assignments.
 func keyFinder() func([]byte) []span {
 	whole := []keyPattern{
-		{regexp.MustCompile(`-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----`), 0},
-		{regexp.MustCompile(`(?:ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp[0-9]+) AAAA[0-9A-Za-z+/]{40,}={0,2}`), 0},
-		{regexp.MustCompile(`AGE-SECRET-KEY-1[0-9A-Z]{50,}`), 0},
-		{regexp.MustCompile(`\bgh[pousr]_[A-Za-z0-9]{36}\b`), 0},
-		{regexp.MustCompile(`\bgithub_pat_[A-Za-z0-9_]{22,}`), 0},
-		{regexp.MustCompile(`\bglpat-[A-Za-z0-9_-]{20,}`), 0},
-		{regexp.MustCompile(`\bxox[abprs]-[A-Za-z0-9-]{10,}`), 0},
-		{regexp.MustCompile(`\bAKIA[0-9A-Z]{16}\b`), 0},
-		{regexp.MustCompile(`\bAIza[0-9A-Za-z_-]{35}`), 0},
-		{regexp.MustCompile(`\b[0-9]{8,10}:[A-Za-z0-9_-]{35}\b`), 0},
-		{regexp.MustCompile(`\btskey-[A-Za-z0-9-]{16,}`), 0},
-		{regexp.MustCompile(`(?:^|[^A-Za-z0-9_-])(sk-[A-Za-z0-9_-]*[0-9][A-Za-z0-9_-]*)`), 20},
-		{regexp.MustCompile(`\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}`), 0},
-		{regexp.MustCompile(`(?:PrivateKey|PresharedKey|PublicKey)\s*=\s*[A-Za-z0-9+/]{43}=`), 0},
+		{re: regexp.MustCompile(`-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----`)},
+		{re: regexp.MustCompile(`(?:ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp[0-9]+) AAAA[0-9A-Za-z+/]{40,}={0,2}`)},
+		{re: regexp.MustCompile(`AGE-SECRET-KEY-1[0-9A-Z]{50,}`)},
+		{re: regexp.MustCompile(`\bgh[pousr]_[A-Za-z0-9]{36}\b`)},
+		{re: regexp.MustCompile(`\bgithub_pat_[A-Za-z0-9_]{22,}`)},
+		{re: regexp.MustCompile(`\bglpat-[A-Za-z0-9_-]{20,}`)},
+		{re: regexp.MustCompile(`\bxox[abprs]-[A-Za-z0-9-]{10,}`)},
+		{re: regexp.MustCompile(`\bAKIA[0-9A-Z]{16}\b`)},
+		{re: regexp.MustCompile(`\bAIza[0-9A-Za-z_-]{35}`)},
+		// Telegram bot token: bounded in code, because \b misses a token that ends in '-' or
+		// follows "bot" in an API address.
+		{re: regexp.MustCompile(`[0-9]{8,10}:[A-Za-z0-9_-]{35}`), notBefore: digits, notAfter: idChars},
+		{re: regexp.MustCompile(`\btskey-[A-Za-z0-9-]{16,}`)},
+		{re: regexp.MustCompile(`(?:^|[^A-Za-z0-9_-])(sk-[A-Za-z0-9_-]*[0-9][A-Za-z0-9_-]*)`), min: 20},
+		{re: regexp.MustCompile(`\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}`)},
+		{re: regexp.MustCompile(`(?:PrivateKey|PresharedKey|PublicKey)\s*=\s*[A-Za-z0-9+/]{43}=`)},
 	}
 	assign := []*regexp.Regexp{
 		regexp.MustCompile(`(?i)(?:password|passwd|secret|token|api_?key)[a-z0-9_]*["']?\s*[:=]+\s*["']([^"'\s]+)["']`),
@@ -179,11 +181,19 @@ func keyFinder() func([]byte) []span {
 }
 
 // keyPattern is one key or token form; min is the shortest hit, and the span of group 1 counts
-// when the expression has one.
+// when the expression has one. A match touched by a byte of notBefore or notAfter is part of a
+// longer token and no hit.
 type keyPattern struct {
-	re  *regexp.Regexp
-	min int
+	re                  *regexp.Regexp
+	min                 int
+	notBefore, notAfter string
 }
+
+// Byte sets for keyPattern boundaries.
+const (
+	digits  = "0123456789"
+	idChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-"
+)
 
 func findKeys(patterns []keyPattern, line []byte) []span {
 	var out []span
@@ -193,7 +203,7 @@ func findKeys(patterns []keyPattern, line []byte) []span {
 			if len(m) > 2 && m[2] >= 0 {
 				s = span{m[2], m[3]}
 			}
-			if s.end-s.start >= p.min && !isPlaceholder(line[s.start:s.end]) {
+			if s.end-s.start >= p.min && !isPlaceholder(line[s.start:s.end]) && p.bounded(line, s) {
 				out = append(out, s)
 			}
 		}
@@ -201,12 +211,20 @@ func findKeys(patterns []keyPattern, line []byte) []span {
 	return out
 }
 
+// bounded reports whether s is not touched by a byte of the pattern's boundary sets.
+func (p keyPattern) bounded(line []byte, s span) bool {
+	if s.start > 0 && strings.IndexByte(p.notBefore, line[s.start-1]) >= 0 {
+		return false
+	}
+	return s.end >= len(line) || strings.IndexByte(p.notAfter, line[s.end]) < 0
+}
+
 func findAssignments(res []*regexp.Regexp, line []byte) []span {
 	var out []span
 	for _, re := range res {
 		for _, m := range re.FindAllSubmatchIndex(line, -1) {
 			v := line[m[2]:m[3]]
-			if len(v) >= minSecretLen && !isPlaceholder(v) && entropy(v) >= minSecretEntropy && hasDigit(v) {
+			if len(v) >= minSecretLen && !isPlaceholder(v) && entropy(v) >= minSecretEntropy {
 				out = append(out, span{m[2], m[3]})
 			}
 		}
@@ -219,15 +237,6 @@ func isPlaceholder(v []byte) bool {
 	lower := bytes.ToLower(v)
 	for _, marker := range []string{"example", "<", "${", "__keep_current__", "xxxxxxxx"} {
 		if bytes.Contains(lower, []byte(marker)) {
-			return true
-		}
-	}
-	return false
-}
-
-func hasDigit(v []byte) bool {
-	for _, c := range v {
-		if c >= '0' && c <= '9' {
 			return true
 		}
 	}

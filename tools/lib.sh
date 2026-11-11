@@ -230,11 +230,26 @@ nmb_offline() {
 
 # nmb_go_offline SCRIPT ARGS...: re-runs the calling script inside the offline namespace, or says
 # NOT OFFLINE when the namespace cannot be made. Sets NMB_WHERE_NET for the step labels.
+# nmb_net_isolated: true only when this process sees no network interface other than loopback.
+nmb_net_isolated() {
+	local ip links
+	ip=$(nmb_ip_path) || return 1
+	links=$("$ip" -o link show) || return 1
+	[ -n "$links" ] || return 1
+	! grep -qvE '^[0-9]+: lo[:@]' <<<"$links"
+}
+
+# NMB_IN_OFFLINE alone is never trusted: a caller that is not offline can pass it on, so the label
+# "offline" is given only when the process really sees loopback only (verifier, F-00 round 1).
 nmb_go_offline() {
 	if [ "${NMB_IN_OFFLINE:-}" = 1 ]; then
-		NMB_WHERE_NET="offline"
-		export GOPROXY=off
-		return 0
+		if nmb_net_isolated; then
+			NMB_WHERE_NET="offline"
+			export GOPROXY=off
+			return 0
+		fi
+		printf 'gate: NMB_IN_OFFLINE=1 was inherited, but this process has a network interface; ignored\n'
+		unset NMB_IN_OFFLINE
 	fi
 	if nmb_offline true >/dev/null 2>&1; then
 		local rc=0

@@ -12,7 +12,8 @@ import (
 // minPrivateLen is the shortest private value accepted; shorter ones would match everywhere.
 const minPrivateLen = 4
 
-// identityPrefix marks a private-list line whose address is accepted as a commit identity.
+// identityPrefix marks a private-list line whose address or name is accepted as a commit
+// identity (author or committer); the value stays a private value everywhere else.
 const identityPrefix = "identity-ok "
 
 // privateValue is one value of the owner's private list. Only its line number is ever printed.
@@ -24,7 +25,7 @@ type privateValue struct {
 // privateList is the parsed private list.
 type privateList struct {
 	values     []privateValue
-	identities map[string]bool // lower-case addresses accepted as commit identities
+	identities map[string]bool // lower-case addresses and names accepted as commit identities
 }
 
 // LoadAllow parses the allow list: lines "<category> <exact value> <reason>"; blank lines and

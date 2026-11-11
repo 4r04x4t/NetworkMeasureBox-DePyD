@@ -119,9 +119,10 @@ func (s *Scanner) scanMessages(git gitRunner) ([]Hit, error) {
 }
 
 // checkIdentities fails every author or committer address that is neither a GitHub noreply
-// address nor accepted in the private list. Addresses are reported masked.
+// address nor accepted in the private list, and every author or committer name that is neither
+// the account name its own noreply address already shows nor accepted there. Values are masked.
 func checkIdentities(git gitRunner, accepted map[string]bool) ([]Hit, error) {
-	out, err := git(nil, "log", "--all", "--format=%H%x00%ae%x00%ce")
+	out, err := git(nil, "log", "--all", "--format=%H%x00%an%x00%ae%x00%cn%x00%ce")
 	if err != nil {
 		return nil, err
 	}
@@ -129,18 +130,60 @@ func checkIdentities(git gitRunner, accepted map[string]bool) ([]Hit, error) {
 	var hits []Hit
 	for _, line := range strings.Split(strings.TrimSpace(string(out)), "\n") {
 		f := strings.Split(line, "\x00")
-		if len(f) != 3 {
+		if len(f) != 5 {
 			continue
 		}
-		for _, addr := range f[1:] {
-			lower := strings.ToLower(addr)
-			if seen[lower] || accepted[lower] || strings.HasSuffix(lower, "@users.noreply.github.com") {
-				continue
-			}
-			seen[lower] = true
-			hits = append(hits, Hit{Path: "commit identity " + f[0][:min(12, len(f[0]))], Line: 1, Col: 1,
-				Category: catEmail, value: []byte(addr)})
+		where := "commit identity " + f[0][:min(12, len(f[0]))]
+		for _, id := range []identity{{name: f[1], addr: f[2]}, {name: f[3], addr: f[4]}} {
+			hits = append(hits, newHits(seen, where, id, id.problems(accepted))...)
 		}
 	}
 	return hits, nil
+}
+
+// newHits returns the hits of id not reported before, each at where; seen remembers them.
+func newHits(seen map[string]bool, where string, id identity, found []Hit) []Hit {
+	var out []Hit
+	for _, h := range found {
+		key := h.Category + "\x00" + string(h.value) + "\x00" + id.addr
+		if !seen[key] {
+			seen[key] = true
+			h.Path = where
+			out = append(out, h)
+		}
+	}
+	return out
+}
+
+// noreplyDomain is GitHub's address domain for accounts that keep their address private.
+const noreplyDomain = "@users.noreply.github.com"
+
+// identity is the name and address of one author or committer.
+type identity struct{ name, addr string }
+
+// problems returns the hits of one identity (Path is set by the caller).
+func (id identity) problems(accepted map[string]bool) []Hit {
+	var hits []Hit
+	lower := strings.ToLower(id.addr)
+	if !accepted[lower] && !strings.HasSuffix(lower, noreplyDomain) {
+		hits = append(hits, Hit{Line: 1, Col: 1, Category: catEmail, value: []byte(id.addr)})
+	}
+	name := strings.ToLower(strings.TrimSpace(id.name))
+	if name != "" && !accepted[name] && name != noreplyLogin(lower) {
+		hits = append(hits, Hit{Line: 1, Col: 1, Category: catName, value: []byte(id.name)})
+	}
+	return hits
+}
+
+// noreplyLogin returns the account name of "<id>+<login>@users.noreply.github.com" or
+// "<login>@users.noreply.github.com", or "" for any other address.
+func noreplyLogin(addr string) string {
+	local, ok := strings.CutSuffix(addr, noreplyDomain)
+	if !ok {
+		return ""
+	}
+	if _, login, found := strings.Cut(local, "+"); found {
+		return login
+	}
+	return local
 }

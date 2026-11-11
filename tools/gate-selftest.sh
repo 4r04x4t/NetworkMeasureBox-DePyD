@@ -2,7 +2,8 @@
 # Proves that the gate can fail (brief F-00 4.7): on throw-away copies of the repository (never on
 # this work tree), each planted fault must make its step fail, and the clean copy must pass.
 # Usage: tools/gate-selftest.sh [CASE...]
-# Cases: clean gofmt nesting gosec depcheck email testfail testwrites root summary matrix pipe
+# Cases: clean offlinevar gofmt nesting gosec depcheck email testfail testwrites testwritesignored
+#        root summary matrix pipe
 set -euo pipefail
 # shellcheck source=tools/lib.sh
 . "$(dirname -- "${BASH_SOURCE[0]}")/lib.sh"
@@ -51,10 +52,9 @@ plant() {
 	cat >"$1/$2"
 }
 
-case_clean() {
-	local d
-	d=$(copy_repo clean)
-	plant "$d" internal/selftestprobe/probe.go <<'GO'
+# plant_probe DIR: a test that fails unless it runs hermetic, offline (loopback only) and not as root.
+plant_probe() {
+	plant "$1" internal/selftestprobe/probe.go <<'GO'
 // Package selftestprobe exists only in the gate self-test copy.
 package selftestprobe
 GO
@@ -82,11 +82,26 @@ func TestHermetic(t *testing.T) {
 	}
 }
 GO
+}
+
+case_clean() {
+	local d
+	d=$(copy_repo clean)
+	plant_probe "$d"
 	expect 0 "test:B" "$d" tools/test.sh B
 	expect 0 "analyse:scriptrules" "$d" tools/analyse.sh gofmt cleancode scriptrules gosec
 	expect 0 "scan:tree" "$d" tools/scan.sh tree
 	expect 0 "deps:depcheck" "$d" tools/deps.sh
 	expect 0 "build:sizes" "$d" tools/build-matrix.sh linux-arm64
+}
+
+# offlinevar: NMB_IN_OFFLINE=1 passed in from outside the namespace must not skip it (the probe
+# sees the network interfaces of the PC and fails if it does).
+case_offlinevar() {
+	local d
+	d=$(copy_repo offlinevar)
+	plant_probe "$d"
+	expect 0 "was inherited, but this process has a network interface" "$d" env NMB_IN_OFFLINE=1 tools/test.sh B
 }
 
 case_gofmt() {
@@ -116,6 +131,25 @@ func planted(x int) int {
 }
 GO
 	expect fail "nesting planted" "$d" tools/analyse.sh cleancode
+	rm -f -- "$d/internal/buildinfo/planted.go"
+	plant "$d" internal/buildinfo/planted.go <<'GO'
+package buildinfo
+
+// Planted is a table of handlers; the literal inside it nests four levels.
+var Planted = map[string]func(int) int{"a": func(x int) int {
+	if x > 0 {
+		if x > 1 {
+			if x > 2 {
+				if x > 3 {
+					return 4
+				}
+			}
+		}
+	}
+	return 0
+}}
+GO
+	expect fail "nesting Planted (literal inside)" "$d" tools/analyse.sh cleancode
 }
 
 case_gosec() {
@@ -185,6 +219,27 @@ GO
 	expect fail "the tests changed the repository" "$d" tools/test.sh B
 }
 
+# testwritesignored: a write into an ignored folder (build/) is a change of the repository too.
+case_testwritesignored() {
+	local d
+	d=$(copy_repo testwritesignored)
+	plant "$d" internal/buildinfo/planted_test.go <<'GO'
+package buildinfo
+
+import (
+	"os"
+	"testing"
+)
+
+func TestPlantedIgnoredWrite(t *testing.T) {
+	if err := os.WriteFile("../../build/planted-by-test.txt", []byte("x"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+}
+GO
+	expect fail "build/planted-by-test.txt" "$d" tools/test.sh B
+}
+
 case_root() {
 	local d
 	d=$(copy_repo root)
@@ -218,7 +273,7 @@ case_pipe() {
 	expect fail "a pipe to tail or tee" "$d" tools/analyse.sh scriptrules
 }
 
-all=(clean gofmt nesting gosec depcheck email testfail testwrites root summary matrix pipe)
+all=(clean offlinevar gofmt nesting gosec depcheck email testfail testwrites testwritesignored root summary matrix pipe)
 cases=("$@")
 [ "${#cases[@]}" -gt 0 ] || cases=("${all[@]}")
 for c in "${cases[@]}"; do

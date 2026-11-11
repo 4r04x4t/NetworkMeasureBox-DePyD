@@ -89,9 +89,12 @@ changed during it.
 - Unprivileged ICMP is off inside the namespace; tests that need ping get fakes from F-06.
 - It does not run QEMU system guests (no package of F-00 needs one); later packages take the lock
   `~/nmb-work/qemu.lock` with `flock` and give a guest at most 512 MB.
-- The history scan (`tools/scan.sh history`: every blob, commit message and author or committer address of all
-  refs) runs before a push, not in every package gate. Commit addresses must be GitHub noreply addresses or be
-  accepted in the private list with a line `identity-ok <address>`.
+- The history scan (`tools/scan.sh history`: every blob, commit message and author or committer name and address
+  of all refs) runs before a push, not in every package gate. Commit addresses must be GitHub noreply addresses or
+  be accepted in the private list with a line `identity-ok <address>`; a commit name must be the account name that
+  its own noreply address already shows (`<id>+<name>@users.noreply.github.com`) or be accepted the same way
+  (`identity-ok <name>`). A no-reply address of anyone else (a co-author line) is a hit unless
+  `tools/privscan/allow.txt` names it exactly.
 
 ## Clean-code limits
 
