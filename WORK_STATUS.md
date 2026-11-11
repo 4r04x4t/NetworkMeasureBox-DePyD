@@ -61,3 +61,4 @@ Waiting: C-01, C-02, C-06 (they implement F-04a/b/f; briefed after F-04 is accep
 - 2026-11-11: licence decided by the owner: MIT, copyright "NetworkMeasureBox contributors"; OONI only as the separate ooniprobe program. LIC-01 lists merged; LICENSE added.
 - 2026-11-11: owner decided the base (provisional): Debian 13 for the Pi 4 and x86-64, systemd, A/B update with RAUC and SWUpdate both tested before one is fixed. To write into roadmap 6A (Python repo) with the I-09 summary.
 - 2026-11-11: F-04 third review failed (4 blocking, all fixed in 038ee2c); owner chose review and acceptance per part. C-03/C-04/C-07/C-11 briefs done, held for F-04 like the other core briefs.
+- 2026-11-11: M-06 brief accepted and merged; M-07..M-10 in round 3 (person-started rule clarified: held back only by a refusal pause and the metered-link no-decision wait; a reached cap never stops it; Retry-After honoured exactly; Ookla ISP-server search and router extension written into M-10).
