@@ -14,7 +14,7 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public). First push 2026
 | F-01 | Owner's open decisions | accepted | Python repo bb0a553 (pushed to its origin main) | verifier pass, minors fixed | — |
 | F-02 | Requirements register | accepted | merge 71d3b80 | check.sh rc 0 (2340 requirements); independent checks pass | no open question |
 | F-03 | Known Python faults | accepted | merge aafe010 | verifier pass (294 entries, twelve-field check) | no open question |
-| F-04 | Contracts | brief (six part briefs a-f + coordinator) | — | — | — |
+| F-04 | Contracts | verify (per part, owner 2026-11-11, after 3 failed whole reviews; commit 038ee2c) | — | — | owner may veto the decisions listed in F-04.md section 4 |
 | F-05 | Phase 0 reference | brief accepted (code waits for F-04) | brief merged | 3 review rounds, final pass | — |
 | F-06 | Test bed | brief accepted (code waits for F-04) | brief merged | 4 review rounds, final pass | gate changes for the integrator listed in the brief |
 | F-07 | Shared specification and vectors | blocked (3 review rounds failed; held for F-04) | brief on pkg/F-07 (073c72a) | r1 20 findings fixed, r2 2 majors fixed, r3 1 major + 6 minors open | empty evidence must not count as proof; next round after F-04 is accepted |
@@ -60,3 +60,4 @@ Waiting: C-01, C-02, C-06 (they implement F-04a/b/f; briefed after F-04 is accep
 - 2026-11-11: I-08 accepted and merged; all eight image records done; I-09 (comparison for 6A, owner decides the base) can start.
 - 2026-11-11: licence decided by the owner: MIT, copyright "NetworkMeasureBox contributors"; OONI only as the separate ooniprobe program. LIC-01 lists merged; LICENSE added.
 - 2026-11-11: owner decided the base (provisional): Debian 13 for the Pi 4 and x86-64, systemd, A/B update with RAUC and SWUpdate both tested before one is fixed. To write into roadmap 6A (Python repo) with the I-09 summary.
+- 2026-11-11: F-04 third review failed (4 blocking, all fixed in 038ee2c); owner chose review and acceptance per part. C-03/C-04/C-07/C-11 briefs done, held for F-04 like the other core briefs.
