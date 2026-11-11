@@ -15,8 +15,8 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public). First push 2026
 | F-02 | Requirements register | accepted | merge 71d3b80 | check.sh rc 0 (2340 requirements); independent checks pass | no open question |
 | F-03 | Known Python faults | accepted | merge aafe010 | verifier pass (294 entries, twelve-field check) | no open question |
 | F-04 | Contracts | brief (six part briefs a-f + coordinator) | — | — | — |
-| F-05 | Phase 0 reference | brief | — | — | — |
-| F-06 | Test bed | brief | — | — | — |
+| F-05 | Phase 0 reference | brief accepted (code waits for F-04) | brief merged | 3 review rounds, final pass | — |
+| F-06 | Test bed | brief accepted (code waits for F-04) | brief merged | 4 review rounds, final pass | gate changes for the integrator listed in the brief |
 | F-07 | Shared specification and vectors | brief | — | — | — |
 
 ## Images
@@ -55,3 +55,4 @@ Waiting: C-01, C-02, C-06 (they implement F-04a/b/f; briefed after F-04 is accep
 - 2026-11-11: register check added to the gate; first push of main. I-07 accepted (developer's name and address removed from the record; exact allow entries for two key file names). An API interruption (identity verification) stopped about 15 agents; F-04, F-05/F-06, C-05/08/09/10 and I-08 were restarted from where they stopped.
 - 2026-11-11: force-push of main (owner approved) after a history rewrite that removed a third-party e-mail from the first I-07 commit; F-07 brief and C-03/C-04/C-07/C-11 briefs started.
 - 2026-11-11: C-05/C-08/C-09/C-10 briefs: 2 review rounds, 1-3 blocking findings each, mostly drift against F-04 drafts that changed meanwhile. Held until F-04 is accepted; then one reconciliation-and-fix round per core brief (C-01..C-11) against the accepted F-04, then review.
+- 2026-11-11: F-05 and F-06 briefs accepted and merged. Pending register additions collected from briefs: F05-P1..P16 (F-05), NF-1..NF-6 (C-05), the clock-jump check entry (F-06); added in one register round once F-04 is accepted.
