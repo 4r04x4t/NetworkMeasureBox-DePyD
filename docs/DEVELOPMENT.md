@@ -123,4 +123,10 @@ What the scanner does not report, and its known limits:
   found (none of them is a delegated top-level domain today; a test checks this against the public suffix list).
 - A public IPv4 address glued to a following `.<digit>` (a sentence ending without a space before a number) looks
   like a version number and is not found. Inside a host name between letter labels (`app.<address>.nip.io`) it is
-  found, and leading zeros are read as decimal padding, so a zero-padded public address is found too.
+  found, and leading zeros are read as decimal padding, so a zero-padded public address is found too. Not found:
+  an address after a host label that ends in a digit (`web2.<address>.nip.io`, `x-1.<address>.sslip.io`) or
+  followed by `-<letters>` inside a label, because the digits join one longer dotted number.
+- False hits that need an exact allow entry: a four-part version that looks like a public address, in a dotted
+  file or package name (`<name>.<a.b.c.d>.<suffix>`, for example a release archive name) or after a letter or a
+  dash (`v<a.b.c.d>-rc`, `kernel-<a.b.c.d>`). The allow entry names the exact value and why it is no address.
+- Allow entries apply to every scan mode (tree, dist and history), also those whose reason says "history only".
