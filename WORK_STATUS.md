@@ -26,7 +26,7 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public, empty until the 
 | I-01 | OpenWrt 25.12.6 x86-64 | accepted | merge 83a14fd | — |
 | I-02 | OpenWrt 25.12.6 armsr/armv8 | accepted | merge fed2004 | — |
 | I-03 | OpenWrt 25.12.6 armsr/armv7 | accepted | merge c653884 | — |
-| I-04 | OpenWrt 25.12.6 x86/generic | verify (one open major: boot time of run 3) | — | — |
+| I-04 | OpenWrt 25.12.6 x86/generic | accepted | merge 6a230a8 | — |
 | I-05 | OpenWrt 25.12.6 Raspberry Pi 4 | accepted (taken apart only; boot on the Pi 4 is a later step) | merge 996f6e9 | — |
 | I-06 | Debian 13.7.0 amd64 and arm64 | accepted | merge 57a6e1b | — |
 | I-07 | Alpine 3.24.4 | brief (being analysed) | — | — |
