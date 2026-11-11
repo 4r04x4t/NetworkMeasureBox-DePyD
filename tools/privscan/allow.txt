@@ -15,3 +15,4 @@ ipv4 5.90.188.22 not an address: the bare firmware version of brcmfmac43236b.bin
 ipv4 01.2.3.4 not personal data: an invented zero-padded quad, the "not an address" test case of tools/privscan/rules_test.go in commits before zero-padded quads were read as addresses (history only)
 email .SIGN.RSA.alpine-devel@lists.alpinelinux.org-6165ee59.rsa.pub a file name: Alpine's signature file inside its apk packages, named after the project mailing list and key id, quoted in the I-07 image record; not a person
 email modloop-lts.SIGN.RSA.alpine-devel@lists.alpinelinux.org-6165ee59.rsa.pub a file name: the signature file of Alpine's modloop, named after the project mailing list and key id, quoted in the I-07 image record; not a person
+ipv4 5.4.1.0 not an address: the version of dnf5, dnf5-plugins, libdnf5 and libdnf5-cli (5.4.1.0-1.fc44) in the Fedora IoT image record of package I-08
