@@ -372,8 +372,11 @@ The 131 packages of the base root (`rootfs.tar.gz`, `.manifest`) are this list w
 - Download: 8,006,271 bytes (squashfs) and 9,135,764 bytes (ext4), as `.img.gz`.
 - Disk image: 243,564,032 bytes (232.3 MiB) for each; ESP 128 MiB, root partition 104 MiB
   (`CONFIG_TARGET_KERNEL_PARTSIZE=128`, `CONFIG_TARGET_ROOTFS_PARTSIZE=104` in the ImageBuilder's `.config`).
-- squashfs root: 3,836,034 bytes compressed. Unpacked, the root is 8,001,828 bytes (`du -sb`), the ext4 root the
-  same files. Of that:
+- squashfs root: 3,836,034 bytes compressed. Unpacked, the root is 11,654,817 bytes (`du -sb .` in a fresh
+  `unsquashfs -no-xattrs -d un/root p2.img` of partition 2, cut with `dd bs=512 skip=262656 count=212992` from the
+  checked image). The ext4 root (`debugfs -R "rdump / …"`) and the targz root (`tar -xzf … --exclude='./dev/*'`)
+  give the same 11,654,817 bytes. An earlier version of this record said 8,001,828 bytes; that figure was wrong.
+  Of that:
   - `lib/modules`: 2,315,672 bytes
   - `lib/firmware`: 0
   - `www` (LuCI): 1,337,317 bytes
@@ -461,7 +464,8 @@ Figures from run 1 (TCG on an x86 host, two vCPUs, 512 MB; **not** a performance
     init completed about 420 s after kernel start. `br-lan` and `eth1` came up at about 361 s (kernel log).
   - **Where the time goes (run 4, `top -b -n 1` every 40 s).** From 67 s to about 345 s of uptime the first-boot
     scripts ran one after another (`S10boot`, then `S10system`, then `S12log`) while one kernel worker thread,
-    `[kworker/0:1+events]`, took 59–78 % CPU in five of the six samples; what that worker did was not determined.
+    shown by `top` as `[kworker/0:1+eve]` (name truncated by `top`; the full name was not seen), took 59–78 % CPU
+    in five of the six samples (66, 59, 66, 78, 19, 74 %); what that worker did was not determined.
     At 395 s `dropbearkey -t rsa` was generating the RSA host key (48 % CPU); by 438 s both dropbear host keys
     existed, and by 485 s uhttpd had generated its EC key and self-signed certificate (`logread`: `Generating EC
     private key`). So most of the first boot is first-boot work under emulation; a second boot of the same disk was
@@ -504,7 +508,7 @@ Figures from run 1 (TCG on an x86 host, two vCPUs, 512 MB; **not** a performance
   the files (section 15). A first cross build belongs to the build packages.
 - **Boot time of a second (not first) boot:** not measured; every run started from a fresh image copy, so all
   figures include the first-boot work (overlay format, host keys, TLS certificate).
-- **What the busy kernel worker (`kworker/0:1+events`) did during the first boot:** not determined (section 12).
+- **What the busy kernel worker (`[kworker/0:1+eve]` in `top`, name truncated) did during the first boot:** not determined (section 12).
 - **A writable 9p share and the ext4 combined image under QEMU:** not tried.
 
 ## 14. Tools missing on the PC
