@@ -105,15 +105,7 @@ Every entry has this form (F-00 brief section 6), the twelve fields in this orde
 These are not entries yet: it is unclear whether the Python behaviour is a fault or intended. The answers go into
 this register (as an entry, or as a note that it is intended) and into the roadmap.
 
-6. **What a missing translation shows.** Roadmap 4.26 (line 406) says the native build shows a missing text in
-   English; Quality Bar 9 (line 602) says no text has Hungarian or English as a silent default for another language.
-   The build check of KF-0048 and KF-0049 fails on a key missing in any language either way. Should a key that is
-   still missing at run time (for example in an add-on) show English, show the key itself, or be impossible because
-   such a build is refused?
-7. **A test started by a person on a metered link without a cap decision.** The answer to question 3 says that
-   scheduled speed tests wait there until the user sets a cap or says unlimited. It does not say whether a test
-   started by a person (Web UI, CLI, bot) waits too. `CHANGELOG.md@ad3758c:35` lets such tests run and count once a
-   cap is reached, which is a different case. Should a test started by a person run there, wait, or ask first?
+None is open: questions 1 to 7 are answered (below). A new question gets the next number, 8.
 
 ### Answered by the owner
 
@@ -134,6 +126,16 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - **Question 5, which actions need a confirmation:** every Telegram bot command that changes the box needs a
   confirmation tap; destructive ones (factory reset, purge) also need the typed word, as in the Web UI; read-only
   commands run at once. Written into KF-0075 and KF-0277.
+- **Question 6, what a missing translation shows:** the build refuses every built-in text that is missing in any of
+  the 11 languages. A key that is still missing at run time (for example from an add-on) shows the English text,
+  visibly marked as untranslated; it is logged and listed in the self-test result and in the diagnostic bundle. It
+  is never a silent fallback to any language. This agrees with roadmap 4.26 (line 406, English) and Quality Bar 9
+  (line 602, no silent default). Written into KF-0048 and KF-0049, and into the other entries on missing
+  translations: KF-0057, KF-0058, KF-0239 and KF-0287.
+- **Question 7, a test started by a person on a metered link without a cap decision:** it waits like a scheduled
+  test until the user sets a cap or says unlimited, and the user is told why it waits; ping keeps running. A cap
+  that is reached (`CHANGELOG.md@ad3758c:35`: tests started by hand still run and count) is a different case and
+  is not changed by this answer. Written into KF-0294, KF-0136 and KF-0230.
 - **Trust of the uplink network** (not a numbered question; raised by the third review of KF-0015, KF-0084 and
   KF-0130): the role of a network the box is plugged into is never inferred from address classes. Nothing is open
   from the uplink side (Web UI, SSH, DNS) until the owner marks that network as their own; the first-start setup
@@ -853,10 +855,10 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Translations
 - What went wrong: About 950 visible Web UI texts (labels, buttons, hints, table headers, placeholders, status words, script messages) had no translation key and were English in every language, Hungarian included; the router settings panel the same.
-- Correct behaviour: Every visible text has a key and exists in all 11 languages, and the build fails on visible text without a key (CHANGELOG 198) and on a key missing in any language (roadmap 602). What a key that is still missing shows at run time is open: roadmap 4.26 (line 406) says English, roadmap 602 says no silent English default (question 6 for the owner; KF-0049 says the same).
+- Correct behaviour: Every visible text has a key and exists in all 11 languages, and the build fails on visible text without a key (CHANGELOG 198) and on a built-in key missing in any language (roadmap 602). Owner, 2026-11-11: a key that is still missing at run time (for example from an add-on) shows the English text, visibly marked as untranslated; it is logged and listed in the self-test result and in the diagnostic bundle; it is never a silent fallback to any language (this agrees with roadmap 406 and 602; KF-0049 says the same).
 - Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:583; CHANGELOG.md@ad3758c:198; CHANGELOG.md@ad3758c:280
 - Python fix commit: ecd72dd, 9d6bca4
-- Package that proves it: C-06 (also U-01, U-02)
+- Package that proves it: C-06 (also U-01, U-02, P-07, R-04)
 - Spec vector: none yet (F-07)
 - Native test, Go: none yet
 - Native test, C: none yet (step 2)
@@ -868,10 +870,10 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Translations
 - What went wrong: Hungarian appeared in other languages: five input hints showed the Hungarian "pl." ("e.g.") everywhere, six script messages fell back to Hungarian, the latency chart's labels were Hungarian in every language, and older builds had Hungarian text in other languages in many places.
-- Correct behaviour: No text, report or chart has Hungarian (or English) as a silent default for another language, and every report and chart label exists in every language (roadmap 602); a build check fails on Hungarian outside the Hungarian files and on a key missing in any language. The run-time fallback for a key that is still missing is question 6 for the owner (roadmap 406 against 602; KF-0048 says the same).
+- Correct behaviour: No text, report or chart has Hungarian (or English) as a silent default for another language, and every report and chart label exists in every language (roadmap 602); a build check fails on Hungarian outside the Hungarian files and on a built-in key missing in any language. Owner, 2026-11-11: a key that is still missing at run time (for example from an add-on) shows the English text, visibly marked as untranslated; it is logged and listed in the self-test result and in the diagnostic bundle; it is never a silent fallback to Hungarian, English or any other language (roadmap 406 and 602; KF-0048 says the same).
 - Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:602; CHANGELOG.md@ad3758c:198; CHANGELOG.md@ad3758c:137; CHANGELOG.md@ad3758c:413; docs/TESTING.md@ad3758c:296 (release checklist 13)
 - Python fix commit: ecd72dd, ad3758c, 48fd816, 22f0664, ebb1099
-- Package that proves it: C-06 (also U-01, R-03, S-11)
+- Package that proves it: C-06 (also U-01, R-03, S-11, P-07, R-04)
 - Spec vector: none yet (F-07)
 - Native test, Go: none yet
 - Native test, C: none yet (step 2)
@@ -988,7 +990,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Reports
 - What went wrong: The chart functions default to `lang="hu"`.
-- Correct behaviour: No language default in report code: the language is always passed; every chart label exists in every language (roadmap 602, 604).
+- Correct behaviour: No language default in report code: the language is always passed; every chart label exists in every language (roadmap 602, 604). Owner, 2026-11-11: the build refuses a built-in text missing in any language; a text still missing at run time shows the English text visibly marked as untranslated, is logged and is listed in the self-test result and the diagnostic bundle, never a silent fallback to any language (KF-0048).
 - Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:604; nmb/report/svg_charts.py@ad3758c:142; nmb/report/svg_charts.py@ad3758c:157; nmb/report/svg_charts.py@ad3758c:251; private audit 2026-11-10, Hungary-bound defaults
 - Python fix commit: not recorded in the source
 - Package that proves it: R-03 (also C-06)
@@ -1003,7 +1005,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Reports
 - What went wrong: One dossier label ("6 (SLA Alatt)") existed only in Hungarian and English; other languages got English.
-- Correct behaviour: Every report label exists in every language (roadmap 602).
+- Correct behaviour: Every report label exists in every language (roadmap 602). Owner, 2026-11-11: the build refuses a built-in text missing in any language; a text still missing at run time shows the English text visibly marked as untranslated, is logged and is listed in the self-test result and the diagnostic bundle, never a silent fallback to any language (KF-0048).
 - Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:604; private audit 2026-11-10, Hungary-bound defaults; git log -S'SLA Alatt'@ad3758c: removed from the dossier in da88eb1
 - Python fix commit: da88eb1
 - Package that proves it: R-03 (also C-06)
@@ -2173,7 +2175,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Data caps
 - What went wrong: A cycle could fail at its end while counting the data it used (the daily usage was written outside the guard).
-- Correct behaviour: Counting data never fails a cycle; a counting error is logged and the measured result is kept. When the usage cannot be counted, scheduled tests on that metered link are treated as possibly over the cap (they wait), and the counting error is shown in the status (derived: roadmap 587, errors fail closed). Owner, 2026-11-11: on a metered link without a cap decision scheduled speed tests wait until the user sets a cap or says unlimited; ping keeps running (KF-0294).
+- Correct behaviour: Counting data never fails a cycle; a counting error is logged and the measured result is kept. When the usage cannot be counted, scheduled tests on that metered link are treated as possibly over the cap (they wait), and the counting error is shown in the status (derived: roadmap 587, errors fail closed). Owner, 2026-11-11: on a metered link without a cap decision speed tests wait until the user sets a cap or says unlimited, scheduled ones and those started by a person alike (the person is told why it waits); ping keeps running (KF-0294).
 - Source: CHANGELOG.md@ad3758c:208
 - Python fix commit: 70c4b91
 - Package that proves it: M-05
@@ -3448,7 +3450,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Scheduling
 - What went wrong: An invalid field, `*/0` or `A-B/N` becomes every value (`nmb/speed/scheduler.py@ad3758c:61`), so a mistyped schedule runs every minute; day-of-month and day-of-week are ANDed.
-- Correct behaviour: The API refuses an invalid schedule with a message and stores nothing; an invalid schedule read from the settings file is logged and replaced by its default (Phase 0, roadmap 629), never widened to every value; day-of-month and day-of-week follow cron's OR rule (derived: cron semantics, to be read in M-04's outside sources).
+- Correct behaviour: The API refuses an invalid schedule with a message and stores nothing; an invalid schedule read from the settings file is logged and replaced by its default (Phase 0, roadmap 629), never widened to every value; day-of-month and day-of-week follow cron's OR rule (derived: Quality Bar 6, roadmap 581, a wrong result is not carried over; the cron documentation, which states the OR rule, is the outside source the M-04 analyst reads and records).
 - Source: private audit 2026-11-10, engines item 7; nmb/speed/scheduler.py@ad3758c:23-61
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-04
@@ -3553,7 +3555,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: iPerf3
 - What went wrong: The upload figure comes from the sender side, and a UDP test reports the offered 1 Mbit/s as its result.
-- Correct behaviour: Throughput from the receiver side; a UDP result is the received rate with its loss (derived: iPerf3 documentation, to be read in M-09).
+- Correct behaviour: Throughput from the receiver side; a UDP result is the received rate with its loss (derived: Quality Bar 6, roadmap 581, a wrong result is not carried over, and roadmap 4.8, line 213, the native client measures throughput, jitter and packet loss; the iPerf3 documentation, which says which side's figures are the measured ones, is the outside source the M-09 analyst reads and records).
 - Source: private audit 2026-11-10, engines item 13
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-09
@@ -3583,7 +3585,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Data caps
 - What went wrong: A missing interface counts 0 and then adds the lifetime counter; a counter reset gives a negative amount; the cap is checked only before a cycle; tests from the Web UI, the port check and traceroute are not counted.
-- Correct behaviour: Usage is the sum of non-negative deltas of the measured interface; a reset starts a new delta; the cap is checked between engines; every test counts (CHANGELOG 35: counted from the data the tests themselves move on the measured interface, and tests started by hand count; the deltas, the reset and the check between engines derived: Quality Bar 6, roadmap 581, no wrong result is carried over). Owner, 2026-11-11: there is no default cap number; on a metered link scheduled speed tests wait until the user sets a cap or says unlimited (KF-0294).
+- Correct behaviour: Usage is the sum of non-negative deltas of the measured interface; a reset starts a new delta; the cap is checked between engines; every test counts (CHANGELOG 35: counted from the data the tests themselves move on the measured interface, and tests started by hand count; the deltas, the reset and the check between engines derived: Quality Bar 6, roadmap 581, no wrong result is carried over). Owner, 2026-11-11: there is no default cap number; on a metered link without a cap decision speed tests wait until the user sets a cap or says unlimited, scheduled ones and those started by a person alike (the person is told why it waits); ping keeps running (KF-0294).
 - Source: private audit 2026-11-10, engines item 14
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-05
@@ -3718,7 +3720,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Translations
 - What went wrong: A few bot texts are English in every language, and the collector's pages exist only in English and Hungarian (Hungarian labels in the collector, `nmb/collector/server.py@ad3758c:488`).
-- Correct behaviour: Every text in all 11 languages (roadmap 602).
+- Correct behaviour: Every text in all 11 languages (roadmap 602). Owner, 2026-11-11: the build refuses a built-in text missing in any language; a text still missing at run time shows the English text visibly marked as untranslated, is logged and is listed in the self-test result and the diagnostic bundle, never a silent fallback to any language (KF-0048).
 - Source: private audit 2026-11-10, bot item L7; nmb/collector/server.py@ad3758c:488
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: C-06 (also S-11, S-13)
@@ -4438,7 +4440,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Translations
 - What went wrong: The `nmb-cli` action names and the Telegram admin commands were never finished in every language (roadmap 579 lists them among the open items the Python version never finished; roadmap 674: translated action names not yet covered).
-- Correct behaviour: Every `nmb-cli` action label and every bot admin command text exists in all 11 languages (roadmap 579, 602); the JSON command names and their output stay as they are (roadmap 668).
+- Correct behaviour: Every `nmb-cli` action label and every bot admin command text exists in all 11 languages (roadmap 579, 602); the JSON command names and their output stay as they are (roadmap 668). Owner, 2026-11-11: the build refuses a built-in text missing in any language; a text still missing at run time shows the English text visibly marked as untranslated, is logged and is listed in the self-test result and the diagnostic bundle, never a silent fallback to any language (KF-0048).
 - Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:579; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:602; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:668; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:674
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: C-06 (also S-10, S-11)
@@ -4543,10 +4545,10 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Data caps
 - What went wrong: On a metered link the scheduled speed tests ran without the user having chosen a cap: the USB link came with a built-in daily limit of 1024 MB, and the per-link data caps were 0 (no cap) by default.
-- Correct behaviour: Owner, 2026-11-11: there is no default cap number; on a metered link scheduled speed tests wait until the user sets a cap or says unlimited; ping keeps running. A waiting test is recorded as skipped with its reason, never as 0 (roadmap 683), and the status says what the user has to choose (derived: Quality Bar 6, roadmap 581: no confusing message). Whether a test started by a person waits too is not decided (question 7); M-05 does not choose it.
+- Correct behaviour: Owner, 2026-11-11: there is no default cap number; on a metered link scheduled speed tests wait until the user sets a cap or says unlimited; ping keeps running. A waiting test is recorded as skipped with its reason, never as 0 (roadmap 683), and the status says what the user has to choose (derived: Quality Bar 6, roadmap 581: no confusing message). Owner, 2026-11-11: a speed test started by a person (Web UI, CLI, bot) on such a link waits like a scheduled test until the user sets a cap or says unlimited, and the person who started it is told that it waits and why; ping keeps running. A cap that is reached is a different case and keeps CHANGELOG 35 (tests started by hand still run and count).
 - Source: docs/TESTING.md@ad3758c:388; CHANGELOG.md@ad3758c:35; nmb/config.py@ad3758c:693; nmb/config.py@ad3758c:728-731 (source analysis)
 - Python fix commit: not recorded in the source; note: not fixed
-- Package that proves it: M-05 (also C-01, U-02)
+- Package that proves it: M-05 (also C-01, U-02, S-10, S-11)
 - Spec vector: none yet (F-07)
 - Native test, Go: none yet
 - Native test, C: none yet (step 2)
