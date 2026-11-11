@@ -71,7 +71,7 @@ a split that is accepted gets the next free number of its series.
 
 | Id | Name | Proposed in | Owns / Also in | Reason |
 | :--- | :--- | :--- | :--- | :--- |
-| X2-01 | Step-2 router tiers (holding package) | roadmap-1-507 (1), porting-plan (1), workplan (4), testing (3), readme | 141 / 44 | Work plan section 1 puts the C11 tier and all router work in step 2, and section 3 has no package for it; without an owner these rows would fail the check. Every row that concerns only the C code base or only router targets is owned here, with the step-1 package under *Also in* (round 1, section G). Stays one holding package in step 1 (its rows go into `spec/` through F-07); split when step 2 is planned. |
+| X2-01 | Step-2 router tiers (holding package) | roadmap-1-507 (1), porting-plan (1), workplan (4), testing (3), readme | 153 / 33 | Work plan section 1 puts the C11 tier and all router work in step 2, and section 3 has no package for it; without an owner these rows would fail the check. Every row that concerns only the C code base or only router targets is owned here, with the step-1 package under *Also in* (round 1, section G). Stays one holding package in step 1 (its rows go into `spec/` through F-07); split when step 2 is planned. |
 | T-01 | First router backends, TL-WR1043ND v1 | roadmap-508-1034 (2) | 3 / 29 | Step 2 writes code (ath79 switch, ath9k, procd/fw4, flash layout, C11/musl build, Go-to-C port, optional UPX) that no package owns; I-10 only analyses images. **Child of X2-01** (porting-plan 1); later routers get T-02 ... in the owner's order. |
 | P-14 | Maker's firmware round trip | roadmap-508-1034 (1) | 9 / 10 | Back to stock firmware (6B.3): per-target write method, optional fetch from the maker, recovery path, round-trip test on each router. Step 2 and per-device; keeping it in P-02 would block P-02's step-1 acceptance. Generic safety rules stay in P-02. |
 | P-15 | Endurance and hostile-network campaign | testing (1) | 3 / 0 | The 24-72 h run, the 24 h low-memory run and the hostile-network suite need days of box or VM time; inside P-13 they would make the release proof too big. P-15 runs before P-13 and hands it its results. |
@@ -136,7 +136,7 @@ VPN, driver finder, updater, storage guard, USB tethering on OpenWrt, RouterOS c
 
 The work plan's rule names roadmap sections, not porting-plan sections; the porting-plan part maps them anyway:
 1, 1.1-1.3, 2, 4, 5, 6, 7G, 7H, 8 (C parts), 9, 10 to X2-01; 3 to P-10; 7.1 X2-01 (N-15 Also in); 7.2 S-11 (C form X2-01);
-7.3 R-03; 7.4 M-14; 7.5 C-09; 7.6 M-12; 7.7 X2-01 (N-12 owns REQ-PP-0079); 7.8 M-04; 7.9 P-01; 7.10 at line 505 N-16; 7.10 at line 698 S-12 (the plan has two
+7.3 R-03; 7.4 M-14; 7.5 C-09; 7.6 M-12; 7.7 X2-01 (N-12 owns REQ-PP-0079); 7.8 M-04; 7.9 P-01; 7.10 at line 505 N-16; 7.10 at line 698 S-12 (its router-only rows X2-01, round 4; the plan has two
 sections numbered 7.10: cite lines, not the number); 7A N-06; 7B M-03; 7F F-04; 7E P-13; 7D P-05; 7C P-11; 8 (Go part) F-00.
 
 ## F. Mechanical changes made by the merge
@@ -237,6 +237,32 @@ corrected in place:
   package (a roadmap section or a file may be split by line range); the Python files are mapped by structure, and each
   package's analyst reads its own files in full and asks the orchestrator to move a file or range when the mapping is wrong.
 
+## K. Round 4 of the checks (2026-11-11)
+
+The checkers' findings of round 4 changed these rows; no id was renumbered, new ids took the next free number.
+
+- **Moved to X2-01** (router-only rows; the step-1 owner under *Also in*): REQ-PP-0149 (from C-03), -0190 (from S-12), -0193
+  (from S-13), REQ-RM-0139 (from S-13).
+- **Split into a step-1 row and a router or C row owned by X2-01:** REQ-PP-0194 (from -0138, no Tailscale on the C builds),
+  -0195 (from -0153, RAM ring buffer and rare flash writes), -0196 (from -0156, router update copies), -0197 (from -0007, C11/musl),
+  -0198 (from -0030, the C11 variants); REQ-RE-0342 (from -0195, 60 KB RAM target), -0343 (from -0176, C11/musl);
+  REQ-RM-1465 (from -1402, the C build in the differential test).
+- **Restated to the source:** REQ-PP-0029 (lines 127-128 only; the invented exception list removed), -0184 (the rule on
+  counting sandboxed programs apart removed); the conflict of line 686 with REQ-RM-1350 and REQ-WP-0179 is Q-40, answered
+  from owner decision 3 and 6B.5. REQ-RM-1002, -1260 (withdrawal undone), -0135 and REQ-PP-0135 went back to their source
+  wording, because Q-01, Q-16 and Q-17 moved to the owner. REQ-CL-0016 narrowed to the two exports line 23 names.
+- **Qualified by the owner's decision of 2026-11-11** (scheduled Ookla runs at most hourly, a test a person starts obeys only
+  the refusal pause): REQ-CT-0006, REQ-RM-1222, REQ-DV-0024, REQ-TS-0310. REQ-TS-0018 reworded (no units other than NMB's own).
+- **Notes only:** REQ-RM-1013, -1035, REQ-WP-0009 now carry `process rule:` and are in `BY_PACKAGE.md` *Flags*; REQ-WP-0187
+  says the disclaimer wording was decided on 2026-11-11 (REQ-NH-0002); REQ-AR-0068, REQ-RE-0280 (Q-14 a developer's choice
+  keeping Python's scope), REQ-PP-0053, -0186 (Q-25), REQ-RM-1277 (Q-36), REQ-DV-0026 (Q-09).
+- **`parts/other-docs.md`:** the Hungarian range 67-87 translates COMPARISON.md:61-80 and line 88 translates :81 (removed from
+  the Hungarian-only table); the context of English line 76 names the scheduled-only limit and REQ-WP-0179.
+- **Questions:** see the header of `QUESTIONS.md` (Q-01, Q-16, Q-17 to the owner; Q-09, Q-14 to the developer's choices;
+  Q-08, Q-12, Q-25, Q-36 corrected; Q-40 new).
+- **Mappings:** M1 *Rows by owner* of 4.25 and 6B.8 recomputed (packages unchanged); M2 and M3 unchanged. `BY_PACKAGE.md`
+  was regenerated (2332 requirements; X2-01 owns 153).
+
 ## M1. Every roadmap section in one package
 
 Every `##` and `###` heading of `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c` outside code blocks (69), with the lines up to the
@@ -281,7 +307,7 @@ lines of two sections counts in both; round 2: recomputed from the parts, and `c
 | 361 | 361-368 | 4.22 CPU Interrupts (IRQ/SoftIRQ), RPS/XPS & NIC Offload Telemetry | C-09 | majority | C-09 3 |
 | 369 | 369-376 | 4.23 Storage I/O & Flash Filesystem Health Monitor | C-08 | majority | C-08 3 |
 | 377 | 377-389 | 4.24 Sanitized Configuration & PII/Secret Masking Engine | C-04 | majority; plan names C-04 and R-04 for 4.24 | C-04 6 |
-| 390 | 390-395 | 4.25 Central Collector Client & GitHub Updater | S-13 | majority; plan names M-04, S-12 and S-13 for 4.25 | S-13 6, S-12 3, M-04 1, M-05 1, P-02 1, X2-01 1 |
+| 390 | 390-395 | 4.25 Central Collector Client & GitHub Updater | S-13 | majority; plan names M-04, S-12 and S-13 for 4.25 | S-13 5, S-12 3, X2-01 2, M-04 1, M-05 1, P-02 1 |
 | 396 | 396-409 | 4.26 Features Added in November 2026 (the Python Reference the Native Build Must Match) | N-10 | majority; the section collects several features (C-06, C-08, M-07, N-08 also cite it) | N-10 9, M-07 5, N-08 5, C-08 2, C-06 1, M-04 1, M-09 1, N-05 1, P-13 1, X2-01 1 |
 | 410 | 410-435 | 4.27 USB Tethering & Mobile Uplink (Phones, 5G/4G Hotspots, Cellular Modems) | N-10 | majority | N-10 12, X2-01 3, N-05 2, N-08 1, P-11 1 |
 | 436 | 436-445 | 4.28 Automatic Mode (`mode = auto`, the Owner's Rule) | N-04 | majority | N-04 7 |
@@ -308,7 +334,7 @@ lines of two sections counts in both; round 2: recomputed from the parts, and `c
 | 873 | 873-883 | 6B.5 Sandboxing as a built-in option (owner, 2026-11-10) | P-04 | majority | P-04 11, F-06 1, N-02 1, N-03 1, P-02 1 |
 | 884 | 884-899 | 6B.6 Captive portals on a Wi-Fi uplink (owner, 2026-11-10) | N-09 | majority | N-09 18, X2-01 1 |
 | 900 | 900-916 | 6B.7 Full user manual and command-line reference (owner, 2026-11-10) | P-12 | majority | P-12 18 |
-| 917 | 917-930 | 6B.8 One behaviour, two languages: the Go and the C code bases learn from each other (owner, 2026-11-10) | F-07 | majority | F-07 11, F-00 1, F-05 1, T-01 1, X2-01 1 |
+| 917 | 917-930 | 6B.8 One behaviour, two languages: the Go and the C code bases learn from each other (owner, 2026-11-10) | F-07 | majority | F-07 11, X2-01 2, F-00 1, F-05 1, T-01 1 |
 | 931 | 931-942 | 6B.4 Downloaded images and firmware to work with | I-09 | part (tie) | F-00 1, I-09 1, I-10 1 |
 | 943 | 943-975 | 7. Component Language & Dependency Elimination Matrix | P-10 | part (step-1 rows spread, M-12 2, C-09 2; the 5 X2-01 rows are the C halves split from step-1 rows in round 2) | X2-01 5, C-09 2, M-12 2, C-02 1, C-04 1, C-08 1, M-01 1, M-02 1, M-04 1, M-08 1, M-09 1, M-13 1, M-14 1, N-01 1, N-07 1, N-12 1, N-13 1, N-15 1, N-17 1, P-01 1, P-10 1, R-03 1, R-05 1, S-01 1, S-11 1 |
 | 976 | 976-999 | 8. Cross-Compilation Matrix (Go) | F-00 | majority | F-00 2 |

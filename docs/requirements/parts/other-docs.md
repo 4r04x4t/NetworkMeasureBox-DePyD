@@ -101,7 +101,7 @@ Each range includes the blank line(s) that end it. Every line of every source is
 | 73 | table row | context: ownership (own device, no contract) |
 | 74 | table row | context: engines and the mixed run, README rows of M-04 |
 | 75 | table row | context: servers, README rows of M-06 to M-10 |
-| 76 | table row | context: per-engine intervals and the Ookla limit, REQ-RE-0073 and REQ-RE-0095 |
+| 76 | table row | context: per-engine intervals and the Ookla limit: scheduled Ookla runs at most hourly (REQ-RE-0073, REQ-RE-0095; a test a person starts obeys the refusal pause only, REQ-TS-0302), and Ookla runs only after its terms are accepted (REQ-WP-0179) |
 | 77 | table row | REQ-NH-0013 |
 | 78 | table row | REQ-NH-0001 |
 | 79 | table row | context: modes and their test status, README and TESTING rows |
@@ -144,8 +144,8 @@ sub-heading, so its line numbers run ahead (English line n is about Hungarian li
 | 58-64 | heading, bullets | context: translation of COMPARISON.md:52-58 |
 | 65 | bullet | context: Hungarian only: the official box "checks the traffic before measuring" and measures when the user is not using the internet; NMB's traffic gate is REQ-RE-0087 |
 | 66 | bullet | context: translation difference: "kiépítési végpont" (the line's termination point) where COMPARISON.md:60 says "access point"; the Hungarian reading is the right one (the official box sits between the line's termination and the user's devices) |
-| 67-87 | bullets, headings, table | context: translation of COMPARISON.md:61-81 |
-| 88 | table row | context: Hungarian only: "access point and client both tested live on 2.4 and 5 GHz", a claim about the Python version's tests (TESTING.md rows), not a native requirement |
+| 67-87 | bullets, headings, table | context: translation of COMPARISON.md:61-80 |
+| 88 | table row | context: translation of COMPARISON.md:81 (access point and client, 2.4 and 5 GHz tested live) |
 | 89 | table row | context: translation of COMPARISON.md:82 |
 | 90 | table row | context: translation of COMPARISON.md:83, adding "not only a web interface" |
 | 91-102 | table rows, headings, bullets | context: translation of COMPARISON.md:84-95 |
@@ -192,7 +192,6 @@ change no statement (a doubled full stop, a translated placeholder) are only in 
 | `docs/NMHH_SZELESSAVNET_OSSZEHASONLITAS.hu.md` | 56 | The term "LAN aggregation". | context: wording |
 | `docs/NMHH_SZELESSAVNET_OSSZEHASONLITAS.hu.md` | 65 | The official box checks the traffic before measuring. | context: NMB's traffic gate, REQ-RE-0087 |
 | `docs/NMHH_SZELESSAVNET_OSSZEHASONLITAS.hu.md` | 66 | The official box sits between the line's termination point and the user's devices (the English says "access point"). | context: the Hungarian is right; the English line 60 is a mistranslation of the Python page |
-| `docs/NMHH_SZELESSAVNET_OSSZEHASONLITAS.hu.md` | 88 | NMB's Wi-Fi access point and client were both tested live on 2.4 and 5 GHz. | context: claim about the Python version's tests |
 | `docs/NMHH_SZELESSAVNET_OSSZEHASONLITAS.hu.md` | 90 | NMB is controlled "not only through a web interface". | context: wording |
 | `CONTRIBUTING.hu.md` | - | none | - |
 | `docs/DEV_SETUP_WINDOWS.hu.md` | - | none (the structure differs at lines 92-94 and 179-183, the content does not) | - |

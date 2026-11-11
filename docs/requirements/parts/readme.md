@@ -4,8 +4,9 @@ Source: `README.md` of the Python repository at commit `ad3758c` (487 lines; thi
 Read in pages: 1-150, 151-300, 301-450, 451-487 (all lines).
 Compared with `README.hu.md@ad3758c` (721 lines, read in pages 1-150, 151-300, 301-450, 451-600, 601-721, all lines): content that exists only in the Hungarian file is listed as its own rows (REQ-RE-0312 to REQ-RE-0338, marked "HU only") or added as a second source to the English row it extends; Hungarian statements that contradict the English file are listed under "Coverage" (README.hu.md table), where the English text wins.
 Package ids from `docs/NATIVE_WORK_PLAN.md@ad3758c:98-218` (section 3) and `:281-294` (image packages I-01..I-10).
-Id range of this part: REQ-RE-0001 to REQ-RE-0341 (0339 and 0340 added in round 1; 0341 in round 3, when `other-docs.md`
-compared README.hu.md line by line again and found the lines 90, 122, 187 and 591 that the Hungarian table below lacked).
+Id range of this part: REQ-RE-0001 to REQ-RE-0343 (0339 and 0340 added in round 1; 0341 in round 3, when `other-docs.md`
+compared README.hu.md line by line again and found the lines 90, 122, 187 and 591 that the Hungarian table below lacked;
+0342 and 0343 in round 4, the router and C halves split from REQ-RE-0195 and -0176).
 
 Reading notes for the register owner:
 - `NEW: X2-01 Step-2 router tiers` is the holding package proposed in `roadmap-1-507.md` and reused by `porting-plan.md`; it is reused here for the router-target rows of README section 16, so the register keeps one id for it.
@@ -192,7 +193,8 @@ Reading notes for the register owner:
 | REQ-RE-0173 | Router plan target: commercial routers with as little as 4 MB flash and 32 MB RAM. | README.md@ad3758c:267 | NEW: X2-01 Step-2 router tiers | | Design target. |
 | REQ-RE-0174 | Generic first: the native code is platform- and architecture-independent and is built, tested and proven on a PC (x86-64) and the Raspberry Pi 4 (ARM64) before any router work; router targets are added later as backends of the same code. | README.md@ad3758c:268 | P-13 | F-00, NEW: X2-01 Step-2 router tiers | |
 | REQ-RE-0175 | Quality bar: the native build runs at least as flawlessly as the Python version, fixes the bugs found on the way instead of carrying them over, and is measurably better (CPU, memory, start-up, logging, safe updates); a component replaces its Python counterpart only with that evidence written down. | README.md@ad3758c:269 | P-13 | F-03, F-05 | |
-| REQ-RE-0176 | Single binary `nmbd`, written in Go 1.23+ (Tier 1) and C11 with musl (Tiers 2 and 3), with no Python, pip or runtime packages. | README.md@ad3758c:270 | P-10 | F-00, NEW: X2-01 Step-2 router tiers | Work plan F-00: the PC's installed Go version is older (source names a specific site value; not copied); the toolchain version is fixed there. |
+| REQ-RE-0176 | Single binary `nmbd`, written in Go 1.23+ (Tier 1), with no Python, pip or runtime packages. | README.md@ad3758c:270 | P-10 | F-00 | Work plan F-00: the PC's installed Go version is older (source names a specific site value; not copied); the toolchain version is fixed there. Round 4: split; the C11/musl half (Tiers 2 and 3) is REQ-RE-0343 (X2-01). |
+| REQ-RE-0343 | The C11 code base of the single binary `nmbd`, with musl libc (Tiers 2 and 3), also with no Python, pip or runtime packages. | README.md@ad3758c:270 | NEW: X2-01 Step-2 router tiers | P-10, F-00 | Split from REQ-RE-0176 in round 4. |
 | REQ-RE-0177 | Router target ASUS RT-AXE7800 (BCM6756, 4 x Cortex-A7 1.7 GHz, 512 MB RAM, 256 MB NAND, 2.5GbE): Asuswrt/Merlin or OpenWrt `bcm4908`; Go or C11; 2.5 Gbps line-rate testing, multi-threaded CAKE, Flow Cache bypass, in-process `tsnet` Tailscale. | README.md@ad3758c:272-275 | NEW: X2-01 Step-2 router tiers | I-10 | Product port target, not site data. Design targets. |
 | REQ-RE-0178 | Router target ASUS RT-N12+ (MT7620N MIPS 580 MHz, 32 MB RAM, 8 MB flash, 100 Mbps): OpenWrt `ramips/mt7620`; C11 musl under 850 KB, about 2.8 MB RSS; 100 Mbps testing under 14 % CPU. | README.md@ad3758c:276-279 | NEW: X2-01 Step-2 router tiers | I-10 | Design targets. |
 | REQ-RE-0179 | Router target TP-Link TL-WR740N v4 (AR9331 MIPS 400 MHz, 32 MB RAM, 4 MB flash, 100 Mbps): stripped OpenWrt `ath79/generic`; micro-C11 `-Os`, UPX (178 KB), 1.4 MB RSS, RAM-only ring buffer with no flash writes. | README.md@ad3758c:280-283 | NEW: X2-01 Step-2 router tiers | I-10 | Design targets. |
@@ -211,7 +213,8 @@ Reading notes for the register owner:
 | REQ-RE-0192 | Router DNS sinkhole: a 512 KB counting Bloom filter (MurmurHash3, 0.1 % false positives) and a trie, under 640 KB RAM on 32 MB routers. | README.md@ad3758c:295 | NEW: X2-01 Step-2 router tiers | N-12 | Design target. |
 | REQ-RE-0193 | Speed engines are in-process TCP/TLS clients towards Ookla, Cloudflare, Fast.com and RTR, without external binaries (zero-copy buffers). | README.md@ad3758c:296 | M-04 | M-06, M-07, M-08, M-10, NEW: X2-01 Step-2 router tiers | In-process Ookla conflicts with the official-binary engine (REQ-RE-0072); owner decision: Ookla "whichever works". `roadmap-1-507.md` proposes `NEW: M-17` shared HTTP transfer core, which would own this row. |
 | REQ-RE-0194 | Self-healing is a multi-tier watchdog: service restart, link bounce, driver offload toggling, configuration rollback. | README.md@ad3758c:297 | P-01 | C-01, N-17 | |
-| REQ-RE-0195 | Dynamic DNS client for `duckdns` and `dynv6`, TLS 1.3, aware of address changes from netlink, under 60 KB RAM. | README.md@ad3758c:298 | N-16 | NEW: X2-01 Step-2 router tiers | RAM figure is a router design target. |
+| REQ-RE-0195 | Dynamic DNS client for `duckdns` and `dynv6`, over TLS 1.3, aware of address changes from netlink. | README.md@ad3758c:298 | N-16 | | Round 4: split; the RAM figure (a router design target) is REQ-RE-0342 (X2-01). |
+| REQ-RE-0342 | Router design target, to measure: the Dynamic DNS client uses under 60 KB RAM. | README.md@ad3758c:298 | NEW: X2-01 Step-2 router tiers | N-16 | Split from REQ-RE-0195 in round 4; the line is under *Target Hardware Porting Specifications*. |
 | REQ-RE-0196 | The README has a tested-status section that says what has actually been run, and links the full testing record. | README.md@ad3758c:307 | P-12 | P-13 | |
 | REQ-RE-0197 | Every speed, CPU and timing figure names the line and hardware it came from; untested line classes (much slower, much faster) are stated, and so is the Pi 4's limit above about 1 Gbps (one gigabit port and its CPU). | README.md@ad3758c:309 | P-13 | P-12 | The test line's ISP, country and router model are not copied (source names a specific site value; not copied). |
 | REQ-RE-0198 | The native build is in daily use on a Raspberry Pi 4 with Debian 13 in `standalone` mode (the Python status) before it replaces the Python version. | README.md@ad3758c:313 | P-13 | | |
@@ -297,7 +300,7 @@ Reading notes for the register owner:
 | REQ-RE-0277 | `/backup create` makes a full backup (settings, database, VPN keys). | README.md@ad3758c:419 | S-11 | P-03 | |
 | REQ-RE-0278 | `/backup send <file> [plain]` sends a backup encrypted with the backup passphrase set on the Web UI's Telegram card (a `.gpg` file that `gpg -d` or Kleopatra opens); without a passphrase it sends nothing; `plain` sends it unencrypted; Telegram's 50 MB bot limit applies. | README.md@ad3758c:420 | S-11 | P-03, C-04 | Security review in S-11 (QB 7): `plain` sends secrets in clear. |
 | REQ-RE-0279 | `/tasks`: load, memory and the busiest processes. | README.md@ad3758c:421 | S-11 | C-09 | |
-| REQ-RE-0280 | `/kill <pid> [15\|9\|1\|2]` sends TERM, KILL, HUP or INT to a process the bot may signal; PID 1 and the bot itself are protected; other signals are refused. | README.md@ad3758c:422 | S-11 | C-09, P-04 | Q-14: confirmation tap for every signal, typed word for KILL or a process outside NMB (owner, 2026-11-11; REQ-AR-0068). |
+| REQ-RE-0280 | `/kill <pid> [15\|9\|1\|2]` sends TERM, KILL, HUP or INT to a process the bot may signal; PID 1 and the bot itself are protected; other signals are refused. | README.md@ad3758c:422 | S-11 | C-09, P-04 | Q-14 (developer's choice): NMB's own processes only, as in Python; confirmation tap for every signal, typed word for KILL (owner, 2026-11-11; REQ-AR-0068). |
 | REQ-RE-0281 | `/drivers`: network adapters and their drivers. | README.md@ad3758c:423 | S-11 | N-17 | |
 | REQ-RE-0282 | `/purge [category] confirm` shows or deletes stored data: `measurements`, `events`, `reports`, `backups`, `logs` (NMB logs, logs kept on the SD card, system journal, kernel buffer) or `all`; settings, passwords and VPN keys are kept. | README.md@ad3758c:424 | S-11 | C-08 | |
 | REQ-RE-0283 | `/reboot now` restarts the box (about 1-2 minutes; in router mode the home network is offline meanwhile). | README.md@ad3758c:425 | S-11 | P-06 | |
@@ -528,7 +531,7 @@ Reading notes for the register owner:
 | 266-267 | paragraph | REQ-RE-0173 |
 | 268 | bullet | REQ-RE-0174 |
 | 269 | bullet | REQ-RE-0175 |
-| 270 | bullet | REQ-RE-0176 |
+| 270 | bullet | REQ-RE-0176, REQ-RE-0343 |
 | 271 | bullet | context: sub-heading "target hardware" |
 | 272-275 | bullet | REQ-RE-0177 |
 | 276-279 | bullet | REQ-RE-0178 |
@@ -543,7 +546,7 @@ Reading notes for the register owner:
 | 295 | bullet | REQ-RE-0192 |
 | 296 | bullet | REQ-RE-0193 |
 | 297 | bullet | REQ-RE-0194 |
-| 298 | bullet | REQ-RE-0195 |
+| 298 | bullet | REQ-RE-0195, REQ-RE-0342 |
 | 299-301 | bullet | context: links to the porting plan and the roadmap, which have their own register parts |
 | 302-305 | rule, heading | context: separator and section heading |
 | 306-307 | paragraph | REQ-RE-0196 |
