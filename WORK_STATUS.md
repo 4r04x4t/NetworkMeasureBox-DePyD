@@ -4,7 +4,7 @@ Kept by the orchestrator (work plan section 2.3). States: waiting, brief, code, 
 Packages and order: `docs/NATIVE_WORK_PLAN.md` in the Python repository, sections 3 and 4.
 An accepted package is never redone; this file wins over anyone's memory.
 
-Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public, empty until the first push), same account as the Python repository. Commits use the GitHub no-reply e-mail (owner, 2026-11-11).
+Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public). First push 2026-11-11 of main at 20aae11 after gate rc 0 and history scan rc 0 of a main-only clone. Commits use the GitHub no-reply e-mail (owner, 2026-11-11).
 
 ## Foundation
 
@@ -29,8 +29,8 @@ Remote: `origin` = `NetworkMeasureBox-DePyD` on GitHub (public, empty until the 
 | I-04 | OpenWrt 25.12.6 x86/generic | accepted | merge 6a230a8 | — |
 | I-05 | OpenWrt 25.12.6 Raspberry Pi 4 | accepted (taken apart only; boot on the Pi 4 is a later step) | merge 996f6e9 | — |
 | I-06 | Debian 13.7.0 amd64 and arm64 | accepted | merge 57a6e1b | — |
-| I-07 | Alpine 3.24.4 | brief (being analysed) | — | — |
-| I-08 | Fedora IoT 44 | waiting (after I-07) | — | — |
+| I-07 | Alpine 3.24.4 | accepted | merge (this commit's parent) | verifier pass, minors noted |
+| I-08 | Fedora IoT 44 | brief (restarted after an API interruption) | — | — |
 | I-09 | Comparison for 6A | waiting | — | — |
 
 ## Core, measuring, network, reports, surfaces, product
@@ -51,3 +51,4 @@ All waiting for the foundation (C-01..C-11, M-01..M-14, N-01..N-18, R-01..R-05, 
 - 2026-11-11: F-01 accepted: every owner decision and the image findings written into the shared plans (Python repo 492fc46 + bb0a553, pushed). The Python folder ~/src/NetworkMeasureBox stays at ad3758c until the briefs that cite it finish; then fast-forward.
 - 2026-11-11: F-00, F-03, F-02 merged into main; changelog updated.
 - 2026-11-11: image records I-01, I-02, I-03, I-05, I-06 accepted and merged; their findings are in roadmap 6A (Python repo bb0a553). Gate on main: shellcheck fails on the register scripts; fix in progress before the first push.
+- 2026-11-11: register check added to the gate; first push of main. I-07 accepted (developer's name and address removed from the record; exact allow entries for two key file names). An API interruption (identity verification) stopped about 15 agents; F-04, F-05/F-06, C-05/08/09/10 and I-08 were restarted from where they stopped.
