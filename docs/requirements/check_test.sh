@@ -1,8 +1,16 @@
 #!/bin/sh
 # Test of check.sh: the real register must pass, and every planted fault in a copy must fail.
-# Usage, from the worktree root:   sh docs/requirements/check_test.sh [register-dir]
+# Usage:   sh docs/requirements/check_test.sh [register-dir]
+#   It runs from the repository root (found from the script's own path), so it can be called from any folder.
+#   register-dir  defaults to docs/requirements; a relative one is taken from the folder it is called from
 set -u
-R=${1:-docs/requirements}
+R=${1:-}
+case $R in
+"" | /*) ;;
+*) R="$(pwd)/$R" ;;
+esac
+cd "$(dirname "$0")/../.." || { echo "check_test: cannot enter the repository root" >&2; exit 2; }
+[ -n "$R" ] || R=docs/requirements
 CHECK="$R/check.sh"
 [ -f "$CHECK" ] || { echo "check_test: no $CHECK" >&2; exit 2; }
 T=$(mktemp -d "${TMPDIR:-/tmp}/nmbregtest.XXXXXX") || exit 2
@@ -31,6 +39,7 @@ plant "id defined twice across parts" parts/testing.md 's/^| REQ-TS-0001 |/| REQ
 plant "coverage gap" parts/changelog.md '/^| 2 | blank |/d'
 plant "coverage overlap" parts/roadmap-1-507.md 's/^| 9-10 |/| 8-10 |/'
 plant "coverage stops early" parts/testing.md '/^| 400-401 |/d; /^| 400 |/d; /^| 401 |/d'
+# shellcheck disable=SC2016 # a sed script: its backticks and $ are sed text, not shell expansions
 plant "id in no coverage row" parts/testing.md '/^## Coverage/,$s/REQ-TS-0001\([^0-9]\)/context: planted\1/g'
 plant "coverage names an undefined id" parts/testing.md 's/^\(| 3-4 | [^|]*| \)REQ-TS-0001 |/\1REQ-TS-0001, REQ-TS-9999 |/'
 plant "requirement row without package" parts/testing.md '/^| REQ-TS-0001 |/s/| P-13 |/|  |/'
@@ -39,18 +48,25 @@ plant "requirement row with five cells" parts/testing.md '/^| REQ-TS-0001 |/s/ |
 plant "owner changed, BY_PACKAGE.md not regenerated" parts/testing.md '/^| REQ-TS-0001 |/s/| P-13 |/| P-12 |/'
 plant "BY_PACKAGE.md loses an id" BY_PACKAGE.md 's/REQ-TS-0001, //'
 plant "BY_PACKAGE.md drops a work plan package" BY_PACKAGE.md 's/^### C-10 /### C-1O /'
+# shellcheck disable=SC2016 # a sed script: its backticks and $ are sed text, not shell expansions
 plant "Python file missing" parts/python-files.md '/^| `\.gitignore`@ad3758c |/d'
+# shellcheck disable=SC2016 # a sed script: its backticks and $ are sed text, not shell expansions
 plant "Python file listed twice" parts/python-files.md '/^| `\.gitignore`@ad3758c |/{p;}'
+# shellcheck disable=SC2016 # a sed script: its backticks and $ are sed text, not shell expansions
 plant "Python file lines missing" parts/python-files.md 's/^| `\.gitignore`@ad3758c | 1-86 |/| `.gitignore`@ad3758c | 1-80 |/'
+# shellcheck disable=SC2016 # a sed script: its backticks and $ are sed text, not shell expansions
 plant "Python file that does not exist" parts/python-files.md '/^| `\.gitignore`@ad3758c |/{p;s/\.gitignore/.gitignored/;}'
 plant "roadmap section not mapped" PACKAGE_CHANGES.md '/^| 116 | 116-/d'
 plant "roadmap section mapped twice" PACKAGE_CHANGES.md '/^| 116 | 116-/{p;}'
 plant "TESTING.md row not mapped" PACKAGE_CHANGES.md '/^## M2\./,/^## M3\./{/^| 400 |/d;}'
+# shellcheck disable=SC2016 # a sed script: its backticks and $ are sed text, not shell expansions
 plant "Python file not mapped" PACKAGE_CHANGES.md '/^| `setup.sh` |/d'
+# shellcheck disable=SC2016 # a sed script: its backticks and $ are sed text, not shell expansions
 plant "Python file mapped to unknown package" PACKAGE_CHANGES.md 's/^| `setup.sh` | P-11 |/| `setup.sh` | Q-11 |/'
 plant "cited line in a coverage row without the id" parts/roadmap-1-507.md 's/^| 414 | paragraph | REQ-RM-0165 ([^|]*|/| 414 | paragraph | context: label |/'
 plant "CONTRIBUTING coverage gap" parts/contributing.md '/^| 8 | bullet |/d'
 plant "other-docs coverage gap" parts/other-docs.md '/^| 20 | heading |/d'
+# shellcheck disable=SC2016 # a sed script: its backticks and $ are sed text, not shell expansions
 plant "Hungarian translation without coverage" parts/other-docs.md '/^### docs\/TESTING.hu.md/,$s/^| 1-6 |/| 2-6 |/'
 plant "REQ-NH owner changed, BY_PACKAGE.md not regenerated" parts/other-docs.md '/^| REQ-NH-0001 |/s/| C-10 |/| P-12 |/'
 plant "M2 owners column stale" PACKAGE_CHANGES.md 's/^| 42 | P-11 | TS-0027, TS-0028 | P-06 1, P-11 1 |/| 42 | P-11 | TS-0027, TS-0028 | P-01 1, P-11 1 |/'

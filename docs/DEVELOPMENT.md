@@ -50,11 +50,12 @@ It runs, always all of them and in this order:
 | `tools/analyse.sh` | gofmt, go vet (amd64, arm64, arm, mips), staticcheck (amd64 and 32-bit arm), gosec, govulncheck (source and the built binaries), gocyclo over 15, `tools/cleancode`, shellcheck, the script rules, the list of `#nosec` annotations, the same checks for `tools/gosecvet` | govulncheck only (vuln.go.dev) |
 | `tools/test.sh` | runs A to G: amd64 with the race detector; amd64 without cgo, shuffled, in `Pacific/Chatham`; arm64 and arm v7 test binaries under `qemu-aarch64-static` and `qemu-arm-static`, in UTC and shuffled in `Pacific/Chatham`; mips and mipsle test binaries compiled only | none (namespace) |
 | `tools/fuzz.sh` | every `Fuzz*` target for `NMB_FUZZTIME` | none (namespace) |
+| `tools/register.sh` | the requirements register (F-02): `register:check` runs `docs/requirements/check.sh` against the Python repository in `NMB_SRC`, `register:test` runs `docs/requirements/check_test.sh` (the check passes the real register and fails each of its planted faults) | none (reads `NMB_SRC` with git) |
 | `tools/scan.sh tree dist` | `tools/privscan` over every tracked and untracked (not ignored) file and over `dist/` | none |
 | `tools/gate-selftest.sh` | plants one fault per check in a throw-away copy and requires the check to fail, and the clean copy to pass | none |
 
 Each script can run alone and takes step names, for example `tools/analyse.sh gofmt cleancode`,
-`tools/test.sh B`, `tools/build-matrix.sh linux-arm64`, `tools/gate-selftest.sh root`. Results go to
+`tools/test.sh B`, `tools/build-matrix.sh linux-arm64`, `tools/register.sh check`, `tools/gate-selftest.sh root`. Results go to
 `build/gate/<UTC time>-.../` (git-ignored): one log per step, `summary.tsv` (step, where it ran, exit code,
 seconds), `sizes.tsv`, `tools.txt` (`go version -m` of every analyser) and `environment.tsv`.
 
@@ -65,6 +66,7 @@ Knobs (each one checked; a bad value stops the gate with exit 2):
 | `NMB_GATE_JOBS` | 2 | parallel Go builds and fuzz workers, 1 to 4 (memory: about 1.8 GB in WSL2) |
 | `NMB_FUZZTIME` | 30s | time per fuzz target, for example `30s` or `2m` |
 | `NMB_TOOLS_DIR` | `~/.cache/nmb/gate-tools` | where the gate tools are installed; absolute, outside the repository |
+| `NMB_SRC` | `~/src/NetworkMeasureBox` | the Python repository the register is checked against (`tools/register.sh`); absolute, outside this repository; read only, at the register's source commit `ad3758c` |
 | `NMB_PRIVATE_VALUES` | not set | a file of the owner's own values (names, addresses, keys) that must appear nowhere; outside the repository, never committed; its values are never printed |
 
 The gate refuses to run as root (fault KF-0001), and refuses `GOSUMDB=off`, `GONOSUMDB`, `GONOSUMCHECK`,
