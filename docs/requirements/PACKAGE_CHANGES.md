@@ -56,7 +56,7 @@ numbering is not used anywhere and is withdrawn by this merge.
 | SLA | U-16 Router page: the ISP profile and the live SLA audit card are `nmb/web/assets/dashboard.html@ad3758c:3704-3780`, a range of U-16 in `parts/python-files.md` (round 2) |
 | Exports | U-04 Speed results page, which holds the speed, broadband, outage and event CSV buttons (`dashboard.html@ad3758c:237-240`); the ping CSV button is on U-03 (`:193`) and takes the row there too; the exports themselves are R-02 and the API S-09 (round 2) |
 | Results, results and logout | U-01: the logout page (`nmb/web/assets/logout.html`, `dashboard.js@ad3758c:8300-8331`) is U-01 in `parts/python-files.md`; the public `/results` page is served by S-09 (`nmb/web/results_page.py`) and its look and texts are U-01's (round 2) |
-| Support | U-01: the Support button, donation dialog and footer are `dashboard.html@ad3758c:1-109, 5221-5239`, U-01 in `parts/python-files.md` (round 2) |
+| Support | U-01: the Support button, donation dialog and footer are U-01's rows of `dashboard.html@ad3758c` in `parts/python-files.md` (round 2) |
 | Outages | U-03 Ping telemetry page: the 24-hour latency and outage telemetry is in the ping tab (`dashboard.html@ad3758c:186-226`); the outages CSV button is on U-04 (round 2) |
 
 **Bare `S-02` and `U-02`.** Some rows (mostly in the roadmap parts and REQ-WP-0134, which copies work plan line 215) write
@@ -77,10 +77,10 @@ a split that is accepted gets the next free number of its series.
 | P-15 | Endurance and hostile-network campaign | testing (1) | 3 / 0 | The 24-72 h run, the 24 h low-memory run and the hostile-network suite need days of box or VM time; inside P-13 they would make the release proof too big. P-15 runs before P-13 and hands it its results. |
 | P-16 | SSH access (keys only) | changelog (1), there as "P-14" | 2 / 0 | No package owns the box's SSH server setting (keys-only switch, check that sshd takes it, automatic switch back). Alternative: merge into P-05 (maintenance mode also gives keys-only access). |
 | P-17 | Guided live scenarios | python-files (D, there as "P-14"), testing (2, there as "P-07b") | 0 / 0 | `nmb/selftest/` is 2,837 lines; P-07 keeps the live self-test groups (`live.py`, testing's "P-07a"), P-17 takes `scenario*.py` with their restore safety. Rows stay in P-07 until accepted. |
-| S-14 | Bot commands: measuring, reports, mode, VPN | python-files (D) | 0 / 0 | `nmb/bot/` is about 4,100 lines; S-14 = `commands.py@ad3758c:249-1061`. |
-| S-15 | Bot commands: DynDNS, blocker, healing, tasks, Wi-Fi, backup, drivers, reboot | python-files (D) | 0 / 0 | S-15 = `commands.py@ad3758c:1062-1725`. **Other proposal** (workplan 2): S-11a commands and menus, S-11b alert monitor (REQ-AR-0072 to -0078). The two cuts are compatible: if the alert monitor is split too, it gets the next free number; the S-11 analyst decides. |
-| N-19 | Blocker lists: gravity update, allow/deny/regex lists, adlists, local DNS records | python-files (D) | 0 / 1 | N-12 is about 2,600 lines with its CLI; N-19 = `netd/adblock.py@ad3758c:1003-1515`. |
-| N-20 | Box resolver and DNS fallback (optional) | changelog (2), there as "N-19" | 0 / 1 | Rows of changelog lines 210, 224, 254 are the box's own resolver management, not a measurement; if M-12 is too big, `netd/dns.py` is cut into M-12 (audit, lookups) and N-20 (fallback, restore). |
+| S-14 | Bot commands: measuring, reports, mode, VPN | python-files (D) | 0 / 0 | `nmb/bot/` is about 4,100 lines; S-14 = the `commands.py@ad3758c` handlers from `_cmd_help` to the VPN command. |
+| S-15 | Bot commands: DynDNS, blocker, healing, tasks, Wi-Fi, backup, drivers, reboot | python-files (D) | 0 / 0 | S-15 = the `commands.py@ad3758c` handlers from `_cmd_dyndns` to the end. **Other proposal** (workplan 2): S-11a commands and menus, S-11b alert monitor (REQ-AR-0072 to -0078). The two cuts are compatible: if the alert monitor is split too, it gets the next free number; the S-11 analyst decides. |
+| N-19 | Blocker lists: gravity update, allow/deny/regex lists, adlists, local DNS records | python-files (D) | 0 / 1 | N-12 is about 2,600 lines with its CLI; N-19 = the list functions of `netd/adblock.py@ad3758c`, from `get_gravity_update_status` up to the DNS server class. |
+| N-20 | Box resolver and DNS fallback (optional) | changelog (2), there as "N-19" | 0 / 1 | Rows REQ-CL-0244, REQ-CL-0262 and REQ-CL-0299 (changelog) are the box's own resolver management, not a measurement; if M-12 is too big, `netd/dns.py` is cut into M-12 (audit, lookups) and N-20 (fallback, restore). |
 | M-15 | Scheduler: cron and interval parser, next run, retry timing | python-files (D) | 0 / 0 | M-04 is about 1,930 lines; M-15 = `speed/scheduler.py` (also used by the web server). |
 | M-16 | RMBT protocol client | python-files (D) | 0 / 0 | M-08 is about 1,450 lines of Python and 2,900 of C; M-16 = `speed/rmbt/` and `components/open-rmbt/`. |
 | M-17 | Shared HTTP transfer core (optional) | roadmap-1-507 (4), there as "M-15"; readme | 0 / 0 | Multi-stream worker pool and per-socket interface binding written and tested once for M-06, M-07, M-10 and M-04 (REQ-RM-0026, -0027, REQ-RE-0193 per the readme part, and REQ-NH-0009 per `other-docs.md`). If not taken, the rows stay with M-06 and M-04. |
@@ -122,11 +122,12 @@ VPN, driver finder, updater, storage guard, USB tethering on OpenWrt, RouterOS c
    `parts/python-files.md`. The workplan part (1) proposed the same alternative; its other option (one owner per file,
    the rest as "uses") is what M3 records. F-01 confirms the reading.
 2. **Moves out of the package the plan names** (python-files C, each with its reason there): `netd/upnp_wan.py` N-11 to M-03;
-   `netd/geoip.py@ad3758c:154-214` to N-07; `netd/interfaces.py@ad3758c:666-813` to M-12 and `847-1070` to M-01;
-   `report/llm_bundle.py@ad3758c:412-620` to M-12; `netd/services.py` pppd parts to N-05 and miniupnpd/prefix delegation to N-11;
-   `common/heal.py@ad3758c:1004-1310` to P-02; `setup.sh@ad3758c:393-454` to P-03; translation tables in code to C-06;
+   `netd/geoip.py@ad3758c` regulatory-domain functions to N-07; the background public-address functions of
+   `netd/interfaces.py@ad3758c` to M-12 and its first-hop and ping-target functions to M-01; the NAT, STUN and DNS functions
+   of `report/llm_bundle.py@ad3758c` to M-12; `netd/services.py` pppd parts to N-05 and miniupnpd/prefix delegation to N-11;
+   `common/heal.py@ad3758c` stable updates to P-02; the password part of `setup.sh@ad3758c` to P-03; translation tables in code to C-06;
    the `bin/` sub-CLIs to their subsystem packages; the `os/` files to N-01, P-11, P-06, P-03, M-13 and S-13; themes to P-09.
-3. **`netd/wifi_share.py`** (testing 4): DHCP guard (`132-251`) N-05, the rest N-08; M3 gives the file to N-08.
+3. **`netd/wifi_share.py`** (testing 4): DHCP guard functions N-05, the rest N-08; M3 gives the file to N-08.
 4. **Box identity** (readme): REQ-RE-0169 is owned by C-01 (made once at first start, stored with the settings); S-12 is the
    alternative.
 5. **Self-heal path** (roadmap-1-507 note): the roadmap names `nmb/report/self_heal.py`, the work plan `common/heal.py`;
@@ -602,7 +603,9 @@ others prove their own REQ-TS row. Splitting the row in the native `TESTING.md` 
 
 Every file of `parts/python-files.md` (351 files of `git ls-tree ad3758c`, without `docs/` and the top-level `*.md`).
 *Package* is the package that ports most of the file's lines; *Also cut to* lists the other packages that `python-files.md`
-gives line ranges of the same file (rows by line count). `check.sh` fails when a file is missing here or listed twice.
+gives a part of the same file, by line range or by function, section or directive (by line count where a count is given;
+the service units' user, capability and sandbox lines go to P-04 and carry no count). `check.sh` fails when a file is
+missing here or listed twice.
 
 | File | Package | Also cut to |
 | :--- | :--- | :--- |
@@ -827,7 +830,7 @@ gives line ranges of the same file (rows by line count). `check.sh` fails when a
 | `os/99-nmb-performance.conf` | N-01 | - |
 | `os/net-detect.sh` | S-10 | - |
 | `os/nic-tune.sh` | N-01 | - |
-| `os/nmb-collector.service` | S-13 | P-04 (6) |
+| `os/nmb-collector.service` | S-13 | P-04 |
 | `os/nmb-guard.nft` | N-02 | - |
 | `os/nmb-wait-online.conf` | P-10 | - |
 | `os/ooni-resolv.conf` | M-13 | - |
@@ -838,31 +841,31 @@ gives line ranges of the same file (rows by line count). `check.sh` fails when a
 | `os/openrc/nmb-web` | P-10 | - |
 | `os/storage-setup.sh` | P-11 | - |
 | `setup.sh` | P-11 | P-03 (62) |
-| `systemd/nmb-adblock-update.service` | P-10 | P-04 (2) |
+| `systemd/nmb-adblock-update.service` | P-10 | P-04 |
 | `systemd/nmb-adblock-update.timer` | P-10 | - |
-| `systemd/nmb-adblock.service` | P-10 | P-04 (8) |
-| `systemd/nmb-db.service` | P-10 | P-04 (2) |
-| `systemd/nmb-guard.service` | P-10 | - |
-| `systemd/nmb-heal.service` | P-10 | P-04 (3) |
+| `systemd/nmb-adblock.service` | P-10 | P-04 |
+| `systemd/nmb-db.service` | P-10 | P-04 |
+| `systemd/nmb-guard.service` | P-10 | P-04 |
+| `systemd/nmb-heal.service` | P-10 | P-04 |
 | `systemd/nmb-heal.timer` | P-10 | - |
-| `systemd/nmb-invasive-log.service` | P-10 | P-04 (2) |
+| `systemd/nmb-invasive-log.service` | P-10 | P-04 |
 | `systemd/nmb-invasive-log.timer` | P-10 | - |
-| `systemd/nmb-iperf3.service` | P-10 | P-04 (2) |
-| `systemd/nmb-maintain.service` | P-10 | P-04 (2) |
+| `systemd/nmb-iperf3.service` | P-10 | P-04 |
+| `systemd/nmb-maintain.service` | P-10 | P-04 |
 | `systemd/nmb-maintain.timer` | P-10 | - |
-| `systemd/nmb-netd.service` | P-10 | P-04 (13) |
-| `systemd/nmb-ooni.service` | P-10 | P-04 (4) |
+| `systemd/nmb-netd.service` | P-10 | P-04 |
+| `systemd/nmb-ooni.service` | P-10 | P-04 |
 | `systemd/nmb-ooni.timer` | P-10 | - |
-| `systemd/nmb-probe.service` | P-10 | P-04 (13) |
-| `systemd/nmb-report.service` | P-10 | P-04 (7) |
+| `systemd/nmb-probe.service` | P-10 | P-04 |
+| `systemd/nmb-report.service` | P-10 | P-04 |
 | `systemd/nmb-report.timer` | P-10 | - |
-| `systemd/nmb-snapshot.service` | P-10 | P-04 (2) |
+| `systemd/nmb-snapshot.service` | P-10 | P-04 |
 | `systemd/nmb-snapshot.timer` | P-10 | - |
-| `systemd/nmb-speed.service` | P-10 | P-04 (7) |
-| `systemd/nmb-telegram.service` | P-10 | P-04 (9) |
-| `systemd/nmb-tune.service` | P-10 | - |
-| `systemd/nmb-usb-import@.service` | P-10 | - |
-| `systemd/nmb-web.service` | P-10 | P-04 (12) |
+| `systemd/nmb-speed.service` | P-10 | P-04 |
+| `systemd/nmb-telegram.service` | P-10 | P-04 |
+| `systemd/nmb-tune.service` | P-10 | P-04 |
+| `systemd/nmb-usb-import@.service` | P-10 | P-04 |
+| `systemd/nmb-web.service` | P-10 | P-04 |
 | `systemd/nmb.target` | P-10 | - |
 | `tests/_box_isolation.py` | F-06 | - |
 | `tests/test_adblock.py` | N-12 | - |

@@ -21,28 +21,41 @@ Read in full for this register (package F-03; the reading proof is `docs/briefs/
 - the private package list of 2026-11-11, written by this package: for each open security category, the packages
   that must also respect it, next to the private audit items. It stays outside every repository too.
 
-A source is written as `<file>@ad3758c:<line>` (Python repository) or as one of the private names above.
+Added by package F-03b (2026-11-11; the proposal table is `docs/briefs/F-03b.md`): the faults proposed in the package
+briefs of the native repository (`docs/briefs/*.md`), each confirmed in the Python source at `ad3758c`. A brief is
+cited as `docs/briefs/<package>.md section <n> (native repository)`; inside *Correct behaviour* as "brief <package>
+section <n>". A proposal that shows a fault still present at `ad3758c`
+in an entry whose *Status, Python* is `fixed` becomes a new entry (*Status, Python* `open`) that names the fixed
+entry; the fixed entry's status is not changed (KF-0182's correct behaviour was sharpened by its brief and points to
+the new entry). After the second review of F-03b an existing entry is widened where a proposal needs more than a
+source; each such change is listed in `docs/briefs/F-03b.md` section 7. The briefs read are those committed in their
+worktrees up to 20:16 on 2026-11-11 (the list is in `docs/briefs/F-03b.md` section 1); later briefs are left for the
+next register round (proposed as package F-03c).
+
+A source is written as `<file>@ad3758c:<line>` or `<file>@ad3758c, function <name>` (also `constant` or `route`; Python repository), as a brief of the native repository (above) or
+as one of the private names above.
 
 ## Rules of this register
 
 - **Open security holes by category only.** A security hole that is still open in the Python version is recorded by
-  its category, never with the place, the input or how to use it (roadmap 608). A category holds several private
+  its category, never with the place, the input or how to use it (roadmap 608). A category holds several
   items, and its correct behaviour is written only from the generic rules of Quality Bar 7 (roadmap 587-591) and the
-  rules from fixes, never clause by clause against one item. The specific requirements stay in the private audit:
-  the analyst of the proving package reads the items named under *Source* there, until the hole is fixed or
-  published. A category entry names only its proving package; the packages that must also respect it are kept with
-  the item numbers in the private package list of 2026-11-11, and their analysts read the same items. When the
+  rules from fixes, never clause by clause against one item. The private audit 2026-11-10 holds the specific
+  requirements: the analyst of the proving package reads the category there (*Source* names the private audit and
+  the package briefs by category only), until the hole is fixed or published. A category entry names only its proving package; the private package list of 2026-11-11 names the
+  packages that must also respect it, and their analysts read the same category. When the
   hole is fixed in the Python version or the details are no longer private, the entry may be completed. Fixed holes say what was wrong, as the public CHANGELOG does. Open faults
   that are not security holes never name a place or a mechanism of an open hole either, and an open fault that an
-  outside party could trigger is described by its effect only: its trigger and its code lines stay in the private
-  notes.
+  outside party could trigger is described by its effect only.
 - **No personal or site data** (Quality Bar point 8): the owner's ISP, devices, addresses, places, account names and
   tokens are written generically.
 - **Ids are permanent.** `KF-0001` to `KF-0047` are the roadmap register (lines 610-619), in its order; new entries
   start at `KF-0048`. An id is never reused or renumbered; a fault found to be no fault is marked so, not deleted.
 - **One package proves each fault**; others that must also respect it are listed as "also" (packages: work plan
-  `docs/NATIVE_WORK_PLAN.md` section 3; `S-02` and `U-02` stand for the API-area and Web UI page packages
-  `S-02…S-0n` and `U-02…U-0n` that the integrator splits).
+  `docs/NATIVE_WORK_PLAN.md` section 3, and the packages that the native repository's
+  `docs/requirements/PACKAGE_CHANGES.md` (at `0b638cf`) adds to it, such as the API-area packages `S-03` to `S-09`
+  split from `S-02` and `C-12`, the translation data conversion; `S-02` and `U-02` stand for the API-area and Web UI
+  page packages `S-02…S-0n` and `U-02…U-0n` that the integrator splits, where an entry names no single one of them).
 - **Correct behaviour** is taken from the sources; where a source does not state it, it is derived from the
   roadmap's rules and marked "derived" with the rule and its line. Cases where it is unclear whether something is a
   fault or intended are listed under *Questions for the owner* before the entries, not guessed; an answer is
@@ -62,8 +75,11 @@ A source is written as `<file>@ad3758c:<line>` (Python repository) or as one of 
   record; KF-0219 to KF-0266 faults still open in the Python version that are not security holes; KF-0267 to
   KF-0282 security holes still open in the Python version, by category only; KF-0283 to KF-0290 added after the
   first review of this register (2026-11-11); KF-0291 and KF-0292 added after the second review (2026-11-11);
-  KF-0293 and up added after the third review and the owner's answers (2026-11-11).
-- **Layout.** *Entry format* and *Questions for the owner* (with *Answered by the owner*) stand before *Entries*;
+  KF-0293 and KF-0294 added after the third review and the owner's answers (2026-11-11); KF-0295 to KF-0482 the
+  faults proposed by the package briefs, added by F-03b (2026-11-11); KF-0483 to KF-0495 the parts of fixed entries
+  that the briefs found still open in the Python version, each naming the fixed entry, added after the review of
+  F-03b (2026-11-11); KF-0496 to KF-0498 added after the second review of F-03b (2026-11-11).
+- **Layout.** *Entry format* and *Questions for the owner* (with *Open* and *Answered by the owner*) stand before *Entries*;
   `## Entries` is the last section of the file and holds nothing but entries, so an entry runs from its `### KF-`
   line to the next one or to the end of the file.
 - Machine-checkable later by F-07: every entry has the twelve fields of *Entry format*, in that order.
@@ -94,10 +110,10 @@ Every entry has this form (F-00 brief section 6), the twelve fields in this orde
   `being fixed` or `open`; *Python fix commit* is one or more commit ids or `not recorded in the source`. In these
   four fields a note may follow the value after `; note: `.
 - Citation form: a line of the Python repository is written `<file>@ad3758c:<line>` or
-  `<file>@ad3758c:<first>-<last>`, with the path from the repository root (for example
+  `<file>@ad3758c:<first>-<last>`, or by name as `<file>@ad3758c, function <name>` (also `constant <name>` or `route <path>`), with the path from the repository root (for example
   `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:610`); inside *Correct behaviour* a short form names the document and the
-  line ("roadmap 587", "CHANGELOG 191"). The private notes are cited by name, date and item number only (see
-  *Sources*).
+  line ("roadmap 587", "CHANGELOG 191"). Sources outside the repository are cited by name, date and item number
+  only (see *Sources*).
 - An open security category names only its proving package (see *Rules*).
 
 ## Questions for the owner
@@ -105,7 +121,15 @@ Every entry has this form (F-00 brief section 6), the twelve fields in this orde
 These are not entries yet: it is unclear whether the Python behaviour is a fault or intended. The answers go into
 this register (as an entry, or as a note that it is intended) and into the roadmap.
 
-None is open: questions 1 to 7 are answered (below). A new question gets the next number, 8.
+Question 8 is open (below); questions 1 to 7 are answered. A new question gets the next number, 9.
+
+### Open
+
+- **Question 8, what a text missing also in English shows** (proposed by brief F-05 *For F-03*, native
+  repository): the answer to question 6 says a key still missing at run time shows the English text, visibly marked
+  as untranslated. What does a key show that is missing in English as well? This can happen only for add-on texts,
+  since the build refuses every built-in text that is missing in any language. F-05's case for it (section 3.6)
+  stays `open` until the answer; the answer goes into KF-0048 and KF-0049.
 
 ### Answered by the owner
 
@@ -125,7 +149,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
   KF-0289.
 - **Question 5, which actions need a confirmation:** every Telegram bot command that changes the box needs a
   confirmation tap; destructive ones (factory reset, purge) also need the typed word, as in the Web UI; read-only
-  commands run at once. Written into KF-0075 and KF-0277.
+  commands run at once. Written into KF-0075.
 - **Question 6, what a missing translation shows:** the build refuses every built-in text that is missing in any of
   the 11 languages. A key that is still missing at run time (for example from an add-on) shows the English text,
   visibly marked as untranslated; it is logged and listed in the self-test result and in the diagnostic bundle. It
@@ -150,7 +174,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Privileged helper and updates
 - What went wrong: the update's test run as root overwrote the real settings
-- Correct behaviour: Tests of an update run unprivileged in a sandbox on a copy of the code, with the settings, database, locks, state files, lists, crash reports, bundles, backups and logs all pointed at throwaway files; a test that still reaches a real file fails and the update is refused; afterwards the real settings, secrets copy and boot copy are byte for byte unchanged. A related update path is covered under the category KF-0270.
+- Correct behaviour: Tests of an update run unprivileged in a sandbox on a copy of the code, with the settings, database, locks, state files, lists, crash reports, bundles, backups and logs all pointed at throwaway files; a test that still reaches a real file fails and the update is refused; afterwards the real settings, secrets copy and boot copy are byte for byte unchanged.
 - Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:610; CHANGELOG.md@ad3758c:204; docs/TESTING.md@ad3758c:118; private log review 2026-11-10 (night), update section
 - Python fix commit: bfbba44
 - Package that proves it: P-02 (also F-00: the gate refuses to run tests as root; P-04)
@@ -451,7 +475,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Firewall
 - What went wrong: a firewall that followed only the settings would have cut off a VPN server that was running
 - Correct behaviour: The guard keeps the port of every VPN server that runs, even when the settings say it is off. Owner, 2026-11-11: show and ask: the status shows the mismatch (running while its setting is off), the firewall keeps the running server's port open (a running VPN is never cut off), and the user chooses to stop it or to turn the setting on.
-- Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:614; CHANGELOG.md@ad3758c:191; private audit 2026-11-10, fix progress (firewall); nmb/netd/openvpn.py@ad3758c:372-385 (source analysis: the status reports only whether the server runs)
+- Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:614; CHANGELOG.md@ad3758c:191; private audit 2026-11-10, fix progress (firewall); nmb/netd/openvpn.py@ad3758c, function get_openvpn_status (source analysis: the status reports only whether the server runs)
 - Python fix commit: f43db0c
 - Package that proves it: N-02 (also N-13, N-14, U-02)
 - Spec vector: none yet (F-07)
@@ -916,7 +940,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Clocks
 - What went wrong: Durations, intervals, timeouts and round-trip times were taken from the wall clock in several components (engines, schedules, DynDNS, the DNS cache, GeoIP, netd intervals), so a clock step changed them.
 - Correct behaviour: Every duration, interval and timeout uses a monotonic clock; the wall clock is used only for stored timestamps (roadmap 583, an example of Quality Bar 6; the components beyond that example derived: Quality Bar 6, roadmap 581, no fragile timing is carried over).
-- Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:583; private audit 2026-11-10, engines item 21 and netd item L2
+- Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:583; private audit 2026-11-10, engines item 21 and netd item L2; nmb/common/secret_keep.py@ad3758c, function update; docs/briefs/C-04.md section 9.1 C04-N2 (native repository); nmb/common/own_action.py@ad3758c:51; nmb/common/own_action.py@ad3758c:72; nmb/common/own_action.py@ad3758c:92-94; docs/briefs/C-07.md section 9 C07-F1 (native repository); nmb/netd/detector.py@ad3758c:80; docs/briefs/F-04d.md section 10 (native repository); nmb/netd/dns.py@ad3758c, function ensure_dns_fallback; docs/briefs/M-12.md section 11 NF-15 (native repository)
 - Python fix commit: not recorded in the source
 - Package that proves it: C-05 (also M-01, M-04, M-09, N-16, N-12)
 - Spec vector: none yet (F-07)
@@ -991,7 +1015,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Reports
 - What went wrong: The chart functions default to `lang="hu"`.
 - Correct behaviour: No language default in report code: the language is always passed; every chart label exists in every language (roadmap 602, 604). Owner, 2026-11-11: the build refuses a built-in text missing in any language; a text still missing at run time shows the English text visibly marked as untranslated, is logged and is listed in the self-test result and the diagnostic bundle, never a silent fallback to any language (KF-0048).
-- Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:604; nmb/report/svg_charts.py@ad3758c:142; nmb/report/svg_charts.py@ad3758c:157; nmb/report/svg_charts.py@ad3758c:251; private audit 2026-11-10, Hungary-bound defaults
+- Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:604; nmb/report/svg_charts.py@ad3758c:142; nmb/report/svg_charts.py@ad3758c:157; nmb/report/svg_charts.py@ad3758c:251; private audit 2026-11-10, Hungary-bound defaults; nmb/web/server.py@ad3758c, function WebRequestHandler.do_GET; docs/briefs/F-04e.md section 10 item 9 (native repository)
 - Python fix commit: not recorded in the source
 - Package that proves it: R-03 (also C-06)
 - Spec vector: none yet (F-07)
@@ -1576,7 +1600,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Ookla engine
 - What went wrong: Deleting the pause file alone did not end the pause until the web server restarted. At ad3758c the loader returns without a change when the file is missing, so the pause held in memory stays.
 - Correct behaviour: When an in-memory pause is cleared on disk, the running process reloads it, or a command clears it (roadmap 691).
-- Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:691; nmb/speed/anti_ban.py@ad3758c:137-145; nmb/speed/anti_ban.py@ad3758c:112-121
+- Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:691; nmb/speed/anti_ban.py@ad3758c, function _load_cooldown; nmb/speed/anti_ban.py@ad3758c, function clear_quarantine
 - Python fix commit: not recorded in the source
 - Package that proves it: M-05 (also M-10)
 - Spec vector: none yet (F-07)
@@ -1979,9 +2003,9 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 ### KF-0123: Event severities that the schema refuses or never stores
 
 - Area: Events
-- What went wrong: The USB fallback events used severity `warning`, which the schema refuses, so they were never stored; the bundle looked for `warning`, `error` and `critical`, which are never stored, so it never listed a warning. At ad3758c the storage guard still writes `warning` (`nmb/common/storage_guard.py@ad3758c:250` against the CHECK in `nmb/db/schema.sql@ad3758c:102`), so its cleanup event is lost.
+- What went wrong: The USB fallback events used severity `warning`, which the schema refuses, so they were never stored; the bundle looked for `warning`, `error` and `critical`, which are never stored, so it never listed a warning. At ad3758c the storage guard still writes `warning` (`nmb/common/storage_guard.py@ad3758c`, function `run`, against the CHECK in `nmb/db/schema.sql@ad3758c:102`), so its cleanup event is lost.
 - Correct behaviour: Severities are one typed list (`debug`, `info`, `warn`, `crit`); a test inserts every event kind into the real schema (TESTING 180).
-- Source: CHANGELOG.md@ad3758c:177; docs/TESTING.md@ad3758c:180; private audit 2026-11-10, reports item 8; nmb/common/storage_guard.py@ad3758c:250; nmb/db/schema.sql@ad3758c:102
+- Source: CHANGELOG.md@ad3758c:177; docs/TESTING.md@ad3758c:180; private audit 2026-11-10, reports item 8; nmb/common/storage_guard.py@ad3758c, function run; nmb/db/schema.sql@ad3758c:102; nmb/probe/ooni.py@ad3758c:689; docs/briefs/F-04c.md section 8 N1 (native repository)
 - Python fix commit: c72fa91, 96832e9
 - Package that proves it: C-07 (also C-08, R-04, F-04)
 - Spec vector: none yet (F-07)
@@ -2114,7 +2138,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 ### KF-0132: Files the installer or README needs missing from the repository
 
 - Area: Packaging
-- What went wrong: The USB settings template and the boot drop-in were kept out of the repository by an ignore rule, so an update was rightly refused.
+- What went wrong: The USB settings template and the boot drop-in were excluded from the repository by an ignore rule, so an update was rightly refused.
 - Correct behaviour: A build check fails when a file the installer installs or the documentation names is missing (CHANGELOG 200).
 - Source: CHANGELOG.md@ad3758c:200
 - Python fix commit: b56b0c4
@@ -2865,8 +2889,8 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Network daemon
 - What went wrong: The network daemon's loop went silent for 8 minutes while a cable moved, and USB never took over.
-- Correct behaviour: A loop part that takes longer than its limit is logged, and stacks can be dumped on request (porting plan 7D 615-618).
-- Source: CHANGELOG.md@ad3758c:276
+- Correct behaviour: A loop part that takes longer than its limit is logged, with a warning as soon as the limit passes while the part still runs and a second line when it ends, and stacks can be dumped on request (porting plan 7D 615-618; brief C-03 section 3.10, PF-31). The warning while the part still runs is not in the Python fix: KF-0498.
+- Source: CHANGELOG.md@ad3758c:276; docs/briefs/C-03.md section 12.2 item 8 (native repository)
 - Python fix commit: beb53cd
 - Package that proves it: N-03 (also C-03)
 - Spec vector: none yet (F-07)
@@ -3105,7 +3129,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Backup and restore
 - What went wrong: Restoring a backup could lose the measurements (the old `-wal` journal was replayed onto the new file); a restored config was overwritten by the older boot copy and readable only by root; an uploaded backup was readable by every user.
-- Correct behaviour: Databases are restored through SQLite's backup API; the restored config wins and is readable by the services only; uploaded files are private; a truncated upload changes nothing (TESTING 170).
+- Correct behaviour: Databases are restored through SQLite's backup API; the restored config wins and is readable by the services only; uploaded files are readable by their owner only; a truncated upload changes nothing (TESTING 170).
 - Source: CHANGELOG.md@ad3758c:311; CHANGELOG.md@ad3758c:312; docs/TESTING.md@ad3758c:170
 - Python fix commit: 8ae01b0, 8aa0efc
 - Package that proves it: P-03 (also C-02)
@@ -3465,8 +3489,8 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 
 - Area: Ping probe
 - What went wrong: Round-trip times can be wrong, and replies that are not the probe's own can be counted.
-- Correct behaviour: RTT from kernel or monotonic timestamps, never the wall clock (Quality Bar 6, roadmap 583); a reply is counted only when it answers one of the probe's own requests, and at most once, so a late reply is not a second sample (derived: Quality Bar 6, roadmap 583).
-- Source: private audit 2026-11-10, engines item 11; source analysis
+- Correct behaviour: RTT from kernel or monotonic timestamps, never the wall clock (Quality Bar 6, roadmap 583); a sample comes only from a reply matched to one of the probe's own requests, one sample per request (derived: Quality Bar 6, roadmap 583).
+- Source: private audit 2026-11-10, engines item 11; source analysis; docs/briefs/F-04b.md section 9 item 3 (native repository; source analysis)
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-01
 - Spec vector: none yet (F-07)
@@ -3496,7 +3520,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Speed engines
 - What went wrong: Runs that ended early or failed in part were stored with status ok for several engines.
 - Correct behaviour: A run is ok only when every direction it claims was measured; otherwise it is partial or failed with its reason (derived: QB6 581).
-- Source: private audit 2026-11-10, engines item 8; CHANGELOG.md@ad3758c:145
+- Source: private audit 2026-11-10, engines item 8; CHANGELOG.md@ad3758c:145; docs/briefs/M-06.md section 11 NF-3 (native repository); docs/briefs/M-10.md section 12, existing entries (native repository)
 - Python fix commit: 428b608; note: RTR only
 - Package that proves it: M-04 (also M-06, M-07, M-08, M-10)
 - Spec vector: none yet (F-07)
@@ -3509,9 +3533,9 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 ### KF-0225: Failed Ookla or RTR run silently starts a second full test
 
 - Area: Speed engines
-- What went wrong: A failed Ookla or RTR run starts a second full test without saying so, with a misleading error.
-- Correct behaviour: No hidden retry: a retry is visible in the row and counts against the data cap and Ookla's hourly limit (derived: roadmap 690).
-- Source: private audit 2026-11-10, engines item 10
+- What went wrong: A failed Ookla or RTR run starts a second full test without saying so, with a misleading error; the second test can be another client, whose result is stored under the engine's name.
+- Correct behaviour: No stand-in client: a run is measured only by the engine its row names, one run gives one row, and a failed run is a failed row of that engine (brief M-08 section 7 F-M08-10; brief M-10 section 12 NF-M10-4). No hidden retry: a retry by the same engine is visible in the row and counts against the data cap and Ookla's hourly limit (derived: roadmap 690).
+- Source: private audit 2026-11-10, engines item 10; docs/briefs/M-08.md section 7 F-M08-10 (native repository); docs/briefs/M-10.md section 12 NF-M10-4 (native repository); docs/briefs/M-10.md section 12, existing entries (native repository)
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-10 (also M-08, M-05)
 - Spec vector: none yet (F-07)
@@ -3556,7 +3580,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: iPerf3
 - What went wrong: The upload figure comes from the sender side, and a UDP test reports the offered 1 Mbit/s as its result.
 - Correct behaviour: Throughput from the receiver side; a UDP result is the received rate with its loss (derived: Quality Bar 6, roadmap 581, a wrong result is not carried over, and roadmap 4.8, line 213, the native client measures throughput, jitter and packet loss; the iPerf3 documentation, which says which side's figures are the measured ones, is the outside source the M-09 analyst reads and records).
-- Source: private audit 2026-11-10, engines item 13
+- Source: private audit 2026-11-10, engines item 13; docs/briefs/M-09.md section 5 N5 and section 3.3 (native repository)
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-09
 - Spec vector: none yet (F-07)
@@ -3586,7 +3610,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Data caps
 - What went wrong: A missing interface counts 0 and then adds the lifetime counter; a counter reset gives a negative amount; the cap is checked only before a cycle; tests from the Web UI, the port check and traceroute are not counted.
 - Correct behaviour: Usage is the sum of non-negative deltas of the measured interface; a reset starts a new delta; the cap is checked between engines; every test counts (CHANGELOG 35: counted from the data the tests themselves move on the measured interface, and tests started by hand count; the deltas, the reset and the check between engines derived: Quality Bar 6, roadmap 581, no wrong result is carried over). Owner, 2026-11-11: there is no default cap number; on a metered link without a cap decision speed tests wait until the user sets a cap or says unlimited, scheduled ones and those started by a person alike (the person is told why it waits); ping keeps running (KF-0294).
-- Source: private audit 2026-11-10, engines item 14
+- Source: private audit 2026-11-10, engines item 14; docs/briefs/M-11.md section 11 NF-21 (native repository)
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-05
 - Spec vector: none yet (F-07)
@@ -3601,7 +3625,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Measurement link
 - What went wrong: Some engines bind to the device only after connecting, or run unbound when the chosen link has no address, while the row names the asked interface.
 - Correct behaviour: Bind before connect; without an address the engine leaves through the default route and the row describes that link (roadmap 452).
-- Source: private audit 2026-11-10, engines item 4; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:452; CHANGELOG.md@ad3758c:241; CHANGELOG.md@ad3758c:267
+- Source: private audit 2026-11-10, engines item 4; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:452; CHANGELOG.md@ad3758c:241; CHANGELOG.md@ad3758c:267; nmb/speed/runner.py@ad3758c:185; docs/briefs/M-09.md section 5 N8 (native repository); nmb/speed/ookla.py@ad3758c, function run_official_ookla; docs/briefs/M-10.md section 12 NF-M10-17 (native repository); nmb/report/llm_bundle.py@ad3758c:435; nmb/report/llm_bundle.py@ad3758c:570; nmb/report/llm_bundle.py@ad3758c:580; nmb/netd/interfaces.py@ad3758c:666; docs/briefs/M-12.md section 11 NF-5 (native repository)
 - Python fix commit: d6202e4, 093dfa2, f3863f1; note: parts
 - Package that proves it: M-04 (also M-06, M-07, M-08)
 - Spec vector: none yet (F-07)
@@ -3614,8 +3638,8 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 ### KF-0232: Port check reports throttling it cannot prove
 
 - Area: Port check
-- What went wrong: The port neutrality check can report "throttled" or "blocked" from a protocol mismatch, an invented baseline, timeouts and third-party targets.
-- Correct behaviour: A port is reported only as what was measured against a server that speaks that protocol, with "unknown" when it cannot be told (derived: QB6 581).
+- What went wrong: The port neutrality check can report "throttled" or "blocked" for a port it has not measured.
+- Correct behaviour: A port is reported only as what was measured, with "unknown" when it cannot be told (derived: QB6 581).
 - Source: private audit 2026-11-10, engines item 17
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-11
@@ -3901,9 +3925,9 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Flash and database
 - What went wrong: Writability tests write files to the boot drive every 3 minutes, and a full integrity check of the live database runs twice every 3 minutes, plus network diagnostics, during measurements.
 - Correct behaviour: Flash writes are rare and small; heavy checks do not run during a measurement (porting plan 7D 617).
-- Source: private audit 2026-11-10, reports item 15
+- Source: private audit 2026-11-10, reports item 15; nmb/report/crash_trap.py@ad3758c, function get_boot_drive_crashes_target; nmb/report/crash_trap.py@ad3758c, function list_crash_reports; nmb/report/crash_trap.py@ad3758c, function read_crash_report; nmb/report/crash_trap.py@ad3758c, function clear_crash_reports; docs/briefs/C-03.md section 12.2 item 8 (native repository)
 - Python fix commit: not recorded in the source; note: not fixed
-- Package that proves it: C-03 (also C-02)
+- Package that proves it: C-03 (also C-02, R-05)
 - Spec vector: none yet (F-07)
 - Native test, Go: none yet
 - Native test, C: none yet (step 2)
@@ -3916,7 +3940,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Database
 - What went wrong: The snapshot opens its source read-write (it can create an empty database and back it up over the good one), falls back silently to another location where its copy does not last, and a restore aborts on "not a database".
 - Correct behaviour: The source is opened read-only; there is no silent fallback; a bad file is refused with a message and nothing is overwritten (derived: roadmap 634).
-- Source: private audit 2026-11-10, reports item 16
+- Source: private audit 2026-11-10, reports item 16; nmb/db/database.py@ad3758c, function connect; nmb/db/database.py@ad3758c, function restore; docs/briefs/C-02.md section 12 NF-3 (native repository)
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: C-02
 - Spec vector: none yet (F-07)
@@ -3991,7 +4015,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Logging
 - What went wrong: The developer log lives on a RAM disk and is lost at reboot; only a small part is kept on the card.
 - Correct behaviour: Crash evidence and the last log lines survive a reboot (porting plan 7D 618).
-- Source: private data-quality list 2026-11-10, missing items; docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:618
+- Source: private data-quality list 2026-11-10, missing items; docs/ROUTER_PORTING_AND_DEPYTHONIZATION_PLAN.md@ad3758c:618; nmb/report/crash_trap.py@ad3758c, constant CRASH_DIR; docs/briefs/C-03.md section 12.2 item 8 (native repository)
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: C-03
 - Spec vector: none yet (F-07)
@@ -4139,9 +4163,9 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 ### KF-0267: Privilege boundary between the service user and root (category)
 
 - Area: Privileged components and files
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Quality Bar 7 at the privilege boundary: everything a less privileged user can write, name or replace is outside input to a privileged component, validated by type, length and allowed values; no path leaves its directory; no command is built from it; errors fail closed (roadmap 587); privileged code never runs anything from `/tmp` or from a folder the service user can write (roadmap 679), and its helper arguments are validated (roadmap 680).
-- Source: private audit 2026-11-10, privileged-operations items 4, 5, 15 and 17; reports item 1; netd items M8 and L8; engines item 19
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: P-06
 - Spec vector: none yet (F-07)
@@ -4149,14 +4173,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0268: Files from outside: uploads, restores and imports (category)
 
 - Area: Backup, restore, USB import, uploads
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Every uploaded, restored or imported file is outside input (roadmap 587): validated by type, length and allowed values before it is used; no path leaves its directory; no command is built from it; errors fail closed; every parser that reads such a file is fuzz-tested (roadmap 588).
-- Source: private audit 2026-11-10, privileged-operations items 6, 7 and 14; web items 3a and 15
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: P-03
 - Spec vector: none yet (F-07)
@@ -4164,14 +4188,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0269: Services with more privilege than they need (category)
 
 - Area: Services and sandboxing
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Daemons run as their own unprivileged user with only the capabilities they need, under systemd or procd sandboxing (read-only system, private `/tmp`, no new privileges, a system call filter where the platform has it) (roadmap 589, 6B.5); the web server does not run as root (roadmap 681).
-- Source: private audit 2026-11-10, privileged-operations items 10 and 11; engines item 3
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: P-04
 - Spec vector: none yet (F-07)
@@ -4179,14 +4203,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0270: Integrity of updates and installed programs (category)
 
 - Area: Updates and installed programs
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Updates and firmware are accepted only with a valid signature (roadmap 589, 6B.3); the checksum of every downloaded binary is verified, and nothing is run from `/tmp` or from a folder the service user can write (roadmap 679); errors fail closed (roadmap 587).
-- Source: private audit 2026-11-10, privileged-operations items 8, 9, 16 and 17
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: P-02
 - Spec vector: none yet (F-07)
@@ -4194,14 +4218,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0271: Transport security of the box's connections (category)
 
 - Area: Outgoing and incoming connections
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Secrets never reach logs, URLs, command lines or the UI, and errors fail closed (roadmap 587); a connection that carries secrets, results or data the box acts on is protected and verified (derived: roadmap 587, 589); the external scan before each release checks TLS (roadmap 591).
-- Source: private audit 2026-11-10, reports items 5 and 20; bot and collector items H4 and L3; engines items 6 and 22; netd items M1 and L4; web item 17
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: S-12
 - Spec vector: none yet (F-07)
@@ -4209,14 +4233,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0272: Values written into the configuration of system daemons (category)
 
 - Area: Configuration generators
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Every value is validated by type, length and allowed values before it is used; no command is built from a value (no shell, arguments as a list); no path leaves its directory; errors fail closed (roadmap 587); every configuration parser and writer is fuzz-tested (roadmap 588).
-- Source: private audit 2026-11-10, netd items M1, M6, M7 and L7; web item 12; reports item 7 (one part)
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: C-01
 - Spec vector: none yet (F-07)
@@ -4224,14 +4248,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0273: Web UI and API request handling (category)
 
 - Area: Web server and API
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Every request is outside input, validated by type, length and allowed values; authentication and authorisation are checked on every endpoint; errors fail closed (roadmap 587); the Web UI has a strict Content Security Policy, CSRF protection, secure cookies or headers, rate-limited login and constant-time comparisons (roadmap 589); the HTTP parser is fuzz-tested (roadmap 588).
-- Source: private audit 2026-11-10, web items 6, 8, 13 (one part), 14, 16, 17 and 19; engines item 25
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: S-01
 - Spec vector: none yet (F-07)
@@ -4239,14 +4263,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0274: Network exposure and packet filtering (category)
 
 - Area: Firewall, listeners and packets from the network
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
-- Correct behaviour: Nothing listens on the WAN side unless the owner turned it on; every packet from outside (DHCP, DNS, PPPoE, UPnP) is outside input, validated by type, length and allowed values; errors fail closed (roadmap 587); local service ports answer only on the networks they serve, on IPv4 and IPv6 (owner, 2026-11-11, trust of the uplink network, which replaces the address-class wording of roadmap 681); an external scan from the LAN and the WAN side before each release (roadmap 591).
-- Source: private audit 2026-11-10, web item 5; netd items H1 (one part), M4, M5 and M12; engines item 3
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
+- Correct behaviour: Nothing listens on the WAN side unless the owner turned it on; every packet from outside (DHCP, DNS, PPPoE, UPnP) is outside input, validated by type, length and allowed values; errors fail closed (roadmap 587); local service ports answer only on the networks they serve, on IPv4 and IPv6 (owner, 2026-11-11, trust of the uplink network); an external scan from the LAN and the WAN side before each release (roadmap 591).
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: N-02
 - Spec vector: none yet (F-07)
@@ -4254,14 +4278,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0275: Secrets and personal data (category)
 
 - Area: Secrets and personal data
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Secrets never reach logs, URLs, command lines, crash reports, diagnostic bundles or the UI (roadmap 587); everything that leaves the box or lands on the boot partition is masked by the one shared list of secrets and personal details (roadmap 4.24, 682); the repository and the built image are scanned for secrets (roadmap 588), and the image is checked for leftover keys and test accounts before each release (roadmap 591).
-- Source: private audit 2026-11-10, privileged-operations items 12, 13 and 18; reports items 4, 6, 11, 14 and 18; netd items L1 and L3; bot and collector items L5 and M8; web item 19; engines item 16
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: C-04
 - Spec vector: none yet (F-07)
@@ -4269,14 +4293,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0276: Central collector server and its client connection (category)
 
 - Area: Central collector
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: The collector is a network-facing server, and the box's connection to it carries results and credentials: every point of Quality Bar 7 (roadmap 587-591) applies to the server and to the client as it does to the box's own Web UI (KF-0273); the protocol stays as roadmap 4.25 describes it (lines 391-392).
-- Source: private audit 2026-11-10, bot and collector items H4, M1, M6, L3 and L4
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: S-13
 - Spec vector: none yet (F-07)
@@ -4284,14 +4308,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0277: Telegram bot commands (category)
 
 - Area: Telegram bot
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
-- Correct behaviour: Authentication and authorisation are checked on every bot command; every argument is outside input, validated by type, length and allowed values; secrets never reach the chat; errors fail closed (roadmap 587). Owner, 2026-11-11: every bot command that changes the box needs a confirmation tap, and the destructive ones (factory reset, purge) also need the typed word, as in the Web UI; read-only commands run at once.
-- Source: private audit 2026-11-10, bot and collector items M2 (one part), M8 (one part) and L5 (one part)
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
+- Correct behaviour: Authentication and authorisation are checked on every bot command; every argument is outside input, validated by type, length and allowed values; secrets never reach the chat; errors fail closed (roadmap 587).
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: S-11
 - Spec vector: none yet (F-07)
@@ -4299,14 +4323,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0278: Resource limits of network-facing services (category)
 
 - Area: Network-facing services
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: A network-facing service stays available: what one client can make it use is bounded, and one bad client or one error never stops the service for the others (derived: roadmap 587, "errors fail closed", and the rule of KF-0024); every parser on such a service is fuzz-tested (roadmap 588).
-- Source: private audit 2026-11-10, web items 4 and 15; bot and collector item M6; netd items M3, M10 and L4; engines item 22
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: S-01
 - Spec vector: none yet (F-07)
@@ -4314,14 +4338,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0279: Errors that fail open (category)
 
 - Area: Error handling
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Errors fail closed (roadmap 587): when something a security decision depends on fails, the component stays in the safer state and says so; it never continues in a weaker one.
-- Source: private audit 2026-11-10, reports item 13; web items 5 and 13 (one part); engines item 16
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: C-01
 - Spec vector: none yet (F-07)
@@ -4329,14 +4353,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0280: Network tools a user can start (category)
 
 - Area: Measurement and diagnostic tools
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: A tool a user can start from the Web UI, the CLI or the bot is checked like any other action: its arguments are outside input, validated by type, length and allowed values; it is authorised for that person; nothing it opens listens on the WAN side unless the owner turned it on; secrets it sees never leave the box (roadmap 587).
-- Source: private audit 2026-11-10, engines items 3, 16 and 25; web item 6 (one part)
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-11
 - Spec vector: none yet (F-07)
@@ -4344,14 +4368,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0281: Outside data the box downloads and acts on (category)
 
 - Area: Downloaded lists and lookups
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Downloaded lists, directories and lookups are outside input: validated by type, length and allowed values before use; no command is built from them; errors fail closed (roadmap 587); their parsers are fuzz-tested (roadmap 588); transport as in KF-0271.
-- Source: private audit 2026-11-10, engines items 6 and 22; netd items M1, L4, L6 and L7
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-12
 - Spec vector: none yet (F-07)
@@ -4359,14 +4383,14 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0282: Authentication and credentials on every surface (category)
 
 - Area: Authentication
-- What went wrong: Open security faults of this category exist in the Python version. Details are private until they are fixed (roadmap 608).
+- What went wrong: Open security faults of this category exist in the Python version; they are listed by category only until they are fixed (roadmap 608).
 - Correct behaviour: Authentication and authorisation are checked on every endpoint, bot command and client connection, and credentials never reach logs, URLs or command lines (roadmap 587); rate-limited login and constant-time comparisons on every surface (roadmap 589); every device has its own login (roadmap 592).
-- Source: private audit 2026-11-10, web item 17; bot and collector item M1; netd item M10; reports items 13 and 20
+- Source: private audit 2026-11-10 and the package briefs (native repository), by category only
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: S-01
 - Spec vector: none yet (F-07)
@@ -4374,7 +4398,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Native test, C: none yet (step 2)
 - Status, Go: open
 - Status, C: not started
-- Status, Python: open; note: security, details private until fixed
+- Status, Python: open; note: security, listed by category only until fixed
 
 ### KF-0283: Licence file and notices of bundled code missing
 
@@ -4411,7 +4435,7 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Area: Web server and API
 - What went wrong: Many endpoints report a failure as HTTP 200 with `"status": "error"`, and the dashboard relies on it.
 - Correct behaviour: Real HTTP status codes (2xx only for success, 4xx for a refused or invalid request, 5xx for a failure of the box) and one error body (`code`, a translation key, detail); the native Web UI and `nmb-cli` are written for this; the collector protocol and the `nmb-cli` JSON command names stay as they are; the difference is listed in the changelog under Changed (work plan 7 point 1).
-- Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:757; docs/NATIVE_WORK_PLAN.md@ad3758c:306-310
+- Source: docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:757; docs/NATIVE_WORK_PLAN.md@ad3758c:306-310; nmb/web/server.py@ad3758c, function WebRequestHandler.do_GET; nmb/web/server.py@ad3758c, function WebRequestHandler.do_POST; docs/briefs/F-04e.md section 10 item 10 (native repository)
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: S-01 (also S-02, U-01, S-10)
 - Spec vector: none yet (F-07)
@@ -4484,9 +4508,9 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 ### KF-0290: Data written into the home folder of whoever runs the code
 
 - Area: Files and folders
-- What went wrong: When their data folder cannot be written, components fall back to a folder under the home folder of the user that runs them, for example crash reports and diagnostic bundles (`nmb/report/crash_trap.py@ad3758c:29`, `35`, `375`) and the diagnostic snapshot (`nmb/report/invasive_logger.py@ad3758c:46`). Data then lands outside the box's data folders, where the rest of NMB does not look, and a run on another machine (a test on the development PC) writes into that user's home folder.
+- What went wrong: When their data folder cannot be written, components fall back to a folder under the home folder of the user that runs them, for example crash reports and diagnostic bundles (`nmb/report/crash_trap.py@ad3758c`, function `create_diagnostic_bundle`, and its `FALLBACK_CRASH_DIR`) and the diagnostic snapshot. Data then lands outside the box's data folders, where the rest of NMB does not look, and a run on another machine (a test on the development PC) writes into that user's home folder.
 - Correct behaviour: Every component takes its folders from one path table; when a folder cannot be written it reports the error and writes nowhere else (derived: roadmap 584, right by design, not because of a file on the developer's PC); tests point every path at throwaway folders and fail when anything is written outside them (KF-0047). The analyst of C-03 finds every such fallback in the Python code before the native paths are fixed.
-- Source: nmb/report/crash_trap.py@ad3758c:29; nmb/report/crash_trap.py@ad3758c:35; nmb/report/crash_trap.py@ad3758c:375; nmb/report/invasive_logger.py@ad3758c:46; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:584; project memory note (a unit test wrote a file into the home folder), confirmed by this source analysis
+- Source: nmb/report/crash_trap.py@ad3758c, constant FALLBACK_CRASH_DIR; nmb/report/crash_trap.py@ad3758c, function create_diagnostic_bundle; docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:584; project memory note (a unit test wrote a file into the home folder), confirmed by this source analysis; nmb/common/backup.py@ad3758c, function _ensure_backup_dir; docs/briefs/C-03.md section 12.2 item 8 (native repository); docs/briefs/F-04c.md section 8 N15 (native repository)
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: C-03 (also R-05, P-01, P-03, F-06)
 - Spec vector: none yet (F-07)
@@ -4549,6 +4573,3066 @@ Answered on 2026-11-11. Each answer is written into the entries it decides, as "
 - Source: docs/TESTING.md@ad3758c:388; CHANGELOG.md@ad3758c:35; nmb/config.py@ad3758c:693; nmb/config.py@ad3758c:728-731 (source analysis)
 - Python fix commit: not recorded in the source; note: not fixed
 - Package that proves it: M-05 (also C-01, U-02, S-10, S-11)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0295: New install copied the example settings with placeholder line data
+
+- Area: Configuration
+- What went wrong: A new install copied the example settings file as the real settings. It holds placeholder line data (an ISP name, an account and a circuit id, a contract of 1000/500 Mbit/s), an e-mail recipient at a real, non-reserved domain, a Wi-Fi channel different from the code's default and the factory Web UI password, so a new box judged its line against a plan nobody had entered.
+- Correct behaviour: First start makes the settings from the key registry's defaults and the generated values only; no example file is copied; a shipped example, if any, is generated from the key registry and holds only defaults and comments (brief C-01 section 3.7 NF-1, requirement C01-R01).
+- Source: config/nmb.conf.example@ad3758c:78; config/nmb.conf.example@ad3758c:111-116; config/nmb.conf.example@ad3758c:126; config/nmb.conf.example@ad3758c:142; docs/briefs/C-01.md section 3.7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-01 (also P-11)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0296: Box id not permanent when its file cannot be read or written
+
+- Area: Configuration
+- What went wrong: When the box id file could not be read, a new random id was made and an existing id was replaced; when it could not be written, every call returned another new id; the write used a fixed temporary name.
+- Correct behaviour: The box id is generated only when no id file exists; an existing file that cannot be read is never replaced; a readable file outside the accepted forms is replaced with an event; a failed write gives no id (shown in the status), never a new id per call (brief C-01 section 3.7 NF-2 and section 3.5, requirement C01-R02).
+- Source: nmb/collector/client.py@ad3758c, function box_uid; docs/briefs/C-01.md section 3.7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-01 (also S-12)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0297: Settings values replaced by defaults without a log record
+
+- Area: Configuration
+- What went wrong: Many invalid settings values were replaced by a default or clamped without any log record (the measuring link, the iPerf3 direction, the data cap period, the Wi-Fi share address, the throttle ports, the allowed chat ids, the Ookla server id, unknown mixed-engine items and every clamped number); only the typed integer, float and boolean readers logged.
+- Correct behaviour: Every replacement of a value by its default is logged and listed, also for dropped list items, words outside the allowed set and numbers out of range (brief C-01 section 3.7 NF-3, requirement C01-R03; Phase 0, roadmap 629: "a bad value is logged").
+- Source: nmb/config.py@ad3758c, function load_config; nmb/config.py@ad3758c, function parse_mixed_engines; nmb/config.py@ad3758c, function _TolerantParser._convert; docs/briefs/C-01.md section 3.7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-01
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0298: Damaged live database used at restart and copied over the good copy
+
+- Area: Database
+- What went wrong: At a restart an existing live database file was used without any check, so a live file damaged by a crash was then snapshotted over the good persistent copy.
+- Correct behaviour: An existing live file is checked like a restored file at start; a bad one is refused and kept aside, and the persistent copy is restored (brief C-02 section 12 NF-1 and section 2.8).
+- Source: nmb/db/database.py@ad3758c:366-368; docs/briefs/C-02.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-02
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0299: Factory reset deleted database files that running services kept open
+
+- Area: Database
+- What went wrong: A factory reset without measurements deleted the live and the persistent database files while the services still had them open: the services went on writing into the deleted file, so their rows vanished, and two files then shared one journal name.
+- Correct behaviour: A wipe goes through the store, table by table, while the store's connections stay open, and keeps the id marks (brief C-02 section 12 NF-2 and section 2.12).
+- Source: nmb/common/backup.py@ad3758c, function factory_reset; docs/briefs/C-02.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: P-03 (also C-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0300: Database snapshot checked neither space nor the copy before replacing the old one
+
+- Area: Database
+- What went wrong: The snapshot never checked the free space, never checked the new copy before renaming it over the old one and never checked what it renamed over.
+- Correct behaviour: Before a snapshot the store checks that the free space covers the live content plus a margin; the copy is checked (`quick_check`) and the destination is verified before the rename; a failed snapshot keeps the old copy and is shown in the status (brief C-02 section 12 NF-4 and section 2.7).
+- Source: nmb/db/database.py@ad3758c:339-357; docs/briefs/C-02.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-02
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0301: Old-code correction tied to one box's deploy moment
+
+- Area: Database
+- What went wrong: The correction that marks Cloudflare rows written by the old code uses one fixed moment, when the fix went live on one box, so on other boxes rows written by an older release after that moment keep their placeholder.
+- Correct behaviour: Whether a row was written by the old code is decided from the row's own facts on every box, not from one box's deploy moment; the exact rule is question Q-C1 of brief C-02 section 13 (proposed there: a NULL version on a Cloudflare row), still open (brief C-02 section 12 NF-5).
+- Source: nmb/db/corrections.py@ad3758c:135-138; docs/briefs/C-02.md section 12 and section 13 Q-C1 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-02
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0302: Log level DEBUG by default and for an unknown level name
+
+- Area: Logging
+- What went wrong: A box installed from the example settings ran at log level DEBUG: the example has no logging section, the code default is DEBUG and the first save wrote it into the settings; an unknown level name also became DEBUG.
+- Correct behaviour: The default level is INFO; an unknown level name gives INFO and a warning (brief C-03 section 12.2 a, requirement REQ-CL-0429; brief F-04c section 8 N2 and section 3.6.2).
+- Source: nmb/config.py@ad3758c:658; nmb/config.py@ad3758c:1493; nmb/devlog.py@ad3758c:299-301; nmb/web/server.py@ad3758c:4596; nmb/speed/runner.py@ad3758c:1317; docs/briefs/C-03.md section 12.2 (native repository); docs/briefs/F-04c.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-03 (also C-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0303: In-memory developer log kept less than it said, and only per process
+
+- Area: Logging
+- What went wrong: The in-memory developer log claimed to keep every record down to TRACE, but the root level filtered records before they reached it, and each process kept its own buffer, so the Web UI's log view showed only the web server's records at the current level.
+- Correct behaviour: The developer log view shows what it says it holds: the records of every component, at the levels the buffer states, with its real capacity (brief C-03 section 12.2 b and section 3.4).
+- Source: nmb/devlog.py@ad3758c, function setup_dev_logging; nmb/web/server.py@ad3758c, route /api/dev/logs; docs/briefs/C-03.md section 12.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-03
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0304: Log rotation could exceed the log file system's share or ignore it
+
+- Area: Logging
+- What went wrong: The rotation that keeps the developer log inside its share of the log file system had a floor of 256 KiB per file that can exceed the share on a small file system, and when the file system could not be measured (or the budget was 0) the configured rotation was kept, so the file system could still fill up.
+- Correct behaviour: The file sink never exceeds its share; when the file system cannot be measured the file sink is off with the reason `fs_unknown` (brief C-03 section 12.2 c and h, sections 3.5.3 and PF-32).
+- Source: nmb/devlog.py@ad3758c:219-228; tests/test_log_budget.py@ad3758c:29-31; docs/briefs/C-03.md section 12.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-03 (also P-11)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0305: System log view classified lines by fixed names and substrings
+
+- Area: Logging
+- What went wrong: The system log view decided the level of a line by substrings, its category by a fixed list of interface and driver names, read only two of NMB's units and fell back to an unprivileged `dmesg`.
+- Correct behaviour: Levels come from the journal's priority, categories from run-time detection of the box's own links and units, every NMB unit is read, and the kernel log is read through the platform interface (brief C-03 section 12.2 d and section 3.8; brief F-04c section 8 N11 and section 3.6.8).
+- Source: nmb/devlog.py@ad3758c:457-509; nmb/devlog.py@ad3758c:582; nmb/devlog.py@ad3758c:616-626; docs/briefs/C-03.md section 12.2 (native repository); docs/briefs/F-04c.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-03 (also N-17)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0306: Log purge went beyond NMB's own log files and cleared the kernel log
+
+- Area: Logging
+- What went wrong: The log purge did not keep to the files of NMB's own log sinks, and it cleared the kernel's ring buffer.
+- Correct behaviour: The purge deletes only the files that NMB's own log sinks list, and never clears the kernel log (brief C-03 section 12.2 e and section 3.7).
+- Source: docs/briefs/C-03.md section 12.2 e (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-03 (also C-08, P-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0307: Crash handler ran network code
+
+- Area: Logging
+- What went wrong: The crash handler looked up the preferred measurement link (network code) while writing a crash report, so a crash in or near that code could fail the report.
+- Correct behaviour: The crash handler only writes what it already has; it runs no network or other component code (brief C-03 section 12.2 f and section 3.9.1).
+- Source: nmb/report/crash_trap.py@ad3758c, function format_crash_report; docs/briefs/C-03.md section 12.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-03
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0308: NMB's log lines reached the journal without a priority
+
+- Area: Logging
+- What went wrong: NMB's components wrote their log lines to standard output without a syslog priority, so the journal stored them all at info and the release check `journalctl -p err` could not see NMB's errors.
+- Correct behaviour: Every log line reaches the journal with its own priority (brief C-03 section 12.2 g and section 3.5.1).
+- Source: nmb/devlog.py@ad3758c, function setup_dev_logging; nmb/probe/engine.py@ad3758c:471; nmb/netd/daemon.py@ad3758c:486; docs/TESTING.md@ad3758c:306; docs/briefs/C-03.md section 12.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-03 (also P-13)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0309: LLM bundle masked the shared address space as Tailscale
+
+- Area: Diagnostics
+- What went wrong: The LLM bundle masked every address of 100.64.0.0/10 as a Tailscale address; that range is also the carrier-grade NAT shared space, so a WAN address behind CGNAT disappeared from the bundle.
+- Correct behaviour: Only the box's own Tailscale addresses are masked (brief C-04 section 9.1 C04-N1 and section 4.6).
+- Source: nmb/report/llm_bundle.py@ad3758c:866; docs/briefs/C-04.md section 9.1 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-04 (also R-04)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0310: Lost secret not put back when its line was missing
+
+- Area: Secrets and personal data
+- What went wrong: A kept secret whose line was missing from the settings was reported as lost but not put back by the restore.
+- Correct behaviour: The restore goes through the settings store and adds the key when its line is missing (brief C-04 section 9.1 C04-N3 and section 4.10).
+- Source: nmb/common/secret_keep.py@ad3758c:86-91; nmb/common/secret_keep.py@ad3758c:101-113; docs/briefs/C-04.md section 9.1 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-04
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0311: LLM bundle shortened MAC addresses inconsistently
+
+- Area: Secrets and personal data
+- What went wrong: The LLM bundle shortened only colon-written MAC addresses to their vendor prefix, kept half of a locally administered address (which has no vendor) and gave no stable pseudonym, so the same device could not be followed through the bundle.
+- Correct behaviour: MAC addresses in every written form are shortened by one rule; a locally administered address is replaced by a pseudonym that stays the same within one bundle (brief C-04 section 9.1 C04-N6 and section 4.5, owner question Q-16).
+- Source: nmb/report/llm_bundle.py@ad3758c:864; docs/briefs/C-04.md section 9.1 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-04 (also R-04)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0312: Secret keep read the whole settings file in every network loop
+
+- Area: Secrets and personal data
+- What went wrong: The secret keep read and parsed the whole settings file in every pass of the network daemon's loop.
+- Correct behaviour: The keep is updated after saves, at start and once a day (brief C-04 section 9.1 C04-N7 and section 4.10).
+- Source: nmb/netd/daemon.py@ad3758c, function NetworkDaemon.run; nmb/common/secret_keep.py@ad3758c, function update; docs/briefs/C-04.md section 9.1 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-04
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0313: Browser identity sent by default, random or preset, never marked
+
+- Area: Measurement honesty
+- What went wrong: By default every speed engine and helper (Cloudflare, Fast.com, Ookla's server list and download, the iPerf3 directory, the hop lookups, GeoIP, the background public-address checks) sent a randomly generated, "fresh" headless-browser User-Agent; nine browser presets could be chosen instead; a custom mode with an empty string fell back to a random browser agent; two engines hard-coded a browser agent as their fallback; no report said that the box had measured under a borrowed identity.
+- Correct behaviour: The box sends its own identity `NetworkMeasureBox/<version>` by default (CONTRIBUTING 17; RFC 9110 10.1.5). Owner, 2026-11-11: the owner may set a custom value, off by default; when one is set it is marked in the diagnostic bundle and in the SLA dossier; no browser presets, no random or fresh agent. An empty custom value means the own identity; an invalid one is refused, never cut or replaced (brief C-05 sections 3.4 and 3.7 NF-1).
+- Source: nmb/common/user_agent.py@ad3758c:1-181; nmb/config.py@ad3758c:652-653; nmb/speed/cloudflare.py@ad3758c:86-91; nmb/speed/fastcom.py@ad3758c, functions _ua and _headers; CONTRIBUTING.md@ad3758c:17; docs/briefs/C-05.md section 3.4 (native repository); docs/briefs/M-09.md section 5 N15 (native repository); docs/briefs/M-10.md section 12 NF-M10-22 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-05 (also M-06, M-07, M-09, M-10, M-11, M-12, C-01, R-03, R-04, R-05, S-03, U-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0314: Own user agents carried made-up, missing or no versions
+
+- Area: Measurement honesty
+- What went wrong: The box's own HTTP clients identified themselves with fixed, invented version numbers (`NetworkMeasureBox/1.0`, `/2.5`, `-DynDNS/1.0`, `-AdBlock/2.0` behind a `Mozilla/5.0` prefix, `NMB/1.0`), with no version (the updater, the collector client, the address lookup), or sent the HTTP library's default agent (the RTR control channel, a local web probe of the updater).
+- Correct behaviour: Every outgoing HTTP request carries one agent built from the installed version record, `NetworkMeasureBox/<release, dev or unknown>` with an optional registered component code, set by one shared transport on every request, so a client that forgets the header cannot exist (CONTRIBUTING 17; CHANGELOG 23; derived: Quality Bar 6, roadmap 581, one version notion; brief C-05 section 3.7 NF-2).
+- Source: nmb/bot/client.py@ad3758c, function TelegramClient._request; nmb/bot/client.py@ad3758c, function TelegramClient.send_document; nmb/bot/client.py@ad3758c, function TelegramClient.send_photo; nmb/netd/duckdns.py@ad3758c, function detect_public_ipv6; nmb/netd/duckdns.py@ad3758c, function _get_over_ipv4; nmb/netd/duckdns.py@ad3758c, function _update_duckdns; nmb/netd/adblock.py@ad3758c, function execute_gravity_update; nmb/common/updater.py@ad3758c, constant USER_AGENT; nmb/common/updater.py@ad3758c, function _web_answers; nmb/common/netaddr.py@ad3758c, function lookup_public_ip; nmb/speed/rmbt/control.py@ad3758c, function _post; docs/briefs/C-05.md section 3.5.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-05 (also P-02, S-11, S-12, N-12, N-16, M-08, M-11)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0315: Public and local address rules wrong for special ranges and dependent on the Python version
+
+- Area: Measurement data
+- What went wrong: The check that decides whether an address is a public line address let multicast, NAT64 and the new documentation prefix through as public, stored the IPv4-mapped IPv6 form of a public IPv4 address as IPv6, and gave different answers on Python 3.12 and 3.13 for several special blocks; the local-peer check counted 0.0.0.0, the broadcast address and the reserved class E block as local; the measurement setup counted every special block that the interpreter marks private (benchmarking, the IETF protocol block) as a private address, so a box on such an address was recorded as behind a router.
+- Correct behaviour: One classification table derived from the IANA IPv4 and IPv6 Special-Purpose Address registries, the same on every machine and in both code bases (roadmap 6B.8); public for a record = globally reachable unicast or a documentation range; an IPv4-mapped address is the IPv4 address; unspecified, multicast and broadcast are never a local peer; for the measurement setup only RFC 1918 space is `private`, the other special blocks give an unknown path (derived: Quality Bar 6, roadmap 581; brief C-05 sections 3.1 and 3.7 NF-3; brief C-11 sections 2.2 and 2.11 NF-1).
+- Source: nmb/common/netaddr.py@ad3758c:7-56; nmb/common/net_setup.py@ad3758c:75-84; docs/briefs/C-05.md section 3.1 (native repository; checked against Python 3.12.3 on the development PC, 2026-11-11); docs/briefs/C-11.md section 2.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-05 (also C-11, C-02, M-12, R-01, R-04, S-02, S-11)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0316: Two version rules, a hand-kept release number and `unknown` stored as a version
+
+- Area: Version
+- What went wrong: The version shown on rows and reports accepted a 7-40 hex commit while the update check accepted only 40 hex, so a short record showed as a version the update check could not use; the version fell back to running `git` from `PATH`; the word `unknown` was stored in the version column; a second, hand-written release number fed the backup manifest, the collector and the repair code next to the commit used elsewhere.
+- Correct behaviour: One version record read from what the build recorded: a full 40- or 64-hex revision or nothing (a short id is not a revision); the release only from a release tag or a validated build stamp, equal to the newest CHANGELOG version; one text form for every surface; unknown stored as NULL, never as a word; no tool run to find it (CHANGELOG 23, 324; derived: Quality Bar 6, roadmap 581; brief C-05 sections 3.2 and 3.7 NF-4).
+- Source: nmb/common/version.py@ad3758c:9-30; nmb/common/updater.py@ad3758c, constant _SHA_RE; nmb/common/updater.py@ad3758c, function installed_commit; nmb/common/backup.py@ad3758c, constant APP_VERSION; nmb/speed/runner.py@ad3758c:651-655; docs/briefs/C-05.md section 3.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-05 (also P-02, P-03, R-04, S-12, M-04)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0317: Address classification duplicated in many files with different rules
+
+- Area: Measurement data
+- What went wrong: Besides the shared address helper, several more files classified addresses with their own rules, and these rules disagreed with each other.
+- Correct behaviour: One classifier that every native package uses; a tree check refuses address classification outside it (clean code "No duplication", roadmap 743; derived: Quality Bar 6, roadmap 581). Address classes describe measurement data and never decide access (work plan section 7 point 11, owner, 2026-11-11; brief C-05 sections 3.5.1 and 3.7 NF-5).
+- Source: nmb/netd/interfaces.py@ad3758c, function get_dual_stack_ips; nmb/web/server.py@ad3758c, function WebRequestHandler._handle_api_status; nmb/netd/geoip.py@ad3758c, function _is_private_ip; nmb/netd/wireguard.py@ad3758c, function is_private_ip; nmb/speed/traceroute.py@ad3758c, function classify_hop_type; nmb/report/llm_bundle.py@ad3758c, functions _get_nat_and_stun_telemetry and _is_private_ip; nmb/netd/explorer.py@ad3758c, function scan_network_devices; nmb/netd/firewall.py@ad3758c, function onlink_ipv6_prefixes; nmb/config.py@ad3758c, function load_config; docs/briefs/C-05.md section 3.5.1 (native repository); docs/briefs/M-12.md section 11 NF-21 (native repository; checked on Python 3.12.3)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-05 (also M-11, M-12, M-13, N-02, N-13, N-17, C-01, R-04, S-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0318: Public-address lookup not bounded as a whole and its answer family not checked
+
+- Area: Measurement data
+- What went wrong: The lookup of the public address behind NAT could take much longer than its intended 6 s, and it accepted an answer of another address family than the one the test used.
+- Correct behaviour: The lookup has one total deadline of 6 s of monotonic time for resolution, connection, TLS, request and answer, reads at most 4 KiB, resolves over the test's link, and keeps the answer only when it is a public address of the source's family; otherwise the record gets no client address (derived: Quality Bar 6, roadmap 581; roadmap 583; brief C-05 sections 3.1 and 3.7 NF-6).
+- Source: docs/briefs/C-05.md section 3.1 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-05 (also M-04, M-08, M-12)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0319: Self-test's language check could never find a missing key
+
+- Area: Translations
+- What went wrong: The live self-test compared language tables that the language API had already filled up with English, so a key missing in a language could never be found.
+- Correct behaviour: The self-test checks the embedded language files themselves and the run-time records of missing texts (brief C-06 section 9 C06-F01; brief F-04f section 4.13).
+- Source: nmb/selftest/live.py@ad3758c:251-260; nmb/web/server.py@ad3758c, function WebRequestHandler.do_GET; nmb/web/i18n.py@ad3758c:7161-7168; docs/briefs/C-06.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: P-07 (also C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0320: Language loader dropped keys and values without a word
+
+- Area: Translations
+- What went wrong: The JSON language loader of the Web UI dropped, without any message, every key that English lacks and every value that is not a string, while the bot's loader kept such keys.
+- Correct behaviour: A key that the reference language lacks fails the build; an add-on's dropped entries are listed (brief C-06 section 9 C06-F02).
+- Source: nmb/web/i18n.py@ad3758c:7135; nmb/bot/i18n.py@ad3758c:1366; docs/briefs/C-06.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0321: Texts named fixed interfaces
+
+- Area: Translations
+- What went wrong: Thirteen Web UI texts and two bot texts named fixed interfaces (`eth0`, `wlan0`, `br-lan`, for example "Connecting wlan0"), whatever the box's real interfaces were.
+- Correct behaviour: A text names the actual interface as a parameter, or uses neutral words; a build check refuses fixed device names in texts (brief C-06 section 9 C06-F03, check `fixed_device_name`; Generic First rule 3).
+- Source: nmb/bot/messages.py@ad3758c:159; nmb/bot/messages.py@ad3758c:163; docs/briefs/C-06.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-12 (also C-06, S-11, U-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0322: Language tests covered only five of the eleven languages
+
+- Area: Tests
+- What went wrong: Several language tests (the Tailscale and Telegram keys, the alert texts, the bot's Hungarian-marker test) checked only the five core languages, or four.
+- Correct behaviour: Every language check runs over the one language list (brief C-06 section 9 C06-F04).
+- Source: tests/test_tailscale_and_telegram_ui.py@ad3758c:48; tests/test_first_run_fixes.py@ad3758c:233; tests/test_telegram_i18n.py@ad3758c:175; docs/briefs/C-06.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0323: A language file that failed to load changed the language silently
+
+- Area: Translations
+- What went wrong: A Web UI language file that did not load made the whole language English without a word, while the Web UI still offered it; a bot language file that did not load removed the language from the bot only, with a warning in the log.
+- Correct behaviour: One embedded language list for every surface (requirement REQ-RM-1110); the built-in language files are checked at build time, and an add-on file that does not load is refused visibly (brief C-06 section 9 C06-F05; brief F-04f sections 9 F04f-F04 and 4.8).
+- Source: nmb/bot/i18n.py@ad3758c:1360-1371; nmb/web/i18n.py@ad3758c:7131-7134; nmb/report/dossier.py@ad3758c:709-710; docs/briefs/C-06.md section 9 (native repository); docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06 (also S-11)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0324: Outage of the owner's own save counted as a line event
+
+- Area: Measurement data
+- What went wrong: A PPPoE rebuild started by a save of the mode setting that kept the mode was recorded as `failover_rebuild`, the kind for a reaction to the line, so the outage of the owner's own save counted against the ISP.
+- Correct behaviour: The kind of an own-action window follows its trigger: a rebuild caused by a settings save is the box's own action (brief C-07 section 9 C07-F3 and section 3.2).
+- Source: nmb/netd/daemon.py@ad3758c, functions NetworkDaemon._apply_reload, NetworkDaemon._keep_mode_if_same and NetworkDaemon._apply_auto_details; docs/briefs/C-07.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-03 (also C-07)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0325: Failed own action ended like a successful one
+
+- Area: Measurement data
+- What went wrong: An own-action window ended a failed action (for example a mode switch that returned failure) in the same way as a successful one, so the record did not show that the action failed.
+- Correct behaviour: The window's end carries the result, `failed` for a failed action (brief C-07 section 9 C07-F4).
+- Source: nmb/common/own_action.py@ad3758c:103-109; nmb/netd/daemon.py@ad3758c, function NetworkDaemon.switch_mode; docs/briefs/C-07.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-07 (also N-03)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0326: Events lost when their insert failed
+
+- Area: Database
+- What went wrong: Events whose insert failed (own-action windows, USB fallback, data cap) were dropped and only logged, at warning or at debug level.
+- Correct behaviour: An event that cannot be written goes into a bounded retry queue and is written later; a lost event is counted and reported (brief C-07 section 9 C07-F5; brief F-04c section 3.4.2).
+- Source: nmb/common/own_action.py@ad3758c:60-62; nmb/netd/usb_uplink.py@ad3758c:323-324; nmb/speed/data_cap.py@ad3758c:250-251; docs/briefs/C-07.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-07
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0327: Purge on a full RAM disk reported failure and the rows came back
+
+- Area: Storage guard
+- What went wrong: A purge's full `VACUUM` failed on a full RAM disk; the whole category was then reported as failed although its rows were already deleted, and the snapshot was skipped, so the deleted rows came back after a reboot.
+- Correct behaviour: A purge needs no full vacuum; the result says per category what was deleted and what failed, and a snapshot always follows a deletion (brief C-08 section 8 N1 and section 3.2.3).
+- Source: nmb/common/purge.py@ad3758c:91-99; nmb/common/purge.py@ad3758c:151-158; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0328: Purge gave every database category the combined row count
+
+- Area: Storage guard
+- What went wrong: The purge result gave every database category the combined number of deleted rows of all categories.
+- Correct behaviour: Exact numbers per category (brief C-08 section 8 N2 and section 3.2.7).
+- Source: nmb/common/purge.py@ad3758c:152-154; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0329: Measurement purge deleted the setup history and kept the own-action windows
+
+- Area: Storage guard
+- What went wrong: A measurement purge deleted the whole setup history, so later results had no setup until the next change, and deleted every outage but kept the own-action windows that explained them.
+- Correct behaviour: A measurement purge keeps the current setup so later results still have it, and deletes the own-action windows together with the outages of their time, keeping an open window (brief C-08 section 8 N3, N16 and section 3.2.3).
+- Source: nmb/common/purge.py@ad3758c:17-19; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0330: Log purge reported success whatever happened and differed by surface
+
+- Area: Logging
+- What went wrong: "Purge logs" reported success whatever happened, and deleted the event table when started from the Web UI but not from the bot.
+- Correct behaviour: One behaviour for every surface and a result per item cleared or failed (brief C-08 section 8 N4 and section 3.2.5; KF-0143).
+- Source: nmb/common/purge.py@ad3758c:166-169; nmb/web/server.py@ad3758c:2535-2537; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0331: Storage guard deleted evidence events before speed tests and never outages
+
+- Area: Storage guard
+- What went wrong: When the disk filled up the storage guard deleted the oldest events (among them the evidence of the box's own actions) before speed tests and never deleted outages, so the box's own outages then counted against the line.
+- Correct behaviour: Measurements are deleted in a planned order in which the events that explain outages go only together with the outages of their time (brief C-08 section 8 N5 and section 3.1.6).
+- Source: nmb/common/storage_guard.py@ad3758c:96-97; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0332: Storage guard wrote a full snapshot after every deleted day
+
+- Area: Storage guard
+- What went wrong: The storage guard wrote a full database snapshot to the card after every deleted day of every table.
+- Correct behaviour: The guard plans the deletion first, deletes, and then writes one snapshot (brief C-08 section 8 N6 and section 3.1.6).
+- Source: nmb/common/storage_guard.py@ad3758c:118-122; nmb/common/storage_guard.py@ad3758c:130-137; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0333: Storage guard ran inside the network loop; loop part errors at debug level
+
+- Area: Storage guard
+- What went wrong: The storage guard ran inside the network daemon's supervision loop, whose other parts keep the box online, so a slow run delayed the network work; its errors, like those of every loop part, were logged only at debug level.
+- Correct behaviour: The guard runs as its own worker on the monotonic clock; a failure is a warning in the log and a `failed` result in the status (brief C-08 section 8 N7 and section 3.1.3).
+- Source: nmb/netd/daemon.py@ad3758c:325-334; nmb/netd/daemon.py@ad3758c:433; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08 (also N-03)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0334: A second storage guard ran in the web process
+
+- Area: Storage guard
+- What went wrong: "Clean up now" ran a second storage guard inside the web process, beside the one in the network daemon.
+- Correct behaviour: One guard; a request to clean up asks it, and a request during a run gets that run's result (brief C-08 section 8 N8 and section 3.1.3).
+- Source: nmb/web/server.py@ad3758c:2559-2564; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08 (also S-08)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0335: A file removed during the storage guard's run ended the whole run
+
+- Area: Storage guard
+- What went wrong: A file removed between listing and reading its size ended the whole storage guard run with an error.
+- Correct behaviour: A file that is gone is skipped and the run goes on (brief C-08 section 8 N9 and section 3.1.4).
+- Source: nmb/common/storage_guard.py@ad3758c:60; nmb/common/storage_guard.py@ad3758c:79; nmb/common/storage_guard.py@ad3758c:174; nmb/common/storage_guard.py@ad3758c:231; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0336: Memory profile ignored, unknown RAM invented, environment overrides
+
+- Area: System
+- What went wrong: The `memory_profile` setting was ignored by the database, the kernel tuning, RTR and the sniffer, which used the automatic profile; unknown RAM was taken as 1024 MB with half of it available; environment variables overrode the profile and the database cap, and a bad cap value stopped every service at import.
+- Correct behaviour: One effective profile, computed in one place from the setting or the measured RAM, and handed to every consumer; unknown RAM stays unknown; no environment override; a bad value is refused and logged (brief C-08 section 8 N10-N12 and section 3.5.1).
+- Source: nmb/db/database.py@ad3758c, constant LIVE_SIZE_CAP; nmb/db/database.py@ad3758c, function connect; nmb/netd/kernel.py@ad3758c, function apply_kernel_network_tuning; nmb/common/memory.py@ad3758c, functions get_total_ram_mb, get_available_ram_mb, is_low_memory_system and get_db_live_size_cap; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08 (also C-02, N-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0337: Deleting impossible speed tests: any number, corrections left, local-time name
+
+- Area: Database
+- What went wrong: The deletion of impossible speed tests took any number (a negative one deleted every row), set the copy's mode only after creating it, named it in local time without zone and left the corrections of the deleted rows behind; a measurement purge also left the corrections of deleted speed tests behind.
+- Correct behaviour: The limit is validated (finite, 1 to 100,000 Mbit/s) with a dry run first; the backup is a full backup archive; corrections go with their rows in every deletion (brief C-08 section 8 N13 and section 3.2.8; brief F-04b section 9 item 7 and section 3.5.6).
+- Source: nmb/common/purge.py@ad3758c:116-137; nmb/common/purge.py@ad3758c:17-20; docs/briefs/C-08.md section 8 (native repository); docs/briefs/F-04b.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08 (also C-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0338: Storage guard did not even measure with automatic cleanup off
+
+- Area: Storage guard
+- What went wrong: With automatic cleanup switched off the storage guard did not even measure the free space, so a full disk was not reported.
+- Correct behaviour: The guard always measures and reports; the setting only decides whether it deletes (brief C-08 section 8 N14 and section 3.1.3, owner question Q6).
+- Source: nmb/common/storage_guard.py@ad3758c:191-193; docs/briefs/C-08.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0339: Process and CPU figures sampled wrongly
+
+- Area: System
+- What went wrong: The per-process CPU share was the lifetime average reported by `ps`, shown as live; a cold CPU sample of 50 ms was taken inside the request (steps of 20 % per core at 100 Hz, and the request waited); the previous CPU sample lived in module globals written by concurrent request threads without a lock.
+- Correct behaviour: CPU figures come from a recent window measured by one sampler that owns the previous sample and hands out immutable snapshots; a cold start uses a window of 500 ms (brief C-09 section 8 N1, N9, N10).
+- Source: nmb/common/tasks.py@ad3758c:296; nmb/common/tasks.py@ad3758c:330; nmb/common/tasks.py@ad3758c:106-110; nmb/common/tasks.py@ad3758c:25-26; nmb/common/tasks.py@ad3758c:150-151; docs/briefs/C-09.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0340: Process list parsing and state counts wrong
+
+- Area: System
+- What went wrong: A command name with a space shifted the columns of the process list (wrong name and arguments, or the row dropped), and stopped processes were counted as sleeping.
+- Correct behaviour: Process facts are read from `/proc/<pid>/stat` with the name taken up to the last `)`; stopped processes have their own count (brief C-09 section 8 N2, N5).
+- Source: nmb/common/tasks.py@ad3758c:317-319; nmb/common/tasks.py@ad3758c:339-345; docs/briefs/C-09.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0341: NMB and user processes told apart by name substrings and a fixed account list
+
+- Area: System
+- What went wrong: A process counted as NMB's when its name or arguments contained one of a few substrings (false hits, and any process could claim it), and the Web UI's "user apps" filter was a fixed list of Debian account names.
+- Correct behaviour: A process is NMB's by the service user id (supervised children included); the category comes from the user id and the platform's range of ordinary user ids, `unknown` without it (brief C-09 section 8 N3, N4).
+- Source: nmb/common/tasks.py@ad3758c:348-357; nmb/web/assets/dashboard.js@ad3758c:10550; docs/briefs/C-09.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-09 (also U-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0342: Bot showed threads as processes
+
+- Area: Telegram bot
+- What went wrong: The bot showed the kernel's count of scheduling entities (threads) as the number of processes.
+- Correct behaviour: The process count from the process scan (brief C-09 section 8 N6).
+- Source: nmb/common/tasks.py@ad3758c, function get_system_summary; docs/briefs/C-09.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: S-11 (also C-09)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0343: System figures invented when unreadable
+
+- Area: System
+- What went wrong: When they could not be read, the memory total was taken as 1 GiB, the load as 0.0 and the uptime as 00:00:00.
+- Correct behaviour: An unreadable figure is `null`; the uptime comes from the boot clock (brief C-09 section 8 N7, N8).
+- Source: nmb/common/tasks.py@ad3758c:204; nmb/common/tasks.py@ad3758c:252-276; docs/briefs/C-09.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0344: Guest CPU time counted twice
+
+- Area: System
+- What went wrong: The CPU total added the guest time, which the kernel already counts inside user time, so it was counted twice.
+- Correct behaviour: The total is taken without the guest fields (brief C-09 section 8 N11; the kernel's `cputime.c`).
+- Source: nmb/common/tasks.py@ad3758c:84; docs/briefs/C-09.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0345: Temperature and frequency read from one fixed sensor and core
+
+- Area: System
+- What went wrong: The temperature came from `thermal_zone0` only, values below 0 °C were dropped, and four separate readers existed; the CPU frequency was read from `cpu0` only.
+- Correct behaviour: One reader picks the zone by its type and accepts -40 to 150 °C; the frequency is reported per cpufreq policy (brief C-09 section 8 N12, N13).
+- Source: nmb/common/tasks.py@ad3758c:155-165; nmb/common/tasks.py@ad3758c:171; nmb/bot/commands.py@ad3758c:110; nmb/bot/alerts.py@ad3758c:222-229; nmb/report/llm_bundle.py@ad3758c:42; docs/briefs/C-09.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0346: Process kill fell back to a sudo call that is never allowed
+
+- Area: System
+- What went wrong: When signalling a process failed for lack of permission, the code tried `sudo -n kill`, which the sudo rules never allow, and returned sudo's own text to the user.
+- Correct behaviour: A typed refusal, or the audited root action where one exists (brief C-09 section 8 N14).
+- Source: nmb/common/tasks.py@ad3758c:469-477; docs/briefs/C-09.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0347: Packet steering, offloads and irqbalance misread
+
+- Area: System
+- What went wrong: Receive and transmit packet steering were judged from queue 0 only, and "off" was read as on when the mask had more than one digit (more than four CPUs); an offload reported "off [requested on]" was read as on, the `ethtool` lookup always took one path, and the status checked the first interface or `eth0`; irqbalance was known only through `systemctl`.
+- Correct behaviour: Every queue is read and its mask parsed; offload features are read typed per physical link; irqbalance is found in the process table (brief C-09 section 8 N15-N17).
+- Source: nmb/netd/kernel.py@ad3758c:310-319; nmb/report/llm_bundle.py@ad3758c, function _get_phy_and_ethtool; nmb/netd/kernel.py@ad3758c:324-337; docs/briefs/C-09.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-09 (also N-01, N-17)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0348: Addresses sent to free lookup services without the user's knowledge
+
+- Area: Privacy
+- What went wrong: The box's public address was sent to a free GeoIP service on every cache miss, and every public hop address of a trace to outside lookup services, without the user's knowledge and without regard to the services' terms of use; failures were cached as data for an hour.
+- Correct behaviour: No address leaves the box for a lookup unless the user switched the lookup on; the lookup uses a service whose terms allow this use; a failure is not data and is not cached as a result (brief C-10 section 11 item 1, P4 and O5; brief M-11 section 11 NF-9: M-12's lookup when switched on).
+- Source: nmb/netd/geoip.py@ad3758c, constant _geoip_cache; nmb/netd/geoip.py@ad3758c, constant GEOIP_CACHE_TTL; nmb/netd/geoip.py@ad3758c, function get_public_geoip; docs/briefs/C-10.md section 11 (native repository); docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12 (also C-10, M-11)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0349: Wi-Fi country could be decided from outside the box
+
+- Area: Wi-Fi
+- What went wrong: The box's Wi-Fi country and regulatory domain could be decided by something outside the box, or by an earlier setting of the box itself, instead of a country the user confirmed.
+- Correct behaviour: The country is confirmed by the user (location-aware, never guessed, Quality Bar 9), and the regulatory domain always follows the confirmed country (brief C-10 section 11 item 2, P3; brief F-04d section 10).
+- Source: docs/briefs/C-10.md section 11 item 2 (native repository); docs/briefs/F-04d.md section 10 item 6 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-07 (also C-10)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0350: Typed Ookla server shown with a Hungarian country and English labels
+
+- Area: Translations
+- What went wrong: A typed Ookla server id became a list entry with the Hungarian word "Egyedi" as its country and the English "Custom Server #n" and "Manual Target", shown in every language.
+- Correct behaviour: Data carries codes; the text comes from the 11 translations (brief C-10 section 11 item 5, P9; brief M-10 section 12 NF-M10-8).
+- Source: nmb/speed/ookla.py@ad3758c, function get_available_servers; docs/briefs/C-10.md section 11 (native repository); docs/briefs/M-10.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-10 (also C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0351: Link kind decided by name and folder existence
+
+- Area: Measurement setup
+- What went wrong: The measurement setup decided a link's kind by its name and by whether its sysfs folder exists: any unknown existing link was `ethernet` (a WireGuard link named otherwise, a GRE tunnel, a veth or a dummy), every PPP link was PPPoE with the path `direct_pppoe`, and a wireless access point was a "Wi-Fi client".
+- Correct behaviour: The kind comes from kernel facts and NMB's own role marks: only netd's own PPPoE session is PPPoE, only a station is a Wi-Fi client, anything else unknown (brief C-11 sections 2.3 and 2.11 NF-2, NF-3, NF-11).
+- Source: nmb/common/net_setup.py@ad3758c:48; nmb/common/net_setup.py@ad3758c:132-157; docs/briefs/C-11.md section 2.3 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0352: Link position decided by its first IPv4 address
+
+- Area: Measurement setup
+- What went wrong: The position of the measuring link (direct or behind a router) was decided by the first IPv4 address that `ip` listed for the link.
+- Correct behaviour: The address the test was bound to decides, then the route's source address, then one class shared by all the link's local addresses, else unknown (brief C-11 sections 2.2 and 2.11 NF-4).
+- Source: nmb/common/net_setup.py@ad3758c:170-179; docs/briefs/C-11.md section 2.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0353: Egress link taken from the main table's lowest-metric default route
+
+- Area: Measurement setup
+- What went wrong: The egress link of an unbound test was taken as the main table's IPv4 default route with the lowest metric, which ignores policy rules (for example the USB source rule).
+- Correct behaviour: The kernel's own route answer for the destination, with policy rules (brief C-11 sections 2.4 and 2.11 NF-5).
+- Source: nmb/common/net_setup.py@ad3758c:182-189; docs/briefs/C-11.md section 2.4 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-11 (also M-04, N-03)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0354: Setup history wrong at mode switches and for flapping links
+
+- Area: Measurement setup
+- What went wrong: No unknown row was written when a mode switch started, so the old setup stayed in force through teardown and setup while the backfill treated the same window as unknown; a flapping link wrote one history row per change without bound.
+- Correct behaviour: An unknown row is written when the switch starts; changes are debounced on observation, rows stamped at their first observation, and a link that does not settle gets one `unsettled` row (brief C-11 sections 2.7.1 and 2.11 NF-6, NF-9).
+- Source: nmb/netd/daemon.py@ad3758c, functions NetworkDaemon.switch_mode and NetworkDaemon._switch_mode; nmb/db/setup_backfill.py@ad3758c:8-9; nmb/db/setup_backfill.py@ad3758c:99-102; nmb/common/net_setup.py@ad3758c:269-287; docs/briefs/C-11.md section 2.7.1 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-11 (also N-03)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0355: A setup change inside a ping minute missed
+
+- Area: Measurement setup
+- What went wrong: Whether the setup changed within a ping minute was decided from the minute's first and last millisecond only, so a change and back within the minute was missed.
+- Correct behaviour: Every history row inside the minute counts (brief C-11 sections 2.7.2 and 2.11 NF-7).
+- Source: nmb/report/csv_export.py@ad3758c:116-124; docs/briefs/C-11.md section 2.7.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-11 (also R-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0356: Whole setup history loaded for every report and export
+
+- Area: Measurement setup
+- What went wrong: Every report and export loaded the whole setup history up to its end into memory.
+- Correct behaviour: A bounded, paged read (brief C-11 sections 2.7.3 and 2.11 NF-8).
+- Source: nmb/common/net_setup.py@ad3758c:318-329; docs/briefs/C-11.md section 2.7.3 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0357: Mode switches read back from English event sentences
+
+- Area: Measurement setup
+- What went wrong: Event details were English sentences, and the measurement setup parsed them back to decide whether the mode switched during a measurement; a sentence that did not parse counted as no switch.
+- Correct behaviour: Events carry typed parameters (the switch's `to`); an event without a decodable target counts as a switch with an unknown target (`changed`) (brief C-11 sections 2.5 and 2.11 NF-12; brief F-04c section 8 N6 and section 3.4.6).
+- Source: nmb/common/net_setup.py@ad3758c:242-250; nmb/db/setup_backfill.py@ad3758c:63; docs/briefs/C-11.md section 2.5 (native repository); docs/briefs/F-04c.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-11 (also C-07, C-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0358: Setup backfill kept the old state and invented a test span
+
+- Area: Measurement setup
+- What went wrong: The one-time setup backfill skipped a mode change it could not parse, so the previous state stayed in force across a switch it could not read, and took 5 minutes as the span of an `ok` row that had no duration.
+- Correct behaviour: After an unreadable switch everything is unknown until the next readable one; a row without a duration has an unknown span, so no `changed` is concluded beyond its own time (brief C-11 sections 2.9.2 (b), (h) and 2.11 NF-13, NF-14).
+- Source: nmb/db/setup_backfill.py@ad3758c:71-73; nmb/db/setup_backfill.py@ad3758c:39; nmb/db/setup_backfill.py@ad3758c:197; docs/briefs/C-11.md section 2.9.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-11 (also C-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0359: Ping target address rewritten in place
+
+- Area: Ping probe
+- What went wrong: When the local gateway or the ISP's first hop changed, the existing ping target's address was overwritten in place, so its whole history was shown against the new address.
+- Correct behaviour: A target's address never changes; a new address is a new target, and the old one keeps its history (brief F-04b section 9 item 1 and section 3.5.2).
+- Source: nmb/netd/interfaces.py@ad3758c, function sync_gateway_ping_targets; docs/briefs/F-04b.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-01 (also C-02, R-01, R-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0360: Row ids reused after a purge
+
+- Area: Database
+- What went wrong: Deleted rows' ids were given again to new rows after a purge, so the collector's upload cursor skipped the new rows and stored corrections pointed at the wrong rows.
+- Correct behaviour: Ids are never reused: the store keeps a high-water mark per table across purges, wipes and restores (brief F-04b section 9 item 2 and section 3.3.7).
+- Source: nmb/common/purge.py@ad3758c:89-90; nmb/collector/client.py@ad3758c, function build_payload; nmb/db/schema.sql@ad3758c:46; docs/briefs/F-04b.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-02 (also S-12, C-08)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0361: Ping samples stamped with the receive or expiry time
+
+- Area: Ping probe
+- What went wrong: A ping sample was stamped with the time its reply arrived or its wait expired, not with the time it was sent, so samples near a minute's edge fell into the wrong minute.
+- Correct behaviour: Every sample carries its send time (brief F-04b section 9 item 3 and section 3.5.3).
+- Source: nmb/probe/engine.py@ad3758c; docs/briefs/F-04b.md section 9 item 3 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-01
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0362: Backup fell back to a raw copy of the live database
+
+- Area: Database
+- What went wrong: When the database backup API failed, the backup fell back to a raw file copy of the live database in WAL mode, which can be inconsistent.
+- Correct behaviour: A backup's database is always a consistent copy made by the snapshot method; when that fails, the backup fails (brief F-04b section 9 item 5 and section 3.12; brief C-02 section 2.12).
+- Source: nmb/common/backup.py@ad3758c, function create_backup; docs/briefs/F-04b.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: P-03
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0363: Schema version never raised; migration failures swallowed
+
+- Area: Database
+- What went wrong: The database schema version stayed 1 through every schema change, and failures of the schema upgrade were logged only at debug level.
+- Correct behaviour: Every schema change raises the version and has a migration; a failed migration stops the store with an error (brief F-04b section 9 item 6 and section 3.10).
+- Source: nmb/db/schema.sql@ad3758c:5; nmb/db/database.py@ad3758c:207-208; docs/briefs/F-04b.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-02
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0364: Data budget day boundary in the process's local zone
+
+- Area: Data caps
+- What went wrong: The data budget's day began at midnight of the process's local time zone, not of the box's configured zone.
+- Correct behaviour: Days of the data budget follow the box's configured time zone (brief F-04b section 9 item 8 and section 3.7).
+- Source: nmb/speed/data_budget.py@ad3758c:22-23; docs/briefs/F-04b.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-05
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0365: Run-time log level change: one process, no end, saved by default
+
+- Area: Logging
+- What went wrong: The run-time log level change affected only the web server's process, never ended, was saved into the settings by default, and set DEBUG when the request named no level.
+- Correct behaviour: A run-time level is set per component, for a stated time, is not saved unless asked, and a request without a level is refused (brief F-04c section 8 N3 and section 3.6.3).
+- Source: nmb/web/server.py@ad3758c, route /api/dev/loglevel; docs/briefs/F-04c.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-03
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0366: Only the web server left crash evidence
+
+- Area: Logging
+- What went wrong: Only the web server installed the crash handler; the network daemon, the probe, the bot and the speed runner left no crash record.
+- Correct behaviour: Every component records its crashes (brief F-04c section 8 N4 and section 3.7.2).
+- Source: nmb/web/server.py@ad3758c, function WebDaemon.run; docs/briefs/F-04c.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-03
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0367: Own-action windows closed without an event, or ended twice
+
+- Area: Measurement data
+- What went wrong: Stale own-action windows were closed at start without any event, and ending a window wrote an end event also for a window that was already closed.
+- Correct behaviour: Every close writes exactly one end event, also for a stale window, and never one for a window already closed (brief F-04c section 8 N5 and section 3.5.3).
+- Source: nmb/common/own_action.py@ad3758c:65-100; docs/briefs/F-04c.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-07
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0368: Network daemon state file: two paths, no freshness, left behind
+
+- Area: Network modes
+- What went wrong: The network daemon's state file had two paths (a fixed one in some readers, one from the settings in others), had no freshness check, and stayed behind when the daemon died, so readers acted on a stale state.
+- Correct behaviour: One status record with its age; a reader that finds it missing or stale gets `unknown` (brief F-04c section 8 N7 and section 3.9.2).
+- Source: nmb/netd/daemon.py@ad3758c, constant STATE_FILE; nmb/netd/daemon.py@ad3758c, functions NetworkDaemon.__init__, NetworkDaemon.run and main; nmb/speed/runner.py@ad3758c:976; nmb/netd/interfaces.py@ad3758c:453; docs/briefs/F-04c.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-03
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0369: Ookla pause file written by two processes through one temporary name
+
+- Area: Ookla engine
+- What went wrong: The Ookla pause file was written by the web server and the speed runner through one fixed temporary file name, the fault that roadmap 684 names for the settings.
+- Correct behaviour: One writer, and every write through a temporary file of its own (roadmap 684; brief F-04c section 8 N8 and section 3.9.1).
+- Source: nmb/speed/anti_ban.py@ad3758c, constant CLIENT_COOLDOWN_FILE; nmb/speed/anti_ban.py@ad3758c, function _save_cooldown; docs/briefs/F-04c.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-05
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0370: Developer log and crash file times in local time without a zone
+
+- Area: Logging
+- What went wrong: The developer log, the crash files and the terminal log view wrote times in local time without any zone.
+- Correct behaviour: Records are kept in UTC; displays show the box's zone with its offset (brief F-04c section 8 N10, sections 3.6.1 and 3.6.6).
+- Source: nmb/devlog.py@ad3758c:75-76; nmb/devlog.py@ad3758c:114-118; nmb/report/crash_trap.py@ad3758c:322; nmb/tui/logs.py@ad3758c:26-30; docs/briefs/F-04c.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-03 (also S-10)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0371: Run-time state kept in the configuration folder
+
+- Area: Configuration
+- What went wrong: Run-time state was kept in the configuration folder, so a backup of the settings carried it.
+- Correct behaviour: Run-time state lives under the state roots, never in the configuration folder (brief F-04c section 8 N12 and section 3.9.3).
+- Source: docs/briefs/F-04c.md section 8 N12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12 (also N-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0372: A running update detected by matching text spacing
+
+- Area: Updates
+- What went wrong: Whether an update was already running was decided by one exact JSON text with one particular spacing, so another spacing hid a running update.
+- Correct behaviour: The record is parsed; whether an update runs is the updater's own state (brief F-04c section 8 N13).
+- Source: docs/briefs/F-04c.md section 8 N13 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: P-02
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0373: Updater recorded no own-action window although the code said so
+
+- Area: Updates
+- What went wrong: The own-action module says that the updater records its windows; the updater records none, so an outage during an update counted against the line.
+- Correct behaviour: The updater opens an `update_apply` window for the time it takes the network down (brief F-04c section 8 N14 and section 3.5.2).
+- Source: nmb/common/own_action.py@ad3758c:9-10; docs/briefs/F-04c.md section 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: P-02 (also C-07)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0374: Link advertising forced to 10/100/1000
+
+- Area: System
+- What went wrong: The kernel tuning forced every wired link's advertised modes to 10/100/1000, capping 2.5, 5 and 10 GbE ports at 1 Gbit/s.
+- Correct behaviour: Advertised modes are never narrowed (requirement F04d-R22; brief F-04d section 10).
+- Source: nmb/netd/kernel.py@ad3758c:225; docs/briefs/F-04d.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-01
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0375: Unprivileged ICMP opened for every group
+
+- Area: System
+- What went wrong: The kernel tuning allowed unprivileged ICMP sockets for every group of the system.
+- Correct behaviour: Only NMB's probe group, or the probe's own capability (brief F-04d section 10).
+- Source: nmb/netd/kernel.py@ad3758c:118; nmb/netd/kernel.py@ad3758c:160; docs/briefs/F-04d.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-01 (also M-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0376: CPU mask and kernel status built on assumptions
+
+- Area: System
+- What went wrong: The CPU mask for packet steering was computed from the CPU count, not the online CPUs; the kernel status claimed timestamp and QoS socket support without a check, and its "primary" interface was the first entry or `eth0`.
+- Correct behaviour: The online CPU set in the kernel's bitmap format; the status reports only what was checked (brief F-04d section 10).
+- Source: nmb/netd/kernel.py@ad3758c, functions get_cpu_affinity_mask_hex and get_kernel_network_status; docs/briefs/F-04d.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-01
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0377: Wi-Fi capabilities merged and assumed
+
+- Area: Wi-Fi
+- What went wrong: The Wi-Fi capabilities of all radios were merged into one interface, one driver was assumed to support n, ac, WPA3 and access point mode, and fixed channel lists and bands were used when parsing failed.
+- Correct behaviour: Facts per radio from nl80211; what is unknown stays unknown (brief F-04d section 10).
+- Source: nmb/netd/wifi.py@ad3758c:212; nmb/netd/wifi.py@ad3758c:238-241; nmb/netd/wifi.py@ad3758c:249-282; nmb/netd/wifi.py@ad3758c:301-306; docs/briefs/F-04d.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-07
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0378: Every radio unblocked
+
+- Area: Wi-Fi
+- What went wrong: Before using Wi-Fi the code ran `rfkill unblock all`, which also unblocked Bluetooth and every other radio.
+- Correct behaviour: Only the radio's own switch is unblocked (brief F-04d section 10).
+- Source: nmb/netd/wifi.py@ad3758c:31-32; docs/briefs/F-04d.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-07
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0379: Chipset names, firmware advice and platform role invented
+
+- Area: System
+- What went wrong: Chipset names were invented from bus and driver; firmware packages were recommended when no controller of that kind existed; a newer OpenWrt with apk was taken for Alpine; whether the device is a router was guessed from model substrings.
+- Correct behaviour: Names only from the data table; recommendations only for detected hardware; the package manager from the distribution plus its tool; no role guess (brief F-04d section 10).
+- Source: nmb/netd/drivers.py@ad3758c:283-290; nmb/netd/drivers.py@ad3758c:457; nmb/netd/drivers.py@ad3758c:464; nmb/netd/os_detector.py@ad3758c:109-131; nmb/netd/drivers.py@ad3758c:501-514; docs/briefs/F-04d.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-17
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0380: Factory MAC address recorded from the current address
+
+- Area: Network modes
+- What went wrong: Reading the factory MAC address recorded the network manager's or the current address as the factory address, so a changed address was taken for the factory one.
+- Correct behaviour: The permanent address is read from the kernel, read only (brief F-04d section 10).
+- Source: docs/briefs/F-04d.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-01
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0381: Wired links decided by name; fallback names returned as real
+
+- Area: Measurement link
+- What went wrong: Whether a link is wired was decided by its name prefix, and when no link was found the names `eth0`, `wlan0` and `usb0` were returned as if they existed.
+- Correct behaviour: Kernel facts decide; no link found is `not_found` (brief F-04d section 10).
+- Source: nmb/netd/interfaces.py@ad3758c:395-402; nmb/netd/interfaces.py@ad3758c:487; nmb/netd/interfaces.py@ad3758c:497; nmb/netd/interfaces.py@ad3758c:504; nmb/netd/interfaces.py@ad3758c:547; docs/briefs/F-04d.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-01 (also N-10)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0382: Duplicate reload command in the network daemon's unit
+
+- Area: Services
+- What went wrong: The network daemon's unit defined `ExecReload=` twice.
+- Correct behaviour: One definition; a unit check in the tests (brief F-04d section 10).
+- Source: systemd/nmb-netd.service@ad3758c, both ExecReload= lines; docs/briefs/F-04d.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: P-10
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0383: Switches given as text read as on for any text
+
+- Area: Web server and API
+- What went wrong: API switches given as text were read as on for any non-empty text, including `"false"`.
+- Correct behaviour: A switch is a JSON boolean; anything else is refused (brief F-04e section 10 item 2 and section 4.6.3).
+- Source: nmb/web/server.py@ad3758c, route /api/ooni/toggle; nmb/web/server.py@ad3758c, route /api/adblock/toggle; nmb/web/server.py@ad3758c, route /api/adblock/adlists/toggle; nmb/web/server.py@ad3758c, route /api/wireguard/toggle; nmb/web/server.py@ad3758c, route /api/telegram/save; docs/briefs/F-04e.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: S-01 (also S-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0384: Partial settings save reset the members not sent
+
+- Area: Web server and API
+- What went wrong: Saving part of a feature's settings (WireGuard, OpenVPN, DynDNS, Telegram, proxy) reset every member that was not sent to its default.
+- Correct behaviour: Only the members sent change (brief F-04e section 10 item 4 and section 4.9).
+- Source: docs/briefs/F-04e.md section 10 item 4 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: S-06 (also C-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0385: API replaced invalid values silently
+
+- Area: Web server and API
+- What went wrong: Invalid values in API requests were silently replaced, so something else ran than was asked.
+- Correct behaviour: HTTP 400 with the reason; nothing runs (brief F-04e section 10 item 5).
+- Source: docs/briefs/F-04e.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: S-01 (also S-03)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0386: Stored command records showed commands that never ran
+
+- Area: Measurement honesty
+- What went wrong: The command record stored or shown for a run did not describe what ran: with no recorded Ookla run the status showed an invented command line with Ookla's licence-acceptance flags (left open by the fix of KF-0027); a Cloudflare run's record showed `curl` commands with a 25 MB download and a 10 MB upload that the engine never ran; an iPerf3 run's record claimed "RFC 2544 / RFC 6349" and showed options from the settings, not those that ran.
+- Correct behaviour: A record of what really ran (the method's real parameters), or none; no claim of a standard method; `null` when nothing was recorded (brief F-04e section 10 item 7; brief M-06 section 11 NF-12; brief M-09 section 5 N13).
+- Source: nmb/web/server.py@ad3758c:3520-3533; nmb/speed/runner.py@ad3758c:494-510; nmb/speed/runner.py@ad3758c:575-587; docs/briefs/F-04e.md section 10 (native repository); docs/briefs/M-06.md section 11 (native repository); docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0027 did not cover the Ookla command line
+- Package that proves it: M-04 (also S-02, M-06, M-09)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0387: Two speed tests could start at once from the Web UI
+
+- Area: Web server and API
+- What went wrong: The web server checked "busy" with a flag that the worker thread set only later, so two requests at the same moment could both start a speed test.
+- Correct behaviour: The measurement lock is taken before the request is accepted (brief F-04e section 10 item 8 and section 4.13).
+- Source: nmb/web/server.py@ad3758c, route /api/speedtest; docs/briefs/F-04e.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-04 (also S-03)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0388: Tests checked source text instead of behaviour
+
+- Area: Tests
+- What went wrong: Two Python tests passed when a text occurred in the server's source file, not when the behaviour was there (the refusal of non-object bodies, the paths the terminal interface calls).
+- Correct behaviour: Tests check behaviour through the interface; a test that greps source text does not count as proof (brief F-04e section 10 item 12 and section 6; derived: Quality Bar 6, roadmap 584, right by design, not by luck).
+- Source: tests/test_first_run_fixes.py@ad3758c:252-254; tests/test_tui.py@ad3758c:39-41; docs/briefs/F-04e.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: S-01 (also S-10)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0389: Bot showed an unknown status code as compliant
+
+- Area: Telegram bot
+- What went wrong: The bot showed the "COMPLIANT" badge for a status code it did not know.
+- Correct behaviour: An unknown code shows "unknown" (brief F-04f section 9 F04f-F01 and section 4.10).
+- Source: nmb/bot/i18n.py@ad3758c:343; nmb/bot/i18n.py@ad3758c:1416; docs/briefs/F-04f.md section 9 (native repository); docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: S-11 (also R-01, C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0390: Translations carried script handlers and were inserted as HTML
+
+- Area: Translations
+- What went wrong: Translations carried `onclick` handlers, `javascript:` links and `style` attributes and were inserted into the page as HTML.
+- Correct behaviour: Translations use a closed markup subset rendered as nodes (brief F-04f section 9 F04f-F02, sections 4.4.4 and 4.7.1).
+- Source: nmb/web/assets/dashboard.js@ad3758c, function applyTranslations; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06 (also U-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0391: Missing or failing texts showed the raw template or key
+
+- Area: Translations
+- What went wrong: A text whose formatting failed showed the raw template with its placeholders; a text missing in the language and in English showed the raw key; an empty bot translation fell back to English without a mark.
+- Correct behaviour: Owner, 2026-11-11 (question 6): a text still missing at run time shows the English text visibly marked as untranslated, logged and listed; a failed format is recorded the same way (brief F-04f section 9 F04f-F03 and section 4.6; KF-0048).
+- Source: nmb/bot/i18n.py@ad3758c:1116-1126; nmb/bot/i18n.py@ad3758c:1242-1247; nmb/web/i18n.py@ad3758c:7159; nmb/web/assets/dashboard.js@ad3758c:36; docs/briefs/F-04f.md section 9 (native repository); docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06 (also S-11, U-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0392: Unknown language code became English silently
+
+- Area: Translations
+- What went wrong: An unknown language code became English without a word, and the language API echoed the unknown code back; codes such as `pt_BR` were not normalised and so also became English.
+- Correct behaviour: A language code is normalised once; an unknown one is refused with an error key (brief F-04f section 9 F04f-F05 and section 4.6.1).
+- Source: nmb/web/i18n.py@ad3758c:7156-7165; nmb/web/server.py@ad3758c, function WebRequestHandler.do_GET; docs/briefs/F-04f.md section 9 (native repository); docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06 (also S-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0393: Numbers formatted in English form in every language
+
+- Area: Translations
+- What went wrong: Numbers were formatted with a decimal dot and English grouping in every language, while some texts hard-coded a number in their own language's form ("99,8%").
+- Correct behaviour: Numbers are formatted typed, per locale, and passed to texts as parameters (brief F-04f section 9 F04f-F07 and section 4.5).
+- Source: nmb/report/dossier.py@ad3758c:724-728; nmb/bot/messages.py@ad3758c:10-12; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06 (also R-03, S-11)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0394: Plurals, sentences and punctuation built from fragments
+
+- Area: Translations
+- What went wrong: Plurals were written as "(s)"; sentences were built from translated fragments; the dossier took its colon from the last character of a label.
+- Correct behaviour: CLDR plural rules; one key per sentence; punctuation inside the texts (brief F-04f section 9 F04f-F08, F04f-F20, F04f-F21, section 4.4.3, requirement F04f-R13).
+- Source: nmb/report/dossier.py@ad3758c; nmb/report/svg_charts.py@ad3758c:274; nmb/web/assets/dashboard.js@ad3758c:63; nmb/report/dossier.py@ad3758c, function generate_html_dossier; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06 (also R-03, U-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0395: English fallback texts in the page script drifted from the translations
+
+- Area: Translations
+- What went wrong: The page script carried English fallback texts that had drifted from the translations of the same keys.
+- Correct behaviour: No fallback text in code (brief F-04f section 9 F04f-F09 and section 4.12.6).
+- Source: nmb/web/assets/dashboard.js@ad3758c:63; nmb/web/i18n.py@ad3758c:6446-6451; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06 (also U-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0396: The page parsed an English engine error
+
+- Area: Web UI
+- What went wrong: The page recognised the Ookla pause by parsing the English error text "Ookla rate limit … min".
+- Correct behaviour: Errors carry codes with parameters (brief F-04f section 9 F04f-F10 and section 4.10; KF-0053).
+- Source: nmb/web/assets/dashboard.js@ad3758c:45-50; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-10 (also U-02, C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0397: Bot verdicts matched as Hungarian words by substring
+
+- Area: Telegram bot
+- What went wrong: The bot's verdict codes were Hungarian words matched by substring, and an unknown verdict was shown raw and upper-cased.
+- Correct behaviour: Verdict codes from the report's code list; an unknown verdict shows "unknown" (brief F-04f section 9 F04f-F11 and section 4.10).
+- Source: nmb/bot/i18n.py@ad3758c:351-408; nmb/bot/i18n.py@ad3758c:1422-1449; docs/briefs/F-04f.md section 9 (native repository); docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: S-11 (also R-01, C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0398: Language button mixed languages
+
+- Area: Telegram bot
+- What went wrong: The English menu button said "Language / Nyelv" (Hungarian in English), and the other languages added English.
+- Correct behaviour: The button in the chat's language only (brief F-04f section 9 F04f-F12 and section 4.11).
+- Source: nmb/bot/i18n.py@ad3758c:110-134; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06 (also S-11)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0399: Page texts embedded in the page instead of served as data
+
+- Area: Web UI
+- What went wrong: The page's texts were embedded in the page itself instead of being served as their own resource.
+- Correct behaviour: Texts come as a separate JSON resource under a content security policy (brief F-04f section 9 F04f-F13 and section 4.9).
+- Source: docs/briefs/F-04f.md section 9 F04f-F13 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: U-01 (also C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0400: Seven text stores with their own fallbacks
+
+- Area: Translations
+- What went wrong: Texts lived in seven stores with their own fallbacks; one key had two texts in two layers, and 17 keys meant different things in the Web UI and the bot.
+- Correct behaviour: One catalog and one key namespace (brief F-04f section 9 F04f-F14, sections 4.2 and 4.3).
+- Source: nmb/web/i18n.py@ad3758c:7125-7142; nmb/bot/i18n.py@ad3758c:1355-1371; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0401: Terminal language actions accepted 5 of 11 languages
+
+- Area: Terminal interface (`nmb-cli`)
+- What went wrong: The terminal interface's language actions accepted only five of the eleven languages.
+- Correct behaviour: The choices come from the one language list (brief F-04f section 9 F04f-F15).
+- Source: nmb/tui/catalog.py@ad3758c:90; nmb/tui/catalog.py@ad3758c:282; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: S-10 (also C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0402: Report e-mail always English
+
+- Area: Reports
+- What went wrong: The report e-mail's setup text was always English.
+- Correct behaviour: The e-mail uses the box language (brief F-04f section 9 F04f-F16, section 4.6.2 and its question Q3).
+- Source: nmb/report/smtp.py@ad3758c:56-70; docs/briefs/F-04f.md section 9 F04f-F16 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: R-05 (also C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0403: Chart and dossier times in UTC in every language
+
+- Area: Reports
+- What went wrong: Chart and dossier times were written in UTC without the box's zone, in the same form in every language.
+- Correct behaviour: Times in the locale's form, in the box's zone with its offset (brief F-04f section 9 F04f-F17 and section 4.5.4).
+- Source: nmb/report/svg_charts.py@ad3758c:147-149; nmb/report/dossier.py@ad3758c:689-691; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: R-03 (also C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0404: Terminal layout measured text by characters
+
+- Area: Terminal interface (`nmb-cli`)
+- What went wrong: The terminal layout measured text by its number of characters, so wide (for example Chinese) labels overflowed 80 columns.
+- Correct behaviour: Display width by UAX #11 (brief F-04f section 9 F04f-F18 and section 4.4.5).
+- Source: nmb/tui/app.py@ad3758c:49-58; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: S-10 (also C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0405: Hungarian leaks detected only by two letters
+
+- Area: Translations
+- What went wrong: Hungarian text in other languages was detected (in the Web UI, the report and the self-test) only by the letters ő and ű.
+- Correct behaviour: A marker list, a same-as-Hungarian check and script checks (brief F-04f section 9 F04f-F19 and section 4.12.4).
+- Source: nmb/selftest/live.py@ad3758c:258; docs/briefs/F-04f.md section 9 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-06 (also P-07)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0406: Export range accepted non-ASCII digits
+
+- Area: Exports
+- What went wrong: The export's range parameter accepted any Unicode digits as a millisecond time stamp.
+- Correct behaviour: Only ASCII digits or the documented date forms; anything else is refused (brief F-05, For F-03, F05-P5).
+- Source: nmb/report/csv_export.py@ad3758c:40; docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: R-02
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0407: Completed 0 bit/s read as unmeasured; placeholder 0 written as a value
+
+- Area: Reports
+- What went wrong: The report figures read a completed test's 0 bit/s as not measured, and the CSV wrote a skipped or failed row's stored placeholder 0 as `0.0`.
+- Correct behaviour: A completed test's value, 0 included, is a measurement; a skipped or failed test has none (brief F-05, For F-03, F05-P6, decision Q2).
+- Source: nmb/report/metrics.py@ad3758c:529-530; nmb/report/csv_export.py@ad3758c:219-220; docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: R-01 (also R-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0408: Report median, p95 and latency extremes computed wrongly
+
+- Area: Reports
+- What went wrong: The report's median of an even count was the upper middle value; its 95th percentile was the element at index `int(0.95 n)` (the maximum for n = 20); the minimum and maximum latency were taken from minute averages instead of the stored minute minima and maxima.
+- Correct behaviour: The median of an even count is the mean of the two middle values; the 95th percentile is the nearest rank `ceil(0.95 n)`; minimum and maximum come from the stored `rtt_min` and `rtt_max` (brief F-05, For F-03, F05-P7, decision Q1).
+- Source: nmb/report/metrics.py@ad3758c:445-451; nmb/report/metrics.py@ad3758c:470; nmb/report/metrics.py@ad3758c:615-618; nmb/db/schema.sql@ad3758c:38; docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: R-01
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0409: Built-in defaults shared by every box or tied to one site
+
+- Area: Configuration
+- What went wrong: Built-in defaults were the same on every box or tied to one site: an e-mail recipient at a real domain, one SSID, one box id, a line type, fixed interface names.
+- Correct behaviour: Defaults hold no site data and nothing that must differ per box: per-box values are generated, the line type is unknown until set, interfaces are detected (Quality Bar 8, roadmap 598; Quality Bar 9; brief F-05, For F-03, F05-P9).
+- Source: nmb/config.py@ad3758c, constant DEFAULT_CONFIG_TEXT; nmb/config.py@ad3758c, classes SystemConfig, NetworkConfig, ISPConfig and SMTPConfig; docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-01
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0410: Status codes chosen by English words in error texts
+
+- Area: Status codes
+- What went wrong: Report status codes for skipped and failed tests were chosen by matching English words in the error text.
+- Correct behaviour: Codes come from the engines' typed reasons (brief F-05, For F-03, F05-P10; KF-0053).
+- Source: nmb/report/status_codes.py@ad3758c:66-74; docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: R-01
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0411: Reports and exports named old rows with live lookups
+
+- Area: Reports
+- What went wrong: Reports, CSV exports and the Web UI named old iPerf3 rows with live GeoIP requests and the stored server list at read time, so the same export could differ from one day to the next; the name cache was unbounded and timed with the wall clock.
+- Correct behaviour: Read paths use stored data only; names are looked up in a bounded background job on the monotonic clock and stored (brief F-05, For F-03, F05-P11; brief M-09 section 5 N12).
+- Source: nmb/report/metrics.py@ad3758c:525-528; nmb/report/csv_export.py@ad3758c:213-217; nmb/web/server.py@ad3758c:3493-3495; nmb/speed/iperf_directory.py@ad3758c:311-359; docs/briefs/F-05.md, For F-03 (native repository); docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09 (also R-01, R-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0412: Schedule shorthand read digits from anywhere and words of two languages
+
+- Area: Scheduling
+- What went wrong: The schedule shorthand collected digits from anywhere in the text, and accepted English and Hungarian words and a bare number.
+- Correct behaviour: Only cron and `<N>s`/`<N>m`; old word forms are converted once at migration with a logged notice (brief F-05, For F-03, F05-P13, F05-P16, decision Q5; Quality Bar 9).
+- Source: nmb/speed/scheduler.py@ad3758c:72; nmb/speed/scheduler.py@ad3758c:80; nmb/speed/scheduler.py@ad3758c:96; nmb/speed/scheduler.py@ad3758c:104; nmb/speed/scheduler.py@ad3758c:115; docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-04
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0413: Proxy acted on input it should have refused
+
+- Area: Proxy
+- What went wrong: The proxy acted on input that it should have refused.
+- Correct behaviour: Every input the proxy takes is read in the native parsers' common form, and anything that is not valid is refused (brief F-05, For F-03).
+- Source: docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0414: Export and report numbers rounded half to even, twice
+
+- Area: Exports
+- What went wrong: Export numbers and report figures were rounded half to even on the binary value (`round(2.5)` gave 2, `round(2.675, 2)` 2.67), `-0.0` was written, and the report's percentages of a mean were taken from the already rounded mean.
+- Correct behaviour: Half away from zero on the exact value (or on its shortest round-trip form); one rounding; no negative zero and no exponent form (brief F-05, For F-03, F05-P15, decision Q3 and section 3.2).
+- Source: nmb/report/csv_export.py@ad3758c, functions iter_ping_summary_csv and export_speedtests_csv; nmb/report/metrics.py@ad3758c, function aggregate_report_data (latency figures and speed summary); docs/briefs/F-05.md, For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: R-02 (also R-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0415: Documented clock-jump check never ends
+
+- Area: Development setup and tests
+- What went wrong: The clock-jump check that the Windows development guide gives for tests that fail now and then sets its end reference (`pm`) to the latest monotonic reading on every pass of its loop, so the loop condition `time.monotonic() < pm + 30` stays true and the check never ends and never prints the number of jumps.
+- Correct behaviour: The check samples the wall and the monotonic clock every 10 ms until 30 s of monotonic time have passed since a start reading that is never changed, counts the samples where the two clocks moved apart by more than 0.5 s, prints "clock jumps in 30 s: N" and ends (exit 1 when N > 0) (brief F-06 section 10.3, decision Q3).
+- Source: docs/DEV_SETUP_WINDOWS.md@ad3758c:112-117; docs/DEV_SETUP_WINDOWS.hu.md@ad3758c:114-119; docs/briefs/F-06.md section 10.3 (native repository; found by F-06's analyst on 2026-11-11: run as written, still running after more than 2.5 minutes; with a fixed end time, ended after 30 s)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: F-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open; note: documentation only
+
+### KF-0416: Cloudflare latency samples included a DNS lookup
+
+- Area: Cloudflare engine
+- What went wrong: Every Cloudflare latency sample, idle and loaded, included a name lookup: the handshake timer started before the connection call resolved the host name.
+- Correct behaviour: The name is resolved once before; only the handshake is timed (brief M-06 section 11 NF-1).
+- Source: nmb/speed/cloudflare.py@ad3758c, functions _tcp_connect_ms, measure_idle_latency and _probe_loaded_latency; docs/briefs/M-06.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0417: Loaded latency taken partly before the load; slow answers dropped
+
+- Area: Speed engines
+- What went wrong: The loaded-latency probes of Cloudflare and Fast.com started before the transfer connections were opened and kept samples from setup and warm-up, and Fast.com dropped probes that timed out under load, so loaded latency and the bufferbloat grade looked better than they were.
+- Correct behaviour: Only samples sent inside the measuring window count; a probe that times out enters the median as a lower bound, their number is stored, and the grade is marked "at least" (brief M-06 section 11 NF-2; brief M-07 section 5 F-M07-5, orchestrator decision D6 of 2026-11-11).
+- Source: nmb/speed/cloudflare.py@ad3758c, functions execute_cloudflare_speedtest and _measure_throughput; nmb/speed/fastcom.py@ad3758c, functions _loaded_probe and _transfer; docs/briefs/M-06.md section 11 (native repository); docs/briefs/M-07.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06 (also M-07)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0418: Engines imitated the speed test provider's web page
+
+- Area: Measurement honesty
+- What went wrong: The Cloudflare and Fast.com engines sent the provider page's `Origin` and `Referer` (Cloudflare also `Sec-Fetch-*` headers) to look like a browser on that page and avoid the provider's rate limit, with a hard-coded browser agent as fallback.
+- Correct behaviour: Own identity only, no browser headers; a refusal is reported, never worked around (requirement REQ-CT-0007; owner, 2026-11-11, brief C-05 section 3.4; brief M-06 section 11 NF-4; brief M-07 section 5 F-M07-1).
+- Source: nmb/speed/cloudflare.py@ad3758c:86-91; nmb/speed/cloudflare.py@ad3758c:181-189; nmb/speed/fastcom.py@ad3758c, functions _ua and _headers; git log@ad3758c: c2fca70; docs/briefs/M-06.md section 11 (native repository); docs/briefs/M-07.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06 (also M-07)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0419: Upload data compressible
+
+- Area: Speed engines
+- What went wrong: The upload payload was compressible: ASCII zeros (Cloudflare), zero bytes (Fast.com), a counting pattern (RTR), so compression on the path could raise the measured upload.
+- Correct behaviour: Random, incompressible data, fresh per write and not a short repeated block (requirement REQ-NH-0009; brief M-06 section 11 NF-5; brief M-07 section 5 F-M07-3; brief M-08 section 7 F-M08-05: high-entropy data with RTR's last-byte rule).
+- Source: nmb/speed/cloudflare.py@ad3758c, function _upload_worker; nmb/speed/fastcom.py@ad3758c:264; components/open-rmbt/src/tests.c@ad3758c:200-202; nmb/speed/rmbt/tests.py@ad3758c:169-170; docs/briefs/M-06.md section 11 (native repository); docs/briefs/M-07.md section 5 (native repository); docs/briefs/M-08.md section 7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06 (also M-07, M-08)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0420: Cloudflare test could reconnect without limit and miss a refusal
+
+- Area: Cloudflare engine
+- What went wrong: A Cloudflare test could keep reconnecting to the test server without any limit, and a refusal by the server could be missed, so such a run was neither stopped nor stored as refused.
+- Correct behaviour: One drop rule and one refusal rule for the whole run, with a stated reconnect limit (brief M-06 section 11 NF-6).
+- Source: docs/briefs/M-06.md section 11 NF-6 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0421: Upload bytes counted when handed to the socket
+
+- Area: Speed engines
+- What went wrong: Cloudflare and Fast.com counted upload bytes when they were handed to the socket, so the send buffers' content (up to megabytes per stream) counted as sent at the window's edges and after a reset.
+- Correct behaviour: Count the bytes the peer acknowledged (written minus the send queue) at each sample (brief M-06 section 11 NF-7; brief M-07 section 5 F-M07-4).
+- Source: nmb/speed/cloudflare.py@ad3758c, function _upload_worker; nmb/speed/fastcom.py@ad3758c:281-285; docs/briefs/M-06.md section 11 (native repository); docs/briefs/M-07.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06 (also M-07)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0422: TLS drops recognised by one error string
+
+- Area: Cloudflare engine
+- What went wrong: A dropped TLS stream was recognised only by the string `RECORD_LAYER_FAILURE`, which in OpenSSL 3.2 and later wraps several causes; the stream's lost time was not recorded; a failed reconnect was counted as a separate serious error.
+- Correct behaviour: The exact error class per drop, the gap per stream, and the reconnect result tied to its drop (brief M-06 section 11 NF-8).
+- Source: nmb/speed/cloudflare.py@ad3758c:416-419; nmb/speed/cloudflare.py@ad3758c:467-473; docs/briefs/M-06.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0423: One Cloudflare run mixed edge addresses, families and metadata
+
+- Area: Cloudflare engine
+- What went wrong: One Cloudflare run could use several edge addresses and both address families, and its metadata (client address, colo) came from another connection than the measured ones.
+- Correct behaviour: One address and family per run; metadata from the measured connection (brief M-06 section 11 NF-10).
+- Source: nmb/speed/cloudflare.py@ad3758c, function fetch_cloudflare_metadata; nmb/speed/cloudflare.py@ad3758c, functions _new_connection, _open_url and _tcp_connect_ms; docs/briefs/M-06.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0424: Impossible Cloudflare result dropped without reason; missing direction written as 0.0
+
+- Area: Cloudflare engine
+- What went wrong: An impossible Cloudflare result was dropped with status error and no reason when no transfer error happened, and a direction without any connection wrote 0.0 into the raw figures.
+- Correct behaviour: The reason `impossible_result`; no 0 for a missing figure (brief M-06 section 11 NF-11).
+- Source: nmb/speed/cloudflare.py@ad3758c, functions _plausible_mbps and execute_cloudflare_speedtest; docs/briefs/M-06.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0425: Engine returned while its transfer threads still ran
+
+- Area: Speed engines
+- What went wrong: Cancel was not prompt, and transfer threads could outlive the engine: a Cloudflare or Fast.com engine's workers and sockets could stay alive well after the engine had returned and keep sending into the next engine of a mixed run.
+- Correct behaviour: Stop within 1 s; every socket closed and every worker ended before the engine returns (brief M-06 section 11 NF-13; brief M-07 section 5 F-M07-6).
+- Source: docs/briefs/M-06.md section 11 NF-13 (native repository); docs/briefs/M-07.md section 5 F-M07-6 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06 (also M-07)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0426: Box's coordinates and postal code fetched into the result
+
+- Area: Privacy
+- What went wrong: The Cloudflare engine copied the box's coordinates, postal code and time zone from the provider's answer into the result object, where nothing used them (and the postal code never matched the header's real name).
+- Correct behaviour: Not kept (data minimisation, Quality Bar 8; brief M-06 section 11 NF-14).
+- Source: nmb/speed/cloudflare.py@ad3758c, function fetch_cloudflare_metadata; docs/briefs/M-06.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0427: Plausibility check off on PPPoE and stacked links
+
+- Area: Cloudflare engine
+- What went wrong: The check that drops a physically impossible Cloudflare result was off on PPPoE and other stacked links, which report no link speed.
+- Correct behaviour: The lower link's speed is used (brief M-06 section 11 NF-15).
+- Source: nmb/speed/cloudflare.py@ad3758c, function _link_capacity_mbps; docs/briefs/M-06.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-06
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0428: Built-in Fast.com token
+
+- Area: Fast.com engine
+- What went wrong: A token constant in the code kept the Fast.com engine running when the page no longer gave one.
+- Correct behaviour: No built-in token; a missing token is a failed run with its reason; nothing token-like in the code (Quality Bar 8 scan; brief M-07 section 5 F-M07-2).
+- Source: nmb/speed/fastcom.py@ad3758c:42-43; nmb/speed/fastcom.py@ad3758c:103-104; docs/briefs/M-07.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-07
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0429: Failing Fast.com server kept its streams; stream count overstated
+
+- Area: Fast.com engine
+- What went wrong: A Fast.com server that failed kept its share of the 16 streams for the whole test (retried every 0.2 s), so the result fell, and the row still said 16 streams.
+- Correct behaviour: After repeated errors a stream moves to another server; the streams that carried data are stored (brief M-07 section 5 F-M07-7).
+- Source: nmb/speed/fastcom.py@ad3758c, functions _down_worker, _transfer and execute_fastcom_speedtest; docs/briefs/M-07.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-07
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0430: Fast.com warm-up cut by sample index
+
+- Area: Fast.com engine
+- What went wrong: The Fast.com warm-up was cut at sample 6, assuming exact 0.5 s ticks, so a late tick moved the cut.
+- Correct behaviour: Cut by monotonic time (brief M-07 section 5 F-M07-9).
+- Source: nmb/speed/fastcom.py@ad3758c, function _transfer; docs/briefs/M-07.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-07
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0431: Second Fast.com API request only to name servers
+
+- Area: Fast.com engine
+- What went wrong: Over plain HTTP each Fast.com run asked the API twice, the second time only to name the servers; the two lists can differ, so names could be missing.
+- Correct behaviour: One request when TLS is used; with plain HTTP a server without a match stays unnamed (brief M-07 section 5 F-M07-10, its question Q-27).
+- Source: nmb/speed/fastcom.py@ad3758c, function _oca_names; docs/briefs/M-07.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-07
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0432: Refusal by Fast.com not recognised
+
+- Area: Fast.com engine
+- What went wrong: A refusal by Fast.com was stored as an ordinary error and the next run asked again at once, on schedules of a few minutes; a refusal from a content server lowered the speed instead of failing the run.
+- Correct behaviour: A refusal pauses the engine and is never worked around; a refusal from a content server fails the run (brief M-07 section 5 F-M07-11 and section 3.10; orchestrator decision D3 and owner decision D1 of 2026-11-11).
+- Source: nmb/speed/fastcom.py@ad3758c, function execute_fastcom_speedtest; docs/briefs/M-07.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-07 (also M-05)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0433: RTR's terms accepted silently for the user
+
+- Area: Measurement honesty
+- What went wrong: RTR's terms were accepted silently for the user: every settings call sent `terms_and_conditions_accepted: true`.
+- Correct behaviour: RTR runs only after the user accepted RTR's terms and privacy text of the current version (link, accept, withdraw); until then the engine is skipped and nothing is stored for it; existing installations start as not accepted; a newer terms version stops it until accepted again (brief M-08 section 7 F-M08-01; the same rule as KF-0028 for Ookla).
+- Source: nmb/speed/rmbt/control.py@ad3758c:96-104; components/open-rmbt/src/control.c@ad3758c:192; components/open-rmbt/src/control.c@ad3758c:203; docs/briefs/M-08.md section 7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0434: RTR test not run or computed by RTR's method
+
+- Area: RTR engine
+- What went wrong: The RTR test ran 4 s with 3 forced threads instead of the control server's duration and the pretests' thread counts, and was still submitted to RTR's open data as a regular test; the speed was the sum of bytes divided by the longest thread's time instead of RTR's formula; the upload used `PUTNORESULT` with client-side times of bytes handed to the socket and had no upload pretest.
+- Correct behaviour: The control server's duration and thread count and the specification's pretest rules, nothing forced; the specification's rate R = Σ b_k(t*)/t* with interpolation at the shortest thread's end; an upload pretest, then `PUT` with the server's time and byte records as the measurement (brief M-08 section 7 F-M08-02 to F-M08-04).
+- Source: nmb/speed/rtr.py@ad3758c, functions execute_rtr_speedtest and _run_native_rmbt_speedtest; nmb/speed/runner.py@ad3758c:169; components/open-rmbt/src/main.c@ad3758c:513-527; components/open-rmbt/src/tests.c@ad3758c:176-294; nmb/speed/rmbt/tests.py@ad3758c:150-221; components/open-rmbt/src/pretest.c@ad3758c:126-129; docs/briefs/M-08.md section 7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0435: RTR's wait before the test cut to 2 s
+
+- Area: RTR engine
+- What went wrong: The server's `test_wait` was cut to 2 s, so a client told to wait longer came before its token window.
+- Correct behaviour: Wait the full `test_wait`, bounded and cancellable (brief M-08 section 7 F-M08-06).
+- Source: nmb/speed/rtr.py@ad3758c:256-257; docs/briefs/M-08.md section 7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0436: Every RTR test reported as one fixed network type
+
+- Area: Measurement data
+- What went wrong: Every box test was reported to RTR as network type 98 ("BROWSER"), and the C client's help called 98 "LAN".
+- Correct behaviour: The type is sent only where the link's kind says what the network is (Ethernet, WLAN, a known mobile link); otherwise RTR's unknown value (brief M-08 section 7 F-M08-07 and section 3.4 #16).
+- Source: nmb/speed/rtr.py@ad3758c:339; components/open-rmbt/src/main.c@ad3758c:195; components/open-rmbt/src/main.c@ad3758c:233; docs/briefs/M-08.md section 7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0437: RTR result link built from the control host
+
+- Area: Measurement data
+- What went wrong: The RTR result link was built from the control host (Python client) or fixed to one web host (C client), whatever service ran the test, and before the result was submitted.
+- Correct behaviour: The service's own share prefix from its settings answer, and only after the result was submitted (brief M-08 section 7 F-M08-08; KF-0038).
+- Source: nmb/speed/rtr.py@ad3758c:156-158; nmb/speed/rtr.py@ad3758c:317-318; components/open-rmbt/src/main.c@ad3758c:660-661; docs/briefs/M-08.md section 7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0438: RTR records carried a fixed version and hardware model
+
+- Area: Measurement data
+- What went wrong: RTR test records carried a fixed client version (`1.1.1`, `NMB-1.1.1`) and a fixed hardware model, and the control requests sent the HTTP library's agent or none.
+- Correct behaviour: The box's own identity and real version (brief C-05 section 3.7 NF-2), the model read at run time or none (brief M-08 section 7 F-M08-09; requirement REQ-CT-0007).
+- Source: nmb/speed/rtr.py@ad3758c, constant VERSION; nmb/speed/rtr.py@ad3758c, functions execute_rtr_speedtest and _run_native_rmbt_speedtest; nmb/speed/rmbt/control.py@ad3758c, functions _post, request_settings and request_test; components/open-rmbt/src/control.c@ad3758c:115-138; docs/briefs/M-08.md section 7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-08 (also C-05)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0439: RTR tied to one deployment's host names
+
+- Area: RTR engine
+- What went wrong: A hard-coded control host and the rewriting of host names (`c01` to `c01v4`/`c01v6`, `httpv4`/`httpv6`) tied the RTR engine to one deployment's names.
+- Correct behaviour: The control service from the settings or the country data file; the address family from the API's protocol version and the settings' per-family hosts (brief M-08 section 7 F-M08-11).
+- Source: nmb/speed/rtr.py@ad3758c:26; nmb/speed/rtr.py@ad3758c:224-230; nmb/speed/rmbt/connection.py@ad3758c, function RmbtConn.connect; docs/briefs/M-08.md section 7 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0440: A stalled test server could hold an RTR run far beyond its length
+
+- Area: RTR engine
+- What went wrong: A stalled RTR test server could hold the run far beyond the test's length before the box gave up.
+- Correct behaviour: The specification's end grace, a run deadline, and records up to the stall (brief M-08 section 7 F-M08-12).
+- Source: docs/briefs/M-08.md section 7 F-M08-12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-08
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0441: Every iPerf3 server checked by opening its control port
+
+- Area: iPerf3
+- What went wrong: Before scheduled runs every configured iPerf3 server was "checked" by opening and closing a TCP connection to its control port, up to three times per cycle, and the Web UI's probe did the same; an iPerf3 server logs this as a failed test and counts it, and a one-client server is held meanwhile. The rule from fixes (roadmap 678) had been applied to the local server only (KF-0071).
+- Correct behaviour: No probe connection to any iPerf3 server; the run's own handshake is the check; a busy or unreachable server adds no row in scheduled runs (roadmap 678; brief M-09 section 5 N1).
+- Source: nmb/speed/runner.py@ad3758c, functions _answers and _run_measurement_cycle; docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0442: Busy or unreachable iPerf3 servers recognised by English words
+
+- Area: iPerf3
+- What went wrong: A busy or unreachable iPerf3 server was recognised by English words in iperf3's error text.
+- Correct behaviour: Classified from the protocol state and the kind of socket error, as reason codes (brief M-09 section 5 N2; KF-0053).
+- Source: nmb/speed/runner.py@ad3758c:343-346; docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0443: Failed one-direction iPerf3 run stored 0 bit/s
+
+- Area: iPerf3
+- What went wrong: A failed one-direction iPerf3 run stored 0 bit/s in that direction, and the stored correction cleared 0 only on `ok` rows.
+- Correct behaviour: A failed run has no values (NULL) (brief M-09 section 5 N3; roadmap 683).
+- Source: nmb/speed/runner.py@ad3758c:222; nmb/speed/runner.py@ad3758c:243-249; nmb/db/corrections.py@ad3758c:199-202; docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0444: iPerf3 text record printed 0 for values it did not get
+
+- Area: iPerf3
+- What went wrong: The iPerf3 engine's stored text record printed 0 for values it did not get ("TCP Retransmissions: 0", "UDP Jitter: 0.00 ms", "Packet Loss: 0.00%").
+- Correct behaviour: An unknown value is absent in every record (brief M-09 section 5 N4).
+- Source: nmb/speed/iperf.py@ad3758c:301; nmb/speed/iperf.py@ad3758c:308-309; nmb/speed/iperf.py@ad3758c:321; nmb/speed/iperf.py@ad3758c:325-326; docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0445: iPerf3 rest history kept per host, not per host and port
+
+- Area: iPerf3
+- What went wrong: The iPerf3 rest history was kept per host, not per host and port, so two servers on one host shared their failures.
+- Correct behaviour: Per host and port (brief M-09 section 5 N6).
+- Source: nmb/speed/runner.py@ad3758c:768; docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0446: iPerf3 server names built into the code and the Web UI
+
+- Area: iPerf3
+- What went wrong: One public iPerf3 server's name was built into the code, the command-line tool and the Web UI as the default target and placeholder, in every locale.
+- Correct behaviour: No built-in server; suggestions by location from the server list (Quality Bar 8 and 9; brief M-09 section 5 N7).
+- Source: nmb/speed/runner.py@ad3758c:172; nmb/speed/runner.py@ad3758c:568; bin/nmb-iperf@ad3758c:132; nmb/web/server.py@ad3758c, route /api/iperf/run; nmb/web/assets/dashboard.html@ad3758c:382; nmb/web/assets/dashboard.js@ad3758c:2340; nmb/web/assets/dashboard.js@ad3758c:2834; docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0447: Local iPerf3 server stop and status hit foreign programs
+
+- Area: iPerf3
+- What went wrong: Stopping the local iPerf3 server, when its unit was absent and the port still listened, fell back to `pkill -f "iperf3 -s"`, stopping any process with that command line; the status reported "running" for any program on the port.
+- Correct behaviour: Stop only what NMB started; a foreign listener is shown as such and never killed (brief M-09 section 5 N9).
+- Source: nmb/speed/iperf.py@ad3758c:498-500; nmb/speed/iperf.py@ad3758c:516-519; nmb/speed/iperf.py@ad3758c:531-546; docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0448: iPerf3 server names resolved again over IPv4 only
+
+- Area: iPerf3
+- What went wrong: iPerf3 server names were found by resolving the host again with IPv4-only `gethostbyname` and naming that address, which may not be the one the test used; IPv6-only servers were never named.
+- Correct behaviour: Name the connected address, in both families (brief M-09 section 5 N10).
+- Source: nmb/speed/iperf_directory.py@ad3758c:340; docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0449: English words stored as server data
+
+- Area: Translations
+- What went wrong: Server fields stored English words as data, shown in every language: a LAN iPerf3 server got "local network server" as its name, and an Ookla result without a server name got "Unknown"; a missing Ookla location and country gave the empty string and a missing host with a port gave `None:<port>`.
+- Correct behaviour: No words in data: a code, or NULL for an absent field; the surfaces translate (brief M-09 section 5 N11; brief M-10 section 12 NF-M10-19).
+- Source: nmb/speed/iperf_directory.py@ad3758c:344; nmb/speed/runner.py@ad3758c:707; nmb/speed/ookla.py@ad3758c:446-448; docs/briefs/M-09.md section 5 (native repository); docs/briefs/M-10.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09 (also M-10)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0450: iPerf3 inputs clamped or dropped; scheduled UDP at the default rate
+
+- Area: iPerf3
+- What went wrong: Out-of-range iPerf3 inputs were clamped and an invalid UDP rate was dropped without a word, and scheduled UDP runs passed no rate, so UDP ran at iperf3's default 1 Mbit/s.
+- Correct behaviour: Invalid input is refused; a UDP run needs its rate (brief M-09 section 5 N14, its blocked item B4).
+- Source: nmb/speed/iperf.py@ad3758c:63-99; nmb/speed/runner.py@ad3758c:183-186; docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0451: Local iPerf3 server settings kept only in memory
+
+- Area: iPerf3
+- What went wrong: Whether the local iPerf3 server is on, and its port, were kept only in the web server's memory, not in the settings.
+- Correct behaviour: Stored in the settings' `[iperf]` section (brief M-09 section 5 N16; brief F-04a section 3.5.9).
+- Source: nmb/web/server.py@ad3758c:1332-1334; nmb/web/server.py@ad3758c:3420-3423; nmb/config.py@ad3758c:597-611; docs/briefs/M-09.md section 5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0452: UDP loss stored as 0 % when nothing was received
+
+- Area: iPerf3
+- What went wrong: UDP loss was stored as iperf3 reported it, and iperf3 sets it to 0 when no packets were counted, so a UDP run that received nothing could store 0 % loss.
+- Correct behaviour: With 0 packets the loss is NULL and the direction is an error (`no_data`) (brief M-09 section 5 N17, sections 3.3 and 3.6).
+- Source: nmb/speed/iperf.py@ad3758c:269; docs/briefs/M-09.md section 5 (native repository; upstream iperf_api.c of iperf 3.22, lines 4464-4469 and 4667-4673)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-09
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0453: Ookla's program installed before the owner accepted its terms
+
+- Area: Ookla engine
+- What went wrong: Ookla's program was downloaded and installed at setup and at run time before the owner had accepted Ookla's terms, and Ookla's licence counts installing as accepting.
+- Correct behaviour: Nothing of Ookla's (download, install, run, list, request) before the owner's acceptance; the owner's action installs it; withdrawing deletes it (brief M-10 section 12 NF-M10-1, sections 4.1 and 4.2; KF-0028).
+- Source: setup.sh@ad3758c; nmb/speed/ookla.py@ad3758c, function find_or_install_ookla_binary; docs/briefs/M-10.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-10
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0454: Ookla server list fetched from the website as a browser, before acceptance
+
+- Area: Ookla engine
+- What went wrong: The Ookla server list was fetched by script from Ookla's website API with the website's `Referer` (and by default a random browser agent), in the background and before the terms were accepted, and every search sent up to three website requests.
+- Correct behaviour: The nearest list comes from the program's own server listing, under the terms gate and the pause; Ookla's website search only on the owner's submitted search, one request, after acceptance, outside a pause, counted, with NMB's own identity and no browser header (brief M-10 section 12 NF-M10-2, section 4.4, decisions D-11 and D-13).
+- Source: nmb/speed/ookla.py@ad3758c, function _get_ookla_headers; nmb/speed/ookla.py@ad3758c, function get_available_servers; docs/briefs/M-10.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-10
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0455: Ookla server list asked every five minutes, also during a pause, uncounted
+
+- Area: Ookla engine
+- What went wrong: The Ookla server list was asked of Ookla every five minutes in the background, on every search and during a refusal pause, and these requests were not counted. One possible contributor to KF-0292, not proven.
+- Correct behaviour: No background refresh younger than 24 h, none in a pause or before acceptance; each fetch is counted as an Ookla request (README 123; brief M-10 section 12 NF-M10-3).
+- Source: nmb/speed/ookla.py@ad3758c, constant SERVER_LIST_MAX_AGE_SEC; nmb/speed/ookla.py@ad3758c, function get_available_servers; README.md@ad3758c:123; docs/briefs/M-10.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-10
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0456: Every Ookla row stored the box's MAC and LAN address
+
+- Area: Privacy
+- What went wrong: Every Ookla row stored the program's whole output, with the box's MAC address and LAN address.
+- Correct behaviour: An allow-list record without them (data minimisation, Quality Bar 8; a MAC the dossier needs comes from the measurement setup's link record; brief M-10 section 12 NF-M10-6).
+- Source: nmb/speed/ookla.py@ad3758c, function run_official_ookla; docs/briefs/M-10.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-10
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0457: Ookla's own refusal text replaced by NMB's sentence
+
+- Area: Measurement honesty
+- What went wrong: Ookla's own refusal text, which names its licence limit, was replaced by NMB's sentence, so the row lost Ookla's answer.
+- Correct behaviour: Keep Ookla's message (bounded and masked) next to a reason code (brief M-10 section 12 NF-M10-7).
+- Source: nmb/speed/runner.py@ad3758c, function _run_single_engine; docs/briefs/M-10.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-04 (also M-10)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0458: Dead Ookla quarantine still shipped; its button cleared more than it said
+
+- Area: Ookla engine
+- What went wrong: The per-server quarantine, rotation and broad "ban signatures" were dead but still shipped and tested, and the Web UI showed a quarantine count and a "clear quarantine" button that also cleared the refusal pause, its doubling and the hourly limit without saying so.
+- Correct behaviour: No quarantine code or count; the owner may end a pause by hand with an action named for what it does, which is logged; it does not clear the hourly limit (brief M-10 section 12 NF-M10-13, CR-2 and B-11).
+- Source: nmb/speed/anti_ban.py@ad3758c, constant BAN_SIGNATURES; nmb/speed/anti_ban.py@ad3758c, functions is_ookla_ban_error, quarantine_server, is_server_quarantined, get_quarantined_servers and clear_quarantine; nmb/speed/anti_ban.py@ad3758c, functions record_server_attempt and get_smart_rotated_server; nmb/web/server.py@ad3758c, function WebRequestHandler.do_POST; nmb/web/server.py@ad3758c, function WebRequestHandler._handle_api_post_config; tests/test_headless_features.py@ad3758c:95-135; docs/briefs/M-10.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-05 (also M-10, U-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0459: Ookla's VPN flag dropped
+
+- Area: Measurement setup
+- What went wrong: Ookla's `isVpn` flag was dropped, so a test through a VPN read as a line measurement.
+- Correct behaviour: Keep it and show it with the setup (brief M-10 section 12 NF-M10-18).
+- Source: nmb/speed/ookla.py@ad3758c, function run_official_ookla; docs/briefs/M-10.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: C-11 (also M-10)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0460: Ookla server list asked twice per failure and without the program's home
+
+- Area: Ookla engine
+- What went wrong: The Ookla server list was asked with `--servers` and, when that failed, a second time with `-L` (the same option), both without the program's home and environment, so as a new client each time and twice per failed refresh.
+- Correct behaviour: One program start per refresh, with the same home and environment as a test; a failure is one failed attempt (brief M-10 section 12 NF-M10-20 and section 4.4).
+- Source: nmb/speed/ookla.py@ad3758c, function run_official_ookla; nmb/speed/ookla.py@ad3758c, function _fetch_master_server_list; docs/briefs/M-10.md section 12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-10
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0461: Ookla result link could point to a result Ookla did not keep
+
+- Area: Measurement honesty
+- What went wrong: A link to an Ookla result that Ookla did not keep could be stored and shown.
+- Correct behaviour: A result link only for a result Ookla kept (brief M-10 section 12 NF-M10-21 and section 4.6; KF-0038).
+- Source: docs/briefs/M-10.md section 12 NF-M10-21 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-10
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0462: Traceroute broke IPv6 targets
+
+- Area: Traceroute
+- What went wrong: The traceroute target was cut at its first colon, so an IPv6 literal became its first group, and the target was resolved without the asked family, so an IPv6 trace compared its hops with an IPv4 address and was never "reached".
+- Correct behaviour: IPv6 literals are kept and the target is resolved in the asked family (brief M-11 section 11 NF-1, NF-2, requirement M11-R5).
+- Source: nmb/speed/traceroute.py@ad3758c:424; nmb/speed/traceroute.py@ad3758c:454-465; docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0463: Failed traces returned as `ok` with no hops and 0 % loss
+
+- Area: Traceroute
+- What went wrong: A trace that failed for lack of privilege, or whose program printed only an error, was returned as `ok` with no hops and 0.0 % loss; other errors returned the exception text.
+- Correct behaviour: An error code; never `ok` without hops (brief M-11 section 11 NF-3).
+- Source: nmb/speed/traceroute.py@ad3758c:515-546; nmb/speed/traceroute.py@ad3758c:604-608; nmb/speed/traceroute.py@ad3758c:663; docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0464: "UDP" trace used a constant port 53
+
+- Area: Traceroute
+- What went wrong: The "UDP" trace method was `traceroute -U`, a constant port 53, not the default UDP method its comment named; towards a DNS server the destination was often not recognised.
+- Correct behaviour: A constant port 33434 by default, configurable; the destination is recognised by "port unreachable" (brief M-11 section 11 NF-4).
+- Source: nmb/speed/traceroute.py@ad3758c:499-500; docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0465: Trace loss, load balancing and "reached" computed wrongly
+
+- Area: Traceroute
+- What went wrong: Per-flow load balancing was not handled (the flow varied per probe; only the first address of a hop line was kept and got every RTT of the line); the trace's overall loss was the share of silent hops, shown as "carrier packet loss"; per-hop loss assumed 3 probes and counted a hop without a printed number as 100 % lost, the tracepath fallback dropped silent hops and repeated hops, the ping fallback had one probe; "destination reached" was a string compare of addresses and the destination RTT was the last hop's even when the target never answered.
+- Correct behaviour: A constant flow (Paris traceroute) with all addresses per hop and their counts; no overall loss, per-hop loss with real denominators and the rate-limit note; reached decided by the answer's kind, the destination RTT NULL unless reached (brief M-11 section 11 NF-5 to NF-8).
+- Source: nmb/speed/traceroute.py@ad3758c:251-336; nmb/speed/traceroute.py@ad3758c:606-608; nmb/web/assets/dashboard.html@ad3758c:528; nmb/speed/traceroute.py@ad3758c:324; nmb/speed/traceroute.py@ad3758c:566-586; nmb/speed/traceroute.py@ad3758c:351; nmb/speed/traceroute.py@ad3758c:539; nmb/speed/traceroute.py@ad3758c:610-620; docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0466: Trace hops labelled with conclusions and English display text
+
+- Area: Traceroute
+- What went wrong: Private hops were labelled "Local Network / Local Gateway" and shared-space hops "ISP Carrier-Grade NAT"; the carrier list filtered English display strings; hop texts were English in every language.
+- Correct behaviour: Address facts with "consistent with" wording, as codes and translation keys (brief M-11 section 11 NF-10, NF-11; KF-0039, KF-0053, KF-0048).
+- Source: nmb/speed/traceroute.py@ad3758c, function run_traceroute; nmb/speed/traceroute.py@ad3758c, function _country_code_to_flag; docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0467: Port check verdicts not measured, port setting never read
+
+- Area: Port check
+- What went wrong: The port check's verdicts were not measurements (the class of KF-0232); the setting for the ports to check was never read, and its default differed from the code's list.
+- Correct behaviour: Every verdict is only what was measured, by the method of brief M-11 section 11 NF-12 to NF-14, with "unknown" and no figure when it cannot be told; the setting for the ports to check is read (brief M-11 section 11 NF-12 to NF-14).
+- Source: nmb/config.py@ad3758c, constant DEFAULT_CONFIG_TEXT; docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11 (also R-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0468: Port checks could run several at once and over a speed test
+
+- Area: Port check
+- What went wrong: Several port checks could run at once and overlap a speed test.
+- Correct behaviour: One at a time under the measurement lock; a second request gets 409 (brief M-11 section 11 NF-15).
+- Source: docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0469: Packet capture could end without a reported reason
+
+- Area: Packet capture
+- What went wrong: The packet capture could end without reporting why.
+- Correct behaviour: The reason the capture ended is reported (brief M-11 section 11 NF-17).
+- Source: docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0470: Capture counters updated outside the lock
+
+- Area: Packet capture
+- What went wrong: The capture's counters were incremented outside the lock.
+- Correct behaviour: Counters atomic or under the lock (checked with the race detector) (brief M-11 section 11 NF-18, NF-22).
+- Source: docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0471: Capture files mislabelled and some packets misread
+
+- Area: Packet capture
+- What went wrong: Capture files were labelled with the Ethernet link type for every link and carried the cut length as the original length, and the packet parser misread some packets.
+- Correct behaviour: The link type of each link, true lengths, and a checked parser (brief M-11 section 11 NF-19).
+- Source: docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0472: Capture page showed 0 pps and 0 drops that were never measured
+
+- Area: Web UI
+- What went wrong: The capture page showed `0 pps` and `0` drops: the engine never sent these figures.
+- Correct behaviour: Measured or NULL (brief M-11 section 11 NF-20; KF-0027).
+- Source: nmb/web/assets/dashboard.js@ad3758c:4119-4120; docs/briefs/M-11.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-11 (also U-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0473: STUN answers accepted without the checks the standard requires
+
+- Area: Diagnostics
+- What went wrong: The NAT audit accepted STUN answers without the checks RFC 8489 requires, so a wrong or late answer could be taken as the mapped address.
+- Correct behaviour: The checks of RFC 8489 sections 6.3 and 6.3.3, XOR-MAPPED-ADDRESS only, attributes walked with padding (RFC 8489 section 14) (brief M-12 section 11 NF-1, NF-2).
+- Source: docs/briefs/M-12.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0474: STUN and the interception test IPv4 only
+
+- Area: Diagnostics
+- What went wrong: The STUN audit and the DNS interception test ran over IPv4 only.
+- Correct behaviour: Both families where a route exists (brief M-12 section 11 NF-4).
+- Source: nmb/report/llm_bundle.py@ad3758c:424; nmb/report/llm_bundle.py@ad3758c:446; nmb/report/llm_bundle.py@ad3758c:535; docs/briefs/M-12.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0475: Third-party services used as built-in defaults against or without their terms
+
+- Area: Outgoing and incoming connections
+- What went wrong: A resolver whose terms count configuring a device as acceptance and forbid offering it to third parties without written permission was in the default DNS fallback list, and a STUN server without published terms for this use was a fixed default.
+- Correct behaviour: A default only with published permission for this use; the user may add others (brief M-12 section 11 NF-20, NF-6, requirement M12-R4; brief F-04a section 3.5.3).
+- Source: nmb/netd/dns.py@ad3758c, constant DEFAULT_FALLBACK_SERVERS; nmb/report/llm_bundle.py@ad3758c:427; docs/briefs/M-12.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0476: DNS audit took answers that were not replies and reported untested results
+
+- Area: Diagnostics
+- What went wrong: The DNS audit could take answers that were not replies to its own queries, reported cache and validation results it had not measured, said "no hijacking" without a test, took the gateway as the DHCP resolver, and ran its queries one after another although the README calls them concurrent.
+- Correct behaviour: Every answer is matched to its query (id, question, source); a result is reported only when it was tested (brief M-12 section 11 NF-9, NF-10, sections 4.1 to 4.4).
+- Source: README.md@ad3758c:193; docs/briefs/M-12.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0477: Name resolution timeout not honoured and process-wide
+
+- Area: DNS resolver
+- What went wrong: The resolution timeout was set with the process-wide default socket timeout, which `getaddrinfo` ignores and which changes every thread.
+- Correct behaviour: A deadline per query on its own socket (brief M-12 section 11 NF-12).
+- Source: nmb/netd/dns.py@ad3758c, functions resolve_cached and test_dns_resolution; docs/briefs/M-12.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0478: DNS cache invented latencies and ignored record TTLs
+
+- Area: DNS resolver
+- What went wrong: The resolver stored 0.0 ms for a failure and 0.02 ms for a cache hit as latencies, and its cache ignored record TTLs and families (300 s fixed, the first address of any family).
+- Correct behaviour: A failure has no latency (NULL) and a cache hit is not a measurement; the cache is TTL-capped and keyed by name, type and link (brief M-12 section 11 NF-13, NF-14).
+- Source: nmb/netd/dns.py@ad3758c, functions resolve_cached and test_dns_resolution; nmb/netd/dns.py@ad3758c, class DnsRamCache; docs/briefs/M-12.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0479: DNS fallback restored only by speed tests, always reported as success, detected by text
+
+- Area: DNS resolver
+- What went wrong: The normal DNS was restored only when a speed test ran; the restore always reported success and recorded `dns_restored`; any `resolv.conf` with "NetworkMeasureBox" in its head counted as an active fallback.
+- Correct behaviour: The network daemon's own timer restores it (the 15 minutes of REQ-TS-0248 hold without tests); the restore reports what happened; the state file and the resolver configuration decide whether a fallback is active (brief M-12 section 11 NF-16, NF-17, NF-19).
+- Source: nmb/speed/runner.py@ad3758c, function _run_measurement_cycle; nmb/netd/dns.py@ad3758c, functions restore_system_dns and is_fallback_active; docs/briefs/M-12.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0480: DNS fallback and address search bound to fixed interface names
+
+- Area: DNS resolver
+- What went wrong: The DNS fallback was bound to `eth0` and to the network manager's tool, and the public address search tried fixed interface names (`eth0`, `wlan0`, `eth1`, `br0`).
+- Correct behaviour: The measuring link from the measurement setup, and the platform's resolver interface (brief M-12 section 11 NF-18, NF-23).
+- Source: nmb/netd/dns.py@ad3758c, functions ensure_dns_fallback and restore_system_dns; nmb/netd/interfaces.py@ad3758c:745-750; docs/briefs/M-12.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12 (also N-01)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0481: Background public address: interface ignored, values overwritten, IPv6 lost
+
+- Area: Measurement data
+- What went wrong: The background public-address lookup ignored the asked interface, overwrote the `ipv4` field with the public address, lost IPv6 when the IPv4 lookup timed out, aged its result by the wall clock, and used three HTTP services whose terms were not read.
+- Correct behaviour: Brief M-12 section 4.7: per link and family, separate local and public fields, each family on its own, the age on the monotonic clock, services with read terms (brief M-12 section 11 NF-22).
+- Source: nmb/netd/interfaces.py@ad3758c:666-720; nmb/netd/interfaces.py@ad3758c:728-731; docs/briefs/M-12.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0482: GeoIP results invented or taken from unrelated data
+
+- Area: Measurement data
+- What went wrong: GeoIP stored placeholders as values ("Unknown", "--", "N/A", "Unknown ISP"), used the LAN address as the key when no address was given, and returned an earlier OONI run's country and ASN for any address.
+- Correct behaviour: Brief M-12 section 4.8: an unknown field is NULL, never a word; no lookup without a public address; a result belongs only to the address it was asked for (brief M-12 section 11 NF-24).
+- Source: nmb/netd/geoip.py@ad3758c, function get_public_geoip; docs/briefs/M-12.md section 11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-12
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0483: Masked values carry a different marker on each surface
+
+- Area: Secrets and personal data
+- What went wrong: Left open by the fix of KF-0005: masked values carried a different marker on each surface (the shared masking, crash reports and the diagnostic bundle used five forms), and one form carried the length of the value.
+- Correct behaviour: One marker per kind of value on every surface, never with the length or another property of the value, as KF-0005's correct behaviour states (roadmap 4.24, 382-385; brief C-04 section 9.1 C04-N5).
+- Source: nmb/common/redact.py@ad3758c:23; nmb/common/redact.py@ad3758c:36; nmb/report/crash_trap.py@ad3758c, function _extract_frame_locals; nmb/report/crash_trap.py@ad3758c, function create_diagnostic_bundle; nmb/report/llm_bundle.py@ad3758c:862; docs/briefs/C-04.md section 9.1 C04-N5 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0005 did not cover it
+- Package that proves it: C-04 (also R-04, C-03)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0484: No ping sent shown as 0 % loss in the report figures
+
+- Area: Measurement data
+- What went wrong: Left open by the fixes of KF-0034: a target or a minute with no ping sent was shown as 0 % loss in the report figures.
+- Correct behaviour: A target or a minute with no ping sent has no loss value (empty or "--"), never 0 %; a measured 0 % stays 0 (KF-0034; brief F-05 *For F-03* F05-P8).
+- Source: nmb/report/metrics.py@ad3758c:467; nmb/report/metrics.py@ad3758c:488; docs/briefs/F-05.md section For F-03 F05-P8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0034 did not cover it
+- Package that proves it: R-02 (also R-03)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0485: NAT kind, CGNAT and multi-WAN still concluded without proof
+
+- Area: Measurement data
+- What went wrong: Left open by the fix of KF-0039: the diagnostic bundle called the NAT mapping "symmetric" for any difference of the mapped ports, set CGNAT as found when one traceroute hop lay in the shared address space, and concluded "Multi-WAN or symmetric carrier NAT" from a difference between the STUN and the HTTP address, whose HTTP side can be a local or shared address.
+- Correct behaviour: The bundle concludes only what its data shows (KF-0039): the mapping is compared on full transport addresses and named by what was tested, unknown otherwise (RFC 5780 section 4.3); the link's own address decides CGNAT, a hop is only a hint; an address difference is stated as a fact (brief M-12 section 11 NF-3, NF-7, NF-8).
+- Source: nmb/report/llm_bundle.py@ad3758c, function _get_nat_and_stun_telemetry; nmb/report/llm_bundle.py@ad3758c, function generate_llm_diagnostic_bundle; docs/briefs/M-12.md section 11 NF-3, NF-7, NF-8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0039 did not cover it
+- Package that proves it: M-12 (also R-04)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0486: Skipped speed-test rows carry the mode only
+
+- Area: Measurement setup
+- What went wrong: Left open by the fix of KF-0044: a skipped or refused speed-test row got the box's mode only, without the link and the path to the ISP, and no setup source when the mode was unknown; the Python test asserts the mode-only row.
+- Correct behaviour: A skipped or refused row takes the setup that the network daemon's history recorded at the row's time (mode, link and path), source `recorded`, also for a recorded unknown; it carries no values (KF-0044; brief C-11 sections 2.5 and 2.11).
+- Source: nmb/speed/runner.py@ad3758c:682-688; tests/test_measurement_setup.py@ad3758c:230-236; docs/briefs/C-11.md section 2.5, 2.11 and 10.2 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0044 did not cover it
+- Package that proves it: M-04 (also C-11)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0487: Python tests still read the live machine and ask public resolvers
+
+- Area: Tests that depended on the machine
+- What went wrong: Left open by the fixes of KF-0047: the task tests read the live machine's processes and run `ps`, so an empty or busy machine changes their result, and a diagnostic-bundle test asks real public resolvers.
+- Correct behaviour: As KF-0047: native tests are hermetic, with fixed inputs and fakes for processes and resolvers, no network, no host tools and no live state (work plan 2.4; roadmap 747; brief C-09 section 8 N20; brief M-12 section 11 NF-11).
+- Source: tests/test_tasks.py@ad3758c:10-80; tests/test_llm_bundle.py@ad3758c:94-104; docs/briefs/C-09.md section 8 N20 (native repository); docs/briefs/M-12.md section 11 NF-11 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0047 did not cover it
+- Package that proves it: F-00 (also F-06, C-09, M-12)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0488: Wi-Fi country select still holds one fixed country
+
+- Area: Wi-Fi
+- What went wrong: Left open by the fix of KF-0050: the Web UI's Wi-Fi country select still held one fixed country next to automatic and world, and its test asserts it.
+- Correct behaviour: No country is built into the page: every country comes from the box's regulatory data, named in the UI's language (KF-0050; roadmap 599-603; brief C-10 section 11 item 3).
+- Source: nmb/web/assets/dashboard.html@ad3758c:3228-3231; tests/test_regdomains.py@ad3758c:60-62; docs/briefs/C-10.md section 11 item 3 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0050 did not cover it
+- Package that proves it: U-02 (also C-10, N-07)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0489: Wrong request values still give server errors or run with defaults
+
+- Area: Web server
+- What went wrong: Left open by the fix of KF-0062: some request values that are not valid were not refused; the request gave a server error, or the action ran with other values than asked.
+- Correct behaviour: Every endpoint checks each query parameter and body field by the forms and ranges of its contract and refuses a request that does not meet them with a 400 answer that names the reason; nothing runs on a refused request (KF-0062; work plan 7 point 1; brief F-04e section 10 items 1 and 3; brief C-09 section 8 N19).
+- Source: docs/briefs/F-04e.md section 10 items 1 and 3 (native repository); docs/briefs/C-09.md section 8 N19 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0062 did not cover it
+- Package that proves it: S-01 (also S-02, S-08, C-09)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0490: `--help` still runs a command or fails
+
+- Area: Command line
+- What went wrong: Left open after KF-0063: one command ignored `--help` and did its work instead, and another exited 1 with its usage on stderr.
+- Correct behaviour: `--help` on every command prints the usage on stdout, exits 0 and changes nothing (KF-0063; roadmap 632; brief F-05 sections 3.8 and 10).
+- Source: docs/briefs/F-05.md section 3.8, 10 and For F-03 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0063 did not cover it
+- Package that proves it: P-10 (also S-10, P-12)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0491: Old factory Wi-Fi password refused through a literal in the code
+
+- Area: Wi-Fi
+- What went wrong: Next to the fix of KF-0076: the secret keep refused the old shared factory Wi-Fi password through a literal written in its code.
+- Correct behaviour: Refused weak values come from one replaceable data list that every check uses (`spec/config/weak-values.json`); no such value stands in the code (Quality Bar 8, roadmap 594; brief C-04 section 9.1 C04-N4).
+- Source: nmb/common/secret_keep.py@ad3758c; docs/briefs/C-04.md section 9.1 C04-N4 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0076 did not cover it
+- Package that proves it: C-04 (also N-07)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0492: Ookla still runs without a writable home
+
+- Area: Ookla engine
+- What went wrong: Left open by the fix of KF-0087: when its home could not be written, the Ookla program still ran, as a new client each time; the Python test asserts the fallback.
+- Correct behaviour: Without a writable home the Ookla program does not run: the run fails with the reason `ookla_home_unwritable`, since a new client per run adds to Ookla's limits (KF-0087; KF-0292; brief M-10 section 12 NF-M10-12).
+- Source: nmb/speed/ookla.py@ad3758c, function ookla_env; tests/test_ookla_honesty.py@ad3758c:403-407; docs/briefs/M-10.md section 12 NF-M10-12 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0087 did not cover it
+- Package that proves it: M-10 (also P-04)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0493: Port-forwarding help names one ISP's branded router
+
+- Area: Location
+- What went wrong: Left open by the fix of KF-0098: the Web UI's general port-forwarding help named one ISP's branded router.
+- Correct behaviour: No provider or country built in: the help is generic, and a provider-specific hint comes only from replaceable country data (KF-0098; roadmap 599-603; brief C-10 section 11 item 6).
+- Source: nmb/web/assets/dashboard.html@ad3758c:1492; docs/briefs/C-10.md section 11 item 6 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0098 did not cover it
+- Package that proves it: U-02 (also C-10)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0494: Dossier still claims conformity for every country
+
+- Area: Reports
+- What went wrong: Left open by the fix of KF-0099: the dossier quoted the EU regulation for boxes in every country, and in four languages it still claimed adherence to the BEREC guidelines and RFC 2681.
+- Correct behaviour: As KF-0099: the report claims nothing that was not checked, and legal references come only from the box's country file (roadmap 601; brief C-10 section 11 item 4).
+- Source: nmb/report/dossier.py@ad3758c, constant DOSSIER_I18N; docs/briefs/C-10.md section 11 item 4 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0099 did not cover it
+- Package that proves it: R-03 (also C-10, C-06)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0495: README documents monitors that do not exist
+
+- Area: Documentation and alerts
+- What went wrong: Left open by the fix of KF-0288: the README documented a flash I/O and kernel error monitor, a direct `/proc` reader and interrupt and softirq tracking that the code did not have.
+- Correct behaviour: Every feature the documentation names exists and works as described; the manual is generated from the code and checked by the build (KF-0288; roadmap 6B.7; brief C-08 section 8 N15; brief C-09 section 8 N18).
+- Source: README.md@ad3758c:209-211; README.md@ad3758c:203; README.md@ad3758c:233; docs/briefs/C-08.md section 8 N15 (native repository); docs/briefs/C-09.md section 8 N18 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0288 did not cover it
+- Package that proves it: P-12 (also C-08, C-09)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0496: Minute rollup misses samples that arrive after their minute was rolled
+
+- Area: Database
+- What went wrong: The minute rollup goes on from the newest stored minute, every 5 minutes and at report time, while the probe writes its samples in batches; samples of a minute that reach the database after that minute was rolled up are never counted in it, without any clock step.
+- Correct behaviour: A minute row is a pure function of the samples of its minute and target; it is computed only after the minute's end plus a settle time (at least the flush interval plus the probe timeout; M-01 fixes the figure), and computed again whenever samples of that minute are stored later while they are kept; the rollup works from an insert watermark, not from the newest stored minute (brief F-04b section 3.5.4). Clock steps: KF-0253.
+- Source: nmb/db/database.py@ad3758c:236-238; nmb/report/metrics.py@ad3758c:288-292; systemd/nmb-maintain.timer@ad3758c:6; docs/briefs/F-04b.md section 9 item 4 (native repository); docs/briefs/F-04b.md section 3.5.4 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: M-01 (also C-02)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0497: Interface counter reader returns made-up values on a read error
+
+- Area: Network interfaces
+- What went wrong: When a counter file of an interface cannot be read, the counter reader raises an unrelated error (UnboundLocalError) that hides the real one; an interface without counters gives zeros instead of no value (the reader has no caller at ad3758c).
+- Correct behaviour: A counter read that fails is an error, never zeros; counters are `uint64`, with the monotonic read time and a reset flag when a value went down (brief F-04d section 10 and section 4.1.5). How the traffic gate treats an unreadable counter: KF-0220.
+- Source: nmb/netd/interfaces.py@ad3758c:641-657; docs/briefs/F-04d.md section 10 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed
+- Package that proves it: N-01 (also M-03)
+- Spec vector: none yet (F-07)
+- Native test, Go: none yet
+- Native test, C: none yet (step 2)
+- Status, Go: open
+- Status, C: not started
+- Status, Python: open
+
+### KF-0498: A hanging network daemon part is reported only after it returns
+
+- Area: Network daemon
+- What went wrong: Left open by the fix of KF-0182: a slow part of the network daemon's loop is logged only after it has returned, so a part that hangs is never reported while it hangs.
+- Correct behaviour: A warning as soon as the part's limit passes while the part still runs, and a second line with the time it took when it ends; stacks on request, as KF-0182 states (porting plan 7D 615-618; brief C-03 section 3.10, PF-31).
+- Source: nmb/netd/daemon.py@ad3758c:325-334; docs/briefs/C-03.md section 3.10 (native repository); docs/briefs/C-03.md section 12.2 item 8 (native repository)
+- Python fix commit: not recorded in the source; note: not fixed; the fix of KF-0182 did not cover it
+- Package that proves it: N-03 (also C-03)
 - Spec vector: none yet (F-07)
 - Native test, Go: none yet
 - Native test, C: none yet (step 2)

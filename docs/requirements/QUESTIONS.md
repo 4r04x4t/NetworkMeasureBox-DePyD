@@ -24,10 +24,10 @@ question of their own (their rows follow Q-09 and the owner's decisions of 2026-
 
 ## Answered by existing decisions
 
-**Q-06 Ubuntu 22.04 / polkit 0.105: service user may manage any unit?** (REQ-RE-0288; P-06) Answered in round 1: QB 6 and 7,
+**Q-06 Service control on Ubuntu 22.04 (old polkit)?** (REQ-RE-0288; P-06) Answered in round 1: QB 6 and 7,
 REQ-TS-0018, REQ-CL-0365: the native privilege rule is an allow-list of NMB's own units on every base.
 
-**Q-07 Alpine without the public-address guard?** (REQ-RE-0290; N-02) Answered in round 1: QB 7 (nothing listens on the WAN
+**Q-07 Public-address guard on Alpine?** (REQ-RE-0290; N-02) Answered in round 1: QB 7 (nothing listens on the WAN
 side unless the owner turned it on, `docs/DEPYTHONIZATION_ROADMAP.md@ad3758c:587`), REQ-TS-0129, REQ-CL-0205: the guard runs
 on every base, Alpine/OpenRC included. Alpine is a supported distribution (Q-05, answered by the owner on 2026-11-11); the base of the own image is I-09's.
 
@@ -130,14 +130,14 @@ languages are an existing decision.
 values (the box's password, the owner's own data) stay outside. Rule: QB 6 (a software-caused known limit is not carried
 over), QB 8, work plan 2.3A (what holds nothing private belongs in the native repository). The row is no longer pending.
 
-**Q-13 Network-admin rights of the web server?** (WP 2; REQ-AR-0012; S-01, P-04) Choice: the native web server gets only the
+**Q-13 Capabilities of the native web server?** (WP 2; REQ-AR-0012; S-01, P-04) Choice: the native web server gets only the
 right to bind its port (`CAP_NET_BIND_SERVICE`, or none with a socket passed by the service manager); network changes and
 other privileged tasks go to the network daemon or the privileged helper. Rule: QB 7 "only the capabilities they need" and
 6B.5. REQ-AR-0012 restated.
 
 **Q-14 `/kill` from Telegram limited to NMB's processes?** (WP 3; REQ-AR-0068, REQ-RE-0280; S-11, P-06) Choice: yes, the
-scope stays Python's effective one. In Python the bot runs as user `nmb` and its `sudo -n kill` fallback is not in the sudoers
-line (`setup.sh@ad3758c:281`), so it signals only what `nmb` may signal ("a process the bot may signal", README.md:422; "the
+scope stays Python's effective one. In Python the bot runs as user `nmb` and its `sudo -n kill` fallback is not allowed by the box's sudo rules for `nmb`
+(set up by `setup.sh@ad3758c`), so it signals only what `nmb` may signal ("a process the bot may signal", README.md:422; "the
 task manager cannot act as root", README.md:452). Native: the bot signals NMB's own processes only; where one runs under
 another service user than the bot, the privileged helper sends the signal after checking the process against its allow-list
 of NMB's own units (never `sudo` or a shell). Every signal needs the confirmation tap of the owner's decision of 2026-11-11;

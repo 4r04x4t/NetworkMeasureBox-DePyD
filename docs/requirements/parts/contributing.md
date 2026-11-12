@@ -36,7 +36,7 @@ Package ids are those of `docs/NATIVE_WORK_PLAN.md` section 3 and 5.4 at `ad3758
 | REQ-CT-0022 | When behaviour or settings change, the user documentation is updated in the same change. | CONTRIBUTING.md@ad3758c:45 | P-12 | every package | Python: the README in both languages; native: the manual in every UI language (Q-09, REQ-DV-0026, 6B.7). Same rule as REQ-RM-1395. |
 | REQ-CT-0023 | Commit messages are written `type(scope): what changed` (`feat`, `fix`, `docs`, `test`, `refactor`), with the reason in the body when it is not obvious. | CONTRIBUTING.md@ad3758c:46 | F-00 | | |
 | REQ-CT-0024 | A change written partly by an AI assistant says so, and the person who submits it stays responsible for having read and tested it. | CONTRIBUTING.md@ad3758c:47 | F-00 | every package | The native agents' commits carry a co-author line. |
-| REQ-CT-0025 | Security problems are reported privately to the maintainer, with the steps to reproduce, never in a public issue; the native repository says how. | CONTRIBUTING.md@ad3758c:51 | F-00 | F-03 | Same handling as REQ-RM-1025 (details private until fixed). |
+| REQ-CT-0025 | Security problems are reported privately to the maintainer, with the steps to reproduce, never in a public issue; the native repository says how. | CONTRIBUTING.md@ad3758c:51 | F-00 | F-03 | Same handling as REQ-RM-1025 (details published only after the fix). |
 | REQ-CT-0026 | The native repository states under which licence contributions are published; the Python version's MIT licence is not assumed for it. | CONTRIBUTING.md@ad3758c:55 | P-08 | F-00, F-01 | The native licence follows from its components (REQ-WP-0193); until it is fixed the repository says it is not decided (REQ-WP-0195). |
 
 ## Coverage
